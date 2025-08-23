@@ -1,17 +1,12 @@
 package base.work.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class UserDTO {
-    private Long id;
-    private String user_id;
-    private String email;
-    private String user_nm;
+  private Long id;
+  @JsonProperty("user_id") private String userId; // 내부는 카멜, 외부는 스네이크
+  private String email;
+  @JsonProperty("user_nm") private String userNm;
 }

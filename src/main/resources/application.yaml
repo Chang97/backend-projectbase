@@ -2,6 +2,11 @@ server:
   port: 8080
 
 spring:
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
   application:
     name: backend-projectbase
   datasource:
@@ -11,3 +16,10 @@ spring:
 
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
+
+logging:
+  level:
+    org.apache.ibatis: DEBUG
+    org.mybatis.spring.mapper: DEBUG
+    org.springframework.http.converter: DEBUG
+
