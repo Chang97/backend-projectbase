@@ -40,6 +40,9 @@ dependencies {
     // 테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0' // 로그
 }
 
 tasks.named('bootRun') {
@@ -50,3 +53,9 @@ tasks.named('bootRun') {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+configurations {
+    developmentOnly
+    runtimeClasspath { extendsFrom developmentOnly }
+}
+

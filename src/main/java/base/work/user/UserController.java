@@ -23,8 +23,8 @@ public class UserController {
     public Map<String,Object> ping(){ return Map.of("ok", true); }
     
     // 숫자만 매칭되게 제약
-    @GetMapping("/{id:\\d+}")
-    public ResponseEntity<UserDTO> get(@PathVariable Long id){
+    @GetMapping("/{id:\\d+}")  
+    public ResponseEntity<UserDTO> get(@PathVariable("id") Long id){
         var dto = userService.findById(id);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }

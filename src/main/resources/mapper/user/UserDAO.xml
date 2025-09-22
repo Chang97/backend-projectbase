@@ -8,7 +8,9 @@
     <!-- findById --> 
 
     <select id="findById">
-    SELECT * FROM user WHERE id = #{id}
+    SELECT * 
+      FROM user 
+     WHERE id = #{id}
     </select>
 
 </mapper>
