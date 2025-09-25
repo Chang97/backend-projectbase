@@ -24,7 +24,7 @@ public class UserController {
     
     // 숫자만 매칭되게 제약
     @GetMapping("/{id:\\d+}")  
-    public ResponseEntity<UserDTO> get(@PathVariable("id") Long id){
+    public ResponseEntity<UserDTO> get(@PathVariable Long id){
         var dto = userService.findById(id);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }

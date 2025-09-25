@@ -54,6 +54,11 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-parameters']
+}
+
+
 configurations {
     developmentOnly
     runtimeClasspath { extendsFrom developmentOnly }
