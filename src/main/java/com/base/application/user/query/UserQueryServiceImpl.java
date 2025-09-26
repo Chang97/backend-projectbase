@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.base.domain.user.User;
 import com.base.domain.user.UserRepository;
 import com.base.exception.BusinessException;
+import com.base.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +43,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     @Override
     public User getUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     

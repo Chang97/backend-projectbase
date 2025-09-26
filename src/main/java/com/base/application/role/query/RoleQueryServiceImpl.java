@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.base.domain.role.Role;
 import com.base.domain.role.RoleRepository;
-import com.base.exception.BusinessException;
+import com.base.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,7 @@ public class RoleQueryServiceImpl implements RoleQueryService {
     @Override
     public Role getRole(Long id) {
         return roleRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Role not found"));
+                .orElseThrow(() -> new NotFoundException("Role not found"));
     }
 
     @Override

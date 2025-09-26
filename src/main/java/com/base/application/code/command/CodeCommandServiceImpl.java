@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.base.domain.code.Code;
 import com.base.domain.code.CodeRepository;
 import com.base.exception.BusinessException;
+import com.base.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +24,7 @@ public class CodeCommandServiceImpl implements CodeCommandService {
     @Override
     public Code updateCode(Long id, Code code) {
         Code existing = codeRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Code not found"));
+                .orElseThrow(() -> new NotFoundException("Code not found"));
         existing.setCode(code.getCode());
         existing.setCodeName(code.getCodeName());
         existing.setDescription(code.getDescription());
