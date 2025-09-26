@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
         body.put("timestamp", LocalDateTime.now());
         body.put("error", "Business Error");
         body.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body); // 409
     }
 
     @ExceptionHandler(Exception.class)
