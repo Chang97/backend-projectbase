@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.base.domain.user.User;
 import com.base.domain.user.UserRepository;
+import com.base.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,7 +42,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     @Override
     public User getUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new BusinessException("User not found"));
     }
 
     

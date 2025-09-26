@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.base.domain.code.Code;
 import com.base.domain.code.CodeRepository;
+import com.base.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +24,6 @@ public class CodeQueryServiceImpl implements CodeQueryService {
     @Override
     public Code getCode(Long id) {
         return codeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Code not found"));
+                .orElseThrow(() -> new BusinessException("Code not found"));
     }
 }
