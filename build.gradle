@@ -45,6 +45,9 @@ dependencies {
     implementation 'com.google.guava:guava:32.1.2-jre' // 필요 시
     implementation "com.fasterxml.jackson.core:jackson-databind"
 
+    annotationProcessor 'org.projectlombok:lombok'
+
+
     // DTO <-> Entity 변환
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
@@ -61,7 +64,11 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0' // 로그
+    
+    // 로그
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0' 
+    implementation 'com.vladmihalcea.flexy-pool:flexy-pool-core:1.2.4'
+
 }
 
 tasks.named('bootRun') {

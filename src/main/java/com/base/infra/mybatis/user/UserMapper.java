@@ -1,8 +1,8 @@
-package com.infra.mybatis.user;
+package com.base.infra.mybatis.user;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.api.user.dto.UserResponse;
+import com.base.api.user.dto.UserResponse;
 
 @Mapper
 public interface UserMapper {

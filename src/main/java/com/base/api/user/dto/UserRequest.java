@@ -1,4 +1,4 @@
-package com.api.user.dto;
+package com.base.api.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
