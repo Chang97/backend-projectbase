@@ -52,13 +52,13 @@ public class UserController {
         return userQueryService.findByLoginId(loginId);
     }
 
-    @PostMapping
-    public User createUser(@RequestBody User user) {
+    @PostMapping("/{id}")
+    public User createUser(@PathVariable Long id, @RequestBody User user) {
         return userCommandService.createUser(user);
     }
 
-    @PutMapping
-    public User updateUser(@RequestBody Long id, User user) {
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
         return userCommandService.updateUser(id, user);
     }
 

@@ -37,8 +37,8 @@ public class RoleController {
     }
 
     // 생성
-    @PostMapping
-    public Role createRole(@RequestBody Role role) {
+    @PostMapping("/{id}")
+    public Role createRole(@PathVariable Long id, @RequestBody Role role) {
         return roleCommandService.createRole(role);
     }
 
