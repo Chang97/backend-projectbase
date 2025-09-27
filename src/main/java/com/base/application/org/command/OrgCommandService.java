@@ -1,11 +1,12 @@
 package com.base.application.org.command;
 
-import com.base.domain.org.Org;
+import com.base.api.org.dto.OrgRequest;
+import com.base.api.org.dto.OrgResponse;
 
 public interface OrgCommandService {
 
-    Org createOrg(Org code);
-    Org updateOrg(Long id, Org code);
+    OrgResponse createOrg(OrgRequest request);
+    OrgResponse updateOrg(Long id, OrgRequest request);
     void deleteOrg(Long id);
     
 }

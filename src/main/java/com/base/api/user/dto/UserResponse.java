@@ -1,12 +1,16 @@
 package com.base.api.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
-public class UserResponse {
-  private Long id;
-  @JsonProperty("user_id") private String userId; // 내부는 카멜, 외부는 스네이크
-  private String email;
-  @JsonProperty("user_nm") private String userNm;
-}
+public record UserResponse(
+        Long userId,
+        String email,
+        String loginId,
+        String userName,
+        Long orgId,
+        String orgName,
+        String empNo,
+        String pstnName,
+        String tel,
+        Long userStatusId,
+        String userStatusName,
+        Boolean useYn
+) {}

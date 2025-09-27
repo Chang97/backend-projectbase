@@ -2,6 +2,7 @@ package com.base.api.org;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,9 +11,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.base.api.org.dto.OrgRequest;
+import com.base.api.org.dto.OrgResponse;
 import com.base.application.org.command.OrgCommandService;
 import com.base.application.org.query.OrgQueryService;
-import com.base.domain.org.Org;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
@@ -25,32 +27,40 @@ public class OrgController {
     private final OrgCommandService orgCommandService;
     private final OrgQueryService orgQueryService;
 
-    // 조회
-    @GetMapping
-    public List<Org> getAllOrgs() {
-        return orgQueryService.getOrgs();
+    @PostMapping
+    public ResponseEntity<OrgResponse> createOrg(@RequestBody OrgRequest request) {
+        return ResponseEntity.ok(orgCommandService.createOrg(request));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<OrgResponse> updateOrg(
+            @PathVariable Long id, @RequestBody OrgRequest request) {
+        return ResponseEntity.ok(orgCommandService.updateOrg(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOrg(@PathVariable Long id) {
+        orgCommandService.deleteOrg(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public Org getOrg(@PathVariable Long id) {
-        return orgQueryService.getOrg(id);
+    public ResponseEntity<OrgResponse> getOrg(@PathVariable Long id) {
+        return ResponseEntity.ok(orgQueryService.getOrg(id));
     }
 
-    // 생성
-    @PostMapping
-    public Org createOrg(@RequestBody Org org) {
-        return orgCommandService.createOrg(org);
+    @GetMapping
+    public ResponseEntity<List<OrgResponse>> getOrgs() {
+        return ResponseEntity.ok(orgQueryService.getOrgs());
     }
 
-    // 수정
-    @PutMapping("/{id}")
-    public Org updateOrg(@PathVariable Long id, @RequestBody Org org) {
-        return orgCommandService.updateOrg(id, org);
+    @GetMapping("/group/{upperOrgId}")
+    public ResponseEntity<List<OrgResponse>> getOrgsByUpperId(@PathVariable Long upperOrgId) {
+        return ResponseEntity.ok(orgQueryService.getOrgsByUpperId(upperOrgId));
     }
 
-    // 삭제
-    @DeleteMapping("/{id}")
-    public void deleteOrg(@PathVariable Long id) {
-        orgCommandService.deleteOrg(id);
+    @GetMapping("/group/code/{upperOrg}")
+    public ResponseEntity<List<OrgResponse>> getOrgsByUpperOrg(@PathVariable String upperOrg) {
+        return ResponseEntity.ok(orgQueryService.getOrgsByUpperOrg(upperOrg));
     }
 }

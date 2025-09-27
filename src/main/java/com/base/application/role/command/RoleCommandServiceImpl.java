@@ -2,11 +2,15 @@ package com.base.application.role.command;
 
 import org.springframework.stereotype.Service;
 
+import com.base.api.role.dto.RoleRequest;
+import com.base.api.role.dto.RoleResponse;
+import com.base.api.role.mapper.RoleMapper;
 import com.base.domain.role.Role;
 import com.base.domain.role.RoleRepository;
 import com.base.exception.ConflictException;
 import com.base.exception.NotFoundException;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 
@@ -15,34 +19,42 @@ import lombok.RequiredArgsConstructor;
 public class RoleCommandServiceImpl implements RoleCommandService {
 
     private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
     @Override
-    public Role createRole(Role role) {
-        if (roleRepository.existsByRoleName(role.getRoleName())) {
-            throw new ConflictException("Role name already exists: " + role.getRoleName());
+    @Transactional
+    public RoleResponse createRole(RoleRequest request) {
+        if (roleRepository.existsByRoleName(request.roleName())) {
+            throw new ConflictException("Role name already exists: " + request.roleName());
         }
-        return roleRepository.save(role);
+        Role role = roleMapper.toEntity(request);
+        return roleMapper.toResponse(roleRepository.save(role));
     }
 
     @Override
-    public Role updateRole(Long id, Role role) {
+    @Transactional
+    public RoleResponse updateRole(Long id, RoleRequest request) {
         Role existing = roleRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Role not found"));
 
         // 자기 자신이 아닌 다른 레코드에서 중복 확인
-        if (!existing.getRoleName().equals(role.getRoleName())
-                && roleRepository.existsByRoleName(role.getRoleName())) {
-            throw new ConflictException("Role name already exists: " + role.getRoleName());
+        if (!existing.getRoleName().equals(request.roleName())
+                && roleRepository.existsByRoleName(request.roleName())) {
+            throw new ConflictException("Role name already exists: " + request.roleName());
         }
 
-        existing.setRoleName(role.getRoleName());
-        existing.setUseYn(role.getUseYn());
-        return roleRepository.save(existing);
+        existing.setRoleName(request.roleName());
+        existing.setUseYn(request.useYn());
+        return roleMapper.toResponse(roleRepository.save(existing));
     }
 
     @Override
+    @Transactional
     public void deleteRole(Long id) {
-        roleRepository.deleteById(id);
+        Role existing = roleRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Role not found"));
+        existing.setUseYn(false); // Soft delete 처리
+        roleRepository.save(existing);
     }
 
     

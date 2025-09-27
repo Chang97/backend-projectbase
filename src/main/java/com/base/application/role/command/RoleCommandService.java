@@ -1,11 +1,12 @@
 package com.base.application.role.command;
 
-import com.base.domain.role.Role;
+import com.base.api.role.dto.RoleRequest;
+import com.base.api.role.dto.RoleResponse;
 
 public interface RoleCommandService {
 
-    Role createRole(Role role);
-    Role updateRole(Long id, Role role);
+    RoleResponse createRole(RoleRequest role);
+    RoleResponse updateRole(Long id, RoleRequest role);
     void deleteRole(Long id);
 
     

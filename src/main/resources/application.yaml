@@ -10,9 +10,9 @@ spring:
   application:
     name: backend-projectbase
   datasource:
-    hikari:
+    common:
       driver-class-name: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://localhost:5432/coredb
+      jdbc-url: jdbc:postgresql://localhost:5432/coredb?currentSchema=common
       username: app_user
       password: 1234
       maximum-pool-size: 10

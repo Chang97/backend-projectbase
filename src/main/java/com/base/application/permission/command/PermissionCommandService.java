@@ -1,11 +1,12 @@
 package com.base.application.permission.command;
 
-import com.base.domain.permission.Permission;
+import com.base.api.permission.dto.PermissionRequest;
+import com.base.api.permission.dto.PermissionResponse;
 
 public interface PermissionCommandService {
 
-    Permission createPermission(Permission permission);
-    Permission updatePermission(Long id, Permission permission);
+    PermissionResponse createPermission(PermissionRequest request);
+    PermissionResponse updatePermission(Long id, PermissionRequest request);
     void deletePermission(Long id);
     
 }

@@ -3,8 +3,10 @@ package com.base.application.org.query;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.base.domain.org.Org;
+import com.base.api.org.dto.OrgResponse;
+import com.base.api.org.mapper.OrgMapper;
 import com.base.domain.org.OrgRepository;
 import com.base.exception.NotFoundException;
 
@@ -15,15 +17,34 @@ import lombok.RequiredArgsConstructor;
 public class OrgQueryServiceImpl implements OrgQueryService {
 
     private final OrgRepository orgRepository;
+    private final OrgMapper orgMapper;
 
     @Override
-    public List<Org> getOrgs() {
-        return orgRepository.findAll();
+    @Transactional(readOnly = true)
+    public OrgResponse getOrg(Long id) {
+        return orgMapper.toResponse(orgRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Org not found")));
     }
 
     @Override
-    public Org getOrg(Long id) {
-        return orgRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Org not found"));
+    @Transactional(readOnly = true)
+    public List<OrgResponse> getOrgs() {
+        return orgMapper.toResponseList(orgRepository.findAll());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrgResponse> getOrgsByUpperId(Long upperOrgId) {
+        return orgMapper.toResponseList(
+                orgRepository.findByUpperOrg_OrgIdAndUseYnTrueOrderBySrtAsc(upperOrgId)
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrgResponse> getOrgsByUpperOrg(String upperOrg) {
+        return orgMapper.toResponseList(
+                orgRepository.findByUpperOrg_OrgAndUseYnTrueOrderBySrtAsc(upperOrg)
+        );
     }
 }

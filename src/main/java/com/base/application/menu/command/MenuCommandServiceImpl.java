@@ -1,9 +1,14 @@
 package com.base.application.menu.command;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.base.api.menu.dto.MenuRequest;
+import com.base.api.menu.dto.MenuResponse;
+import com.base.api.menu.mapper.MenuMapper;
 import com.base.domain.menu.Menu;
 import com.base.domain.menu.MenuRepository;
+import com.base.exception.ConflictException;
 import com.base.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -14,27 +19,40 @@ import lombok.RequiredArgsConstructor;
 public class MenuCommandServiceImpl implements MenuCommandService {
 
     private final MenuRepository menuRepository;
+    private final MenuMapper menuMapper;
 
     @Override
-    public Menu createMenu(Menu menu) {
-        return menuRepository.save(menu);
+    @Transactional
+    public MenuResponse createMenu(MenuRequest request) {
+        if (menuRepository.existsByMenuCode(request.menuCode())) {
+            throw new ConflictException("Menu code already exists: " + request.menuCode());
+        }
+        Menu menu = menuMapper.toEntity(request);
+        return menuMapper.toResponse(menuRepository.save(menu));
     }
 
     @Override
-    public Menu updateMenu(Long id, Menu menu) {
+    @Transactional
+    public MenuResponse updateMenu(Long id, MenuRequest request) {
         Menu existing = menuRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Menu not found"));
-        existing.setUpperMenu(menu.getUpperMenu());
-        existing.setMenuName(menu.getMenuName());
-        existing.setSrt(menu.getSrt());
-        existing.setUseYn(menu.getUseYn());
-        return menuRepository.save(existing);
+
+        if (!existing.getMenuCode().equals(request.menuCode())
+                && menuRepository.existsByMenuCode(request.menuCode())) {
+            throw new ConflictException("Menu code already exists: " + request.menuCode());
+        }
+
+        menuMapper.updateFromRequest(request, existing);
+        return menuMapper.toResponse(menuRepository.save(existing));
     }
 
     @Override
+    @Transactional
     public void deleteMenu(Long id) {
-        menuRepository.deleteById(id);
+        Menu existing = menuRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Menu not found"));
+        existing.setUseYn(false); // soft delete
+        menuRepository.save(existing);
     }
 
-    
 }

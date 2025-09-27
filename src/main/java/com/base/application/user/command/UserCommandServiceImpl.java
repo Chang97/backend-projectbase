@@ -1,10 +1,11 @@
 package com.base.application.user.command;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.base.api.user.dto.UserRequest;
+import com.base.api.user.dto.UserResponse;
+import com.base.api.user.mapper.UserMapper;
 import com.base.domain.user.User;
 import com.base.domain.user.UserRepository;
 import com.base.exception.ConflictException;
@@ -18,28 +19,48 @@ import lombok.RequiredArgsConstructor;
 public class UserCommandServiceImpl implements UserCommandService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    public User createUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new ConflictException("Email already exists: " + user.getEmail());
+    @Transactional
+    public UserResponse createUser(UserRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new ConflictException("Email already exists: " + request.email());
         }
-        return userRepository.save(user);
+        if (request.loginId() != null && userRepository.existsByLoginId(request.loginId())) {
+            throw new ConflictException("LoginId already exists: " + request.loginId());
+        }
+        User user = userMapper.toEntity(request);
+        return userMapper.toResponse(userRepository.save(user));
     }
 
     @Override
-    public User updateUser(Long id, User user) {
+    @Transactional
+    public UserResponse updateUser(Long id, UserRequest request) {
         User existing = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        if (!existing.getEmail().equals(user.getEmail())
-                && userRepository.existsByEmail(user.getEmail())) {
-            throw new ConflictException("Email already exists: " + user.getEmail());
+        if (!existing.getEmail().equals(request.email())
+                && userRepository.existsByEmail(request.email())) {
+            throw new ConflictException("Email already exists: " + request.email());
+        }
+        if (request.loginId() != null
+                && !request.loginId().equals(existing.getLoginId())
+                && userRepository.existsByLoginId(request.loginId())) {
+            throw new ConflictException("LoginId already exists: " + request.loginId());
         }
 
-        existing.setUserName(user.getUserName());
-        existing.setLoginId(user.getLoginId());
-        return userRepository.save(existing);
+        userMapper.updateFromRequest(request, existing);
+        return userMapper.toResponse(userRepository.save(existing));
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long id) {
+        User existing = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        existing.setUseYn(false); // soft delete
+        userRepository.save(existing);
     }
     
 }

@@ -2,11 +2,11 @@ package com.base.application.role.query;
 
 import java.util.List;
 
-import com.base.domain.role.Role;
+import com.base.api.role.dto.RoleResponse;
 
 public interface RoleQueryService {
 
-    Role getRole(Long id);
-    List<Role> getRoles();
+    RoleResponse getRole(Long id);
+    List<RoleResponse> getRoles();
 
 }

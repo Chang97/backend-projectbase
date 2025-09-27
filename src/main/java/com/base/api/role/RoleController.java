@@ -2,6 +2,7 @@ package com.base.api.role;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,47 +11,45 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.base.api.role.dto.RoleRequest;
+import com.base.api.role.dto.RoleResponse;
 import com.base.application.role.command.RoleCommandService;
 import com.base.application.role.query.RoleQueryService;
-import com.base.domain.role.Role;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("api/role")
 @RequiredArgsConstructor
 public class RoleController {
 
     private final RoleCommandService roleCommandService;
     private final RoleQueryService roleQueryService;
 
-    // 조회
-    @GetMapping
-    public List<Role> getRoles() {
-        return roleQueryService.getRoles();
+@GetMapping
+    public ResponseEntity<List<RoleResponse>> getRoles() {
+        return ResponseEntity.ok(roleQueryService.getRoles());
     }
 
     @GetMapping("/{id}")
-    public Role getRole(@PathVariable Long id) {
-        return roleQueryService.getRole(id);
+    public ResponseEntity<RoleResponse> getRole(@PathVariable Long id) {
+        return ResponseEntity.ok(roleQueryService.getRole(id));
     }
 
-    // 생성
-    @PostMapping("/{id}")
-    public Role createRole(@PathVariable Long id, @RequestBody Role role) {
-        return roleCommandService.createRole(role);
+    @PostMapping
+    public ResponseEntity<RoleResponse> createRole(@RequestBody RoleRequest request) {
+        return ResponseEntity.ok(roleCommandService.createRole(request));
     }
 
-    // 수정
     @PutMapping("/{id}")
-    public Role updateRole(@PathVariable Long id, @RequestBody Role role) {
-        return roleCommandService.updateRole(id, role);
+    public ResponseEntity<RoleResponse> updateRole(@PathVariable Long id, @RequestBody RoleRequest request) {
+        return ResponseEntity.ok(roleCommandService.updateRole(id, request));
     }
 
-    // 삭제
     @DeleteMapping("/{id}")
-    public void deleteRole(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         roleCommandService.deleteRole(id);
+        return ResponseEntity.noContent().build();
     }
 }

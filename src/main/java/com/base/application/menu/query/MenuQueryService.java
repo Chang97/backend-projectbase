@@ -2,11 +2,13 @@ package com.base.application.menu.query;
 
 import java.util.List;
 
-import com.base.domain.menu.Menu;
+import com.base.api.menu.dto.MenuResponse;
 
 public interface MenuQueryService {
 
-    List<Menu> getMenus();
-    Menu getMenu(Long id);
+    List<MenuResponse> getMenus();
+    MenuResponse getMenu(Long id);
+    List<MenuResponse> getMenusByUpperId(Long upperMenuId);
+    List<MenuResponse> getMenusByUpperMenu(String upperMenu);
 
 }

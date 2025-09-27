@@ -1,13 +1,13 @@
 package com.base.application.user.query;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.base.domain.user.User;
+import com.base.api.user.dto.UserResponse;
+import com.base.api.user.mapper.UserMapper;
 import com.base.domain.user.UserRepository;
-import com.base.exception.BusinessException;
 import com.base.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -16,35 +16,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserQueryServiceImpl implements UserQueryService {
 
-    // private final UserMapper userMapper;
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    @Transactional(readOnly = true)
+    public UserResponse getUser(Long id) {
+        return userMapper.toResponse(userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found")));
     }
 
     @Override
-    public Optional<User> findByLoginId(String loginId) {
-        return userRepository.findByLoginId(loginId);
+    @Transactional(readOnly = true)
+    public List<UserResponse> getUsers() {
+        return userMapper.toResponseList(userRepository.findAll());
     }
 
-    @Override
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public User getUser(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User not found"));
-    }
-
-    
 }

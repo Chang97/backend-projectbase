@@ -1,10 +1,13 @@
 package com.base.application.user.command;
 
-import com.base.domain.user.User;
+import com.base.api.user.dto.UserRequest;
+import com.base.api.user.dto.UserResponse;
 
 public interface UserCommandService {
 
-    User createUser(User user);
+    UserResponse createUser(UserRequest user);
 
-    User updateUser(Long id, User user);
+    UserResponse updateUser(Long id, UserRequest user);
+
+    void deleteUser(Long id);
 }

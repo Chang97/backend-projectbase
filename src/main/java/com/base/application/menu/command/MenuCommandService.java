@@ -1,11 +1,12 @@
 package com.base.application.menu.command;
 
-import com.base.domain.menu.Menu;
+import com.base.api.menu.dto.MenuRequest;
+import com.base.api.menu.dto.MenuResponse;
 
 public interface MenuCommandService {
 
-    Menu createMenu(Menu code);
-    Menu updateMenu(Long id, Menu code);
+    MenuResponse createMenu(MenuRequest code);
+    MenuResponse updateMenu(Long id, MenuRequest code);
     void deleteMenu(Long id);
     
 }

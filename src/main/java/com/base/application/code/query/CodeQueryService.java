@@ -2,11 +2,13 @@ package com.base.application.code.query;
 
 import java.util.List;
 
-import com.base.domain.code.Code;
+import com.base.api.code.dto.CodeResponse;
 
 public interface CodeQueryService {
 
-    List<Code> getCodes();
-    Code getCode(Long id);
+    CodeResponse getCode(Long id);
+    List<CodeResponse> getCodes();
+    List<CodeResponse> getCodesByUpperId(Long upperCodeId);
+    List<CodeResponse> getCodesByUpperCode(String upperCode);
 
 }

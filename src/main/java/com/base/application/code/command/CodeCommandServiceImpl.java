@@ -1,9 +1,14 @@
 package com.base.application.code.command;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.base.api.code.dto.CodeRequest;
+import com.base.api.code.dto.CodeResponse;
+import com.base.api.code.mapper.CodeMapper;
 import com.base.domain.code.Code;
 import com.base.domain.code.CodeRepository;
+import com.base.exception.ConflictException;
 import com.base.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -14,31 +19,40 @@ import lombok.RequiredArgsConstructor;
 public class CodeCommandServiceImpl implements CodeCommandService {
 
     private final CodeRepository codeRepository;
+    private final CodeMapper codeMapper;
 
     @Override
-    public Code createCode(Code code) {
-        return codeRepository.save(code);
+    @Transactional
+    public CodeResponse createCode(CodeRequest request) {
+        if (codeRepository.existsByCode(request.code())) {
+            throw new ConflictException("Code already exists: " + request.code());
+        }
+        Code code = codeMapper.toEntity(request);
+        return codeMapper.toResponse(codeRepository.save(code));
     }
 
     @Override
-    public Code updateCode(Long id, Code code) {
+    @Transactional
+    public CodeResponse updateCode(Long id, CodeRequest request) {
         Code existing = codeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Code not found"));
-        existing.setCode(code.getCode());
-        existing.setCodeName(code.getCodeName());
-        existing.setDescription(code.getDescription());
-        existing.setSrt(code.getSrt());
-        existing.setEtc1(code.getEtc1());
-        existing.setEtc2(code.getEtc2());
-        existing.setEtc3(code.getEtc3());
-        existing.setEtc4(code.getEtc4());
-        existing.setUseYn(code.getUseYn());
-        return codeRepository.save(existing);
+
+        if (!existing.getCode().equals(request.code())
+                && codeRepository.existsByCode(request.code())) {
+            throw new ConflictException("Code already exists: " + request.code());
+        }
+
+        codeMapper.updateFromRequest(request, existing);
+        return codeMapper.toResponse(codeRepository.save(existing));
     }
 
     @Override
+    @Transactional
     public void deleteCode(Long id) {
-        codeRepository.deleteById(id);
+        Code existing = codeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Code not found"));
+        existing.setUseYn(false); // soft delete
+        codeRepository.save(existing);
     }
 
     
