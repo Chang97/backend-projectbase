@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import com.base.domain.code.Code;
 import com.base.domain.code.CodeRepository;
-import com.base.exception.BusinessException;
 import com.base.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;

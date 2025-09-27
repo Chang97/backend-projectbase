@@ -3,7 +3,8 @@ package com.base.domain.role;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.OffsetDateTime;
+
+import com.base.domain.common.BaseEntity;
 
 @Entity
 @Table(name = "role")
@@ -12,7 +13,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Role {
+public class Role extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,19 +23,4 @@ public class Role {
     @Column(name = "role_name", length = 200, nullable = false, unique = true)
     private String roleName;
 
-    @Builder.Default
-    @Column(name = "use_yn", nullable = false)
-    private Boolean useYn = true;
-
-    @Column(name = "created_id")
-    private Integer createdId;
-
-    @Column(name = "created_dt", columnDefinition = "timestamptz default now()")
-    private OffsetDateTime createdDt;
-
-    @Column(name = "updated_id")
-    private Integer updatedId;
-
-    @Column(name = "updated_dt", columnDefinition = "timestamptz default now()")
-    private OffsetDateTime updatedDt;
 }
