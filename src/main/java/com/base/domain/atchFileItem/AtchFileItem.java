@@ -1,5 +1,6 @@
-package com.base.domain.file;
+package com.base.domain.atchFileItem;
 
+import com.base.domain.atchFile.AtchFile;
 import com.base.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

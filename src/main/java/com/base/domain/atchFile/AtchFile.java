@@ -1,4 +1,4 @@
-package com.base.domain.file;
+package com.base.domain.atchFile;
 
 import com.base.domain.code.Code;
 import com.base.domain.common.BaseEntity;

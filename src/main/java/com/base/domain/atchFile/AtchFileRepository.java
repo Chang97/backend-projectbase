@@ -1,4 +1,4 @@
-package com.base.domain.file;
+package com.base.domain.atchFile;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
