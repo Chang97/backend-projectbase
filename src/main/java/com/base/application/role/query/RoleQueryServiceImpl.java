@@ -29,6 +29,8 @@ public class RoleQueryServiceImpl implements RoleQueryService {
     @Override
     @Transactional(readOnly = true)
     public List<RoleResponse> getRoles() {
-        return roleMapper.toResponseList(roleRepository.findAll());
+        return roleRepository.findAll().stream()
+            .map(roleMapper::toResponse)
+            .toList();
     }
 }

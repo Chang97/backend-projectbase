@@ -29,22 +29,24 @@ public class OrgQueryServiceImpl implements OrgQueryService {
     @Override
     @Transactional(readOnly = true)
     public List<OrgResponse> getOrgs() {
-        return orgMapper.toResponseList(orgRepository.findAll());
+        return orgRepository.findAll().stream()
+                .map(orgMapper::toResponse)
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<OrgResponse> getOrgsByUpperId(Long upperOrgId) {
-        return orgMapper.toResponseList(
-                orgRepository.findByUpperOrg_OrgIdAndUseYnTrueOrderBySrtAsc(upperOrgId)
-        );
+        return orgRepository.findByUpperOrg_OrgIdAndUseYnTrueOrderBySrtAsc(upperOrgId).stream()
+                .map(orgMapper::toResponse)
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<OrgResponse> getOrgsByUpperOrg(String upperOrg) {
-        return orgMapper.toResponseList(
-                orgRepository.findByUpperOrg_OrgAndUseYnTrueOrderBySrtAsc(upperOrg)
-        );
+        return orgRepository.findByUpperOrg_OrgCodeAndUseYnTrueOrderBySrtAsc(upperOrg).stream()
+                .map(orgMapper::toResponse)
+                .toList();
     }
 }

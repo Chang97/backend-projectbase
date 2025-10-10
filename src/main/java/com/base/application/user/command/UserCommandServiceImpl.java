@@ -1,16 +1,21 @@
 package com.base.application.user.command;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.base.api.user.dto.UserRequest;
 import com.base.api.user.dto.UserResponse;
 import com.base.api.user.mapper.UserMapper;
+import com.base.domain.code.Code;
+import com.base.domain.org.Org;
 import com.base.domain.user.User;
 import com.base.domain.user.UserRepository;
 import com.base.exception.ConflictException;
 import com.base.exception.NotFoundException;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 
@@ -20,6 +25,8 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final EntityManager entityManager;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -31,6 +38,8 @@ public class UserCommandServiceImpl implements UserCommandService {
             throw new ConflictException("LoginId already exists: " + request.loginId());
         }
         User user = userMapper.toEntity(request);
+        applyReferences(user, request);
+        applyPassword(user, request.userPassword());
         return userMapper.toResponse(userRepository.save(user));
     }
 
@@ -51,6 +60,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         }
 
         userMapper.updateFromRequest(request, existing);
+        applyReferences(existing, request);
+        applyPassword(existing, request.userPassword());
         return userMapper.toResponse(userRepository.save(existing));
     }
 
@@ -62,5 +73,25 @@ public class UserCommandServiceImpl implements UserCommandService {
         existing.setUseYn(false); // soft delete
         userRepository.save(existing);
     }
+
+    private void applyReferences(User user, UserRequest request) {
+        if (request.orgId() != null) {
+            user.setOrg(entityManager.getReference(Org.class, request.orgId()));
+        } else {
+            user.setOrg(null);
+        }
+        if (request.userStatusId() != null) {
+            user.setUserStatus(entityManager.getReference(Code.class, request.userStatusId()));
+        } else {
+            user.setUserStatus(null);
+        }
+    }
+
+    private void applyPassword(User user, String rawPassword) {
+        if (StringUtils.hasText(rawPassword)) {
+            user.setUserPassword(passwordEncoder.encode(rawPassword));
+        }
+    }
     
 }
+

@@ -11,6 +11,7 @@ import com.base.domain.code.CodeRepository;
 import com.base.exception.ConflictException;
 import com.base.exception.NotFoundException;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 
@@ -20,6 +21,7 @@ public class CodeCommandServiceImpl implements CodeCommandService {
 
     private final CodeRepository codeRepository;
     private final CodeMapper codeMapper;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
@@ -28,6 +30,7 @@ public class CodeCommandServiceImpl implements CodeCommandService {
             throw new ConflictException("Code already exists: " + request.code());
         }
         Code code = codeMapper.toEntity(request);
+        applyUpperCode(code, request.upperCodeId());
         return codeMapper.toResponse(codeRepository.save(code));
     }
 
@@ -43,6 +46,7 @@ public class CodeCommandServiceImpl implements CodeCommandService {
         }
 
         codeMapper.updateFromRequest(request, existing);
+        applyUpperCode(existing, request.upperCodeId());
         return codeMapper.toResponse(codeRepository.save(existing));
     }
 
@@ -55,5 +59,14 @@ public class CodeCommandServiceImpl implements CodeCommandService {
         codeRepository.save(existing);
     }
 
+    private void applyUpperCode(Code code, Long upperCodeId) {
+        if (upperCodeId != null) {
+            code.setUpperCode(entityManager.getReference(Code.class, upperCodeId));
+        } else {
+            code.setUpperCode(null);
+        }
+    }
+
     
 }
+

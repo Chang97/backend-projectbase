@@ -45,3 +45,6 @@ logging:
     p6spy: INFO
 
 
+jwt:
+  secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-123456}
+  access-token-expiration-seconds: ${JWT_ACCESS_TOKEN_EXPIRATION_SECONDS:3600}

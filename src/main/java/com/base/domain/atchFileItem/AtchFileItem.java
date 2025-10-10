@@ -29,5 +29,5 @@ public class AtchFileItem extends BaseEntity {
     @Column(length = 400)
     private String fileName;
 
-    private Integer fileSize;
+    private Long fileSize;
 }

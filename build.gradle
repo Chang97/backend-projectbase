@@ -22,44 +22,47 @@ dependencies {
     // Spring Boot 기본
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'       // REST API + Tomcat
-    implementation 'org.springframework.boot:spring-boot-starter-validation' // @Valid 등 유효성 검증
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // @Valid ???�효??검�?
 
     // 보안
-    // implementation 'org.springframework.boot:spring-boot-starter-security'   // 보안 
-    // implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    // runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    // runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation 'org.springframework.boot:spring-boot-starter-security'   // ����
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
     // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // MyBatis
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' // MyBatis + Spring Boot
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'          // JDBC 지원
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'          // JDBC 지??
     
-    // DB 드라이버
+    // DB ?�라?�버
     runtimeOnly 'org.postgresql:postgresql:42.7.4'
 
-    // 유틸리티
-    implementation 'org.projectlombok:lombok'
-    implementation 'com.google.guava:guava:32.1.2-jre' // 필요 시
+    // ?�틸리티
+    implementation 'com.google.guava:guava:32.1.2-jre' // ?�요 ??
     implementation "com.fasterxml.jackson.core:jackson-databind"
 
     annotationProcessor 'org.projectlombok:lombok'
 
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
-    // DTO <-> Entity 변환
-    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    // MapStruct
+    implementation 'org.mapstruct:mapstruct:1.6.2'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
 
     // API 문서
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
-    // 공통 유틸
+    // 공통 ?�틸
     implementation 'org.apache.commons:commons-lang3:3.14.0'
     implementation 'commons-io:commons-io:2.15.1'
 
-    // 테스트
+    // ?�스??
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
@@ -72,7 +75,7 @@ dependencies {
 }
 
 tasks.named('bootRun') {
-    // 리소스 변경도 바로 반영
+    // 리소??변경도 바로 반영
     sourceResources sourceSets.main
 }
 

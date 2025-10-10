@@ -5,19 +5,17 @@ import com.base.api.code.dto.CodeResponse;
 import com.base.domain.code.Code;
 import org.mapstruct.*;
 
-import java.util.List;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CodeMapper {
 
-    @Mapping(source = "upperCodeId", target = "upperCode.codeId")
+    @Mapping(target = "upperCode", ignore = true)
     Code toEntity(CodeRequest request);
 
     @Mapping(source = "upperCode.codeId", target = "upperCodeId")
     CodeResponse toResponse(Code code);
 
-    List<CodeResponse> toResponseList(List<Code> codes);
-
+    @Mapping(target = "upperCode", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromRequest(CodeRequest request, @MappingTarget Code entity);
 }
+

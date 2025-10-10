@@ -30,6 +30,8 @@ public class PermissionQueryServiceImpl implements PermissionQueryService {
     @Override
     @Transactional(readOnly = true)
     public List<PermissionResponse> getPermissions() {
-        return permissionMapper.toResponseList(permissionRepository.findAll());
+        return permissionRepository.findAll().stream()
+            .map(permissionMapper::toResponse)
+            .toList();
     }
 }

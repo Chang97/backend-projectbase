@@ -11,6 +11,7 @@ import com.base.domain.menu.MenuRepository;
 import com.base.exception.ConflictException;
 import com.base.exception.NotFoundException;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 
@@ -20,6 +21,7 @@ public class MenuCommandServiceImpl implements MenuCommandService {
 
     private final MenuRepository menuRepository;
     private final MenuMapper menuMapper;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
@@ -28,6 +30,7 @@ public class MenuCommandServiceImpl implements MenuCommandService {
             throw new ConflictException("Menu code already exists: " + request.menuCode());
         }
         Menu menu = menuMapper.toEntity(request);
+        applyUpperMenu(menu, request.upperMenuId());
         return menuMapper.toResponse(menuRepository.save(menu));
     }
 
@@ -43,6 +46,7 @@ public class MenuCommandServiceImpl implements MenuCommandService {
         }
 
         menuMapper.updateFromRequest(request, existing);
+        applyUpperMenu(existing, request.upperMenuId());
         return menuMapper.toResponse(menuRepository.save(existing));
     }
 
@@ -55,4 +59,13 @@ public class MenuCommandServiceImpl implements MenuCommandService {
         menuRepository.save(existing);
     }
 
+    private void applyUpperMenu(Menu menu, Long upperMenuId) {
+        if (upperMenuId != null) {
+            menu.setUpperMenu(entityManager.getReference(Menu.class, upperMenuId));
+        } else {
+            menu.setUpperMenu(null);
+        }
+    }
+
 }
+

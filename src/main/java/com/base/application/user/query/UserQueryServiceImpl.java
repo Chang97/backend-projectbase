@@ -30,7 +30,9 @@ public class UserQueryServiceImpl implements UserQueryService {
     @Override
     @Transactional(readOnly = true)
     public List<UserResponse> getUsers() {
-        return userMapper.toResponseList(userRepository.findAll());
+        return userRepository.findAll().stream()
+            .map(userMapper::toResponse)
+            .toList();
     }
 
 }

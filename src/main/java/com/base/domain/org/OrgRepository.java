@@ -14,6 +14,6 @@ public interface OrgRepository extends JpaRepository<Org, Long> {
     List<Org> findByUpperOrg_OrgIdAndUseYnTrueOrderBySrtAsc(Long upperOrgId);
 
     // 그룹코드 문자열로 바로 하위 조회도 가능하게
-    List<Org> findByUpperOrg_OrgAndUseYnTrueOrderBySrtAsc(String upperOrg);
+    List<Org> findByUpperOrg_OrgCodeAndUseYnTrueOrderBySrtAsc(String upperOrgCode);
 
 }

@@ -1,7 +1,7 @@
 package com.base.api.atchFile.dto;
 
 public record AtchFileResponse(
-        Long fileId,
+        Long atchFileId,
         Long fileGrpCodeId,
         String fileGrpCodeName
 ) {}

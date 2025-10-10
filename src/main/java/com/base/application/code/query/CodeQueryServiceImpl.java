@@ -29,22 +29,24 @@ public class CodeQueryServiceImpl implements CodeQueryService {
     @Override
     @Transactional(readOnly = true)
     public List<CodeResponse> getCodes() {
-        return codeMapper.toResponseList(codeRepository.findAll());
+        return codeRepository.findAll().stream()
+                .map(codeMapper::toResponse)
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CodeResponse> getCodesByUpperId(Long upperCodeId) {
-        return codeMapper.toResponseList(
-                codeRepository.findByUpperCode_CodeIdAndUseYnTrueOrderBySrtAsc(upperCodeId)
-        );
+        return codeRepository.findByUpperCode_CodeIdAndUseYnTrueOrderBySrtAsc(upperCodeId).stream()
+                .map(codeMapper::toResponse)
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CodeResponse> getCodesByUpperCode(String upperCode) {
-        return codeMapper.toResponseList(
-                codeRepository.findByUpperCode_CodeAndUseYnTrueOrderBySrtAsc(upperCode)
-        );
+        return codeRepository.findByUpperCode_CodeAndUseYnTrueOrderBySrtAsc(upperCode).stream()
+                .map(codeMapper::toResponse)
+                .toList();
     }
 }

@@ -11,6 +11,7 @@ import com.base.domain.org.OrgRepository;
 import com.base.exception.ConflictException;
 import com.base.exception.NotFoundException;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 
@@ -20,6 +21,7 @@ public class OrgCommandServiceImpl implements OrgCommandService {
 
     private final OrgRepository orgRepository;
     private final OrgMapper orgMapper;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
@@ -28,6 +30,7 @@ public class OrgCommandServiceImpl implements OrgCommandService {
             throw new ConflictException("Org code already exists: " + request.orgCode());
         }
         Org org = orgMapper.toEntity(request);
+        applyUpperOrg(org, request.upperOrgId());
         return orgMapper.toResponse(orgRepository.save(org));
     }
 
@@ -43,6 +46,7 @@ public class OrgCommandServiceImpl implements OrgCommandService {
         }
 
         orgMapper.updateFromRequest(request, existing);
+        applyUpperOrg(existing, request.upperOrgId());
         return orgMapper.toResponse(orgRepository.save(existing));
     }
 
@@ -55,5 +59,14 @@ public class OrgCommandServiceImpl implements OrgCommandService {
         orgRepository.save(existing);
     }
 
+    private void applyUpperOrg(Org org, Long upperOrgId) {
+        if (upperOrgId != null) {
+            org.setUpperOrg(entityManager.getReference(Org.class, upperOrgId));
+        } else {
+            org.setUpperOrg(null);
+        }
+    }
+
     
 }
+

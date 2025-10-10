@@ -5,19 +5,17 @@ import com.base.api.org.dto.OrgResponse;
 import com.base.domain.org.Org;
 import org.mapstruct.*;
 
-import java.util.List;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface OrgMapper {
 
-    @Mapping(source = "upperOrgId", target = "upperOrg.orgId")
+    @Mapping(target = "upperOrg", ignore = true)
     Org toEntity(OrgRequest request);
 
     @Mapping(source = "upperOrg.orgId", target = "upperOrgId")
     OrgResponse toResponse(Org org);
-
-    List<OrgResponse> toResponseList(List<Org> orgs);
-
+    
+    @Mapping(target = "upperOrg", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromRequest(OrgRequest request, @MappingTarget Org entity);
 }
+

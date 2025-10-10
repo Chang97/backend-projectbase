@@ -22,7 +22,9 @@ public class MenuQueryServiceImpl implements MenuQueryService {
     @Override
     @Transactional(readOnly = true)
     public List<MenuResponse> getMenus() {
-        return menuMapper.toResponseList(menuRepository.findAll());
+        return menuRepository.findAll().stream()
+                .map(menuMapper::toResponse)
+                .toList();
     }
 
     @Override
@@ -35,16 +37,16 @@ public class MenuQueryServiceImpl implements MenuQueryService {
     @Override
     @Transactional(readOnly = true)
     public List<MenuResponse> getMenusByUpperId(Long upperMenuId) {
-        return menuMapper.toResponseList(
-                menuRepository.findByUpperMenu_MenuIdAndUseYnTrueOrderBySrtAsc(upperMenuId)
-        );
+        return menuRepository.findByUpperMenu_MenuIdAndUseYnTrueOrderBySrtAsc(upperMenuId).stream()
+                .map(menuMapper::toResponse)
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<MenuResponse> getMenusByUpperMenu(String upperMenu) {
-        return menuMapper.toResponseList(
-                menuRepository.findByUpperMenu_MenuAndUseYnTrueOrderBySrtAsc(upperMenu)
-        );
+        return menuRepository.findByUpperMenu_MenuCodeAndUseYnTrueOrderBySrtAsc(upperMenu).stream()
+                .map(menuMapper::toResponse)
+                .toList();
     }
 }

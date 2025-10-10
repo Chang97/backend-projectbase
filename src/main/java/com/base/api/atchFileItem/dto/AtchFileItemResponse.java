@@ -4,5 +4,6 @@ public record AtchFileItemResponse(
         Long atchFileItemId,
         Long atchFileId,
         String path,
-        String fileName
+        String fileName,
+        Long fileSize
 ) {}

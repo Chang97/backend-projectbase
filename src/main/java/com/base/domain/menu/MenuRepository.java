@@ -10,5 +10,5 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     Optional<Menu> findByMenuCode(String menuCode);
     Boolean existsByMenuCode(String menuCode);
     List<Menu> findByUpperMenu_MenuIdAndUseYnTrueOrderBySrtAsc(Long upperMenuId);
-    List<Menu> findByUpperMenu_MenuAndUseYnTrueOrderBySrtAsc(String upperMenu);
+    List<Menu> findByUpperMenu_MenuCodeAndUseYnTrueOrderBySrtAsc(String upperMenuCode);
 }

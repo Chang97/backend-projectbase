@@ -5,13 +5,11 @@ import com.base.api.user.dto.UserResponse;
 import com.base.domain.user.User;
 import org.mapstruct.*;
 
-import java.util.List;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 
-    @Mapping(source = "orgId", target = "org.orgId")
-    @Mapping(source = "userStatusId", target = "userStatus.codeId")
+    @Mapping(target = "org", ignore = true)
+    @Mapping(target = "userStatus", ignore = true)
     User toEntity(UserRequest request);
 
     @Mapping(source = "org.orgId", target = "orgId")
@@ -20,8 +18,9 @@ public interface UserMapper {
     @Mapping(source = "userStatus.codeName", target = "userStatusName")
     UserResponse toResponse(User user);
 
-    List<UserResponse> toResponseList(List<User> users);
-
+    @Mapping(target = "org", ignore = true)
+    @Mapping(target = "userStatus", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromRequest(UserRequest request, @MappingTarget User entity);
 }
+
