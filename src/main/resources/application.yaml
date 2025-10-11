@@ -12,7 +12,7 @@ spring:
   datasource:
     common:
       driver-class-name: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://localhost:5432/coredb?currentSchema=common
+      jdbc-url: jdbc:postgresql://172.22.112.1:5432/coredb?currentSchema=common
       username: app_user
       password: 1234
       maximum-pool-size: 10

@@ -12,6 +12,7 @@ import com.base.api.auth.dto.LoginRequest;
 import com.base.api.auth.dto.LoginResponse;
 import com.base.api.user.dto.UserResponse;
 import com.base.api.user.mapper.UserMapper;
+import com.base.application.menu.query.UserMenuQueryService;
 import com.base.domain.user.UserRepository;
 import com.base.exception.NotFoundException;
 import com.base.exception.ValidationException;
@@ -29,6 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;                       // JWT 발급/검증기
     private final UserRepository userRepository;               // 사용자 조회
     private final UserMapper userMapper;                       // 사용자 응답 변환
+    private final UserMenuQueryService userMenuQueryService;   // 사용자별 메뉴 조회
 
     /**
      * 로그인 처리:
@@ -48,12 +50,15 @@ public class AuthServiceImpl implements AuthService {
         UserResponse user = userRepository.findById(principal.getId())
                 .map(userMapper::toResponse)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+        UserMenuQueryService.UserMenuAccessResult menuAccess = userMenuQueryService.getAccessibleMenus(principal.getId());
 
         return new LoginResponse(
                 accessToken,                        // 액세스 토큰
                 "Bearer",                       // 토큰 타입
                 jwtService.extractExpiration(accessToken), // 만료 시각(UTC)
-                user                            // 로그인 사용자 정보
+                user,                           // 로그인 사용자 정보
+                menuAccess.menuTree(),
+                menuAccess.flatMenus()
         );
     }
 
