@@ -51,6 +51,19 @@ public class JwtService {
                 .compact();
     }
 
+    // 리프레시 토큰 생성(Access와 동일 구조지만 유효기간만 길게 설정)
+    public String generateRefreshToken(UserPrincipal principal) {
+        Instant now = Instant.now();
+        Instant expiresAt = now.plusSeconds(properties.refreshTokenExpirationSeconds());
+        return Jwts.builder()
+                .setSubject(principal.getUsername())
+                .claim("uid", principal.getId())
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(expiresAt))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     // 토큰 유효성 단순 검사(파싱 가능 여부)
     public boolean validateToken(String token) {
         try {

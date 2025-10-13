@@ -11,9 +11,11 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.WebUtils;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +33,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            String token = bearerToken.substring(7);
+        String token = resolveToken(request);
+
+        if (StringUtils.hasText(token)) {
 
             // 아직 인증 컨텍스트가 비어 있고 토큰이 유효한 경우만 인증 채움
             if (jwtService.validateToken(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -47,5 +48,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        // 1) 우선 HttpOnly 쿠키에 실린 액세스 토큰을 찾는다.
+        Cookie accessCookie = WebUtils.getCookie(request, "ACCESS_TOKEN");
+        if (accessCookie != null && StringUtils.hasText(accessCookie.getValue())) {
+            return accessCookie.getValue();
+        }
+
+        // 2) 과거 호환을 위해 Authorization 헤더도 허용한다.
+        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+
+        return null;
     }
 }
