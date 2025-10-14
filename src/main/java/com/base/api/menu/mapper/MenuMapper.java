@@ -12,10 +12,20 @@ public interface MenuMapper {
     Menu toEntity(MenuRequest request);
 
     @Mapping(source = "upperMenu.menuId", target = "upperMenuId")
+    @Mapping(target = "lvl", expression = "java(calculateLevel(menu))")
     MenuResponse toResponse(Menu menu);
 
     @Mapping(target = "upperMenu", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromRequest(MenuRequest request, @MappingTarget Menu entity);
-}
 
+    default Integer calculateLevel(Menu menu) {
+        int level = 0;
+        Menu current = menu;
+        while (current != null && current.getUpperMenu() != null) {
+            level++;
+            current = current.getUpperMenu();
+        }
+        return level;
+    }
+}

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,5 +75,11 @@ public class AuthController {
         ResponseEntity.BodyBuilder builder = ResponseEntity.status(HttpStatus.NO_CONTENT);
         cookies.forEach(cookie -> builder.header(HttpHeaders.SET_COOKIE, cookie.toString()));
         return builder.build();
+    }
+
+    /** 현재 인증된 사용자 정보를 조회한다. */
+    @GetMapping("/me")
+    public ResponseEntity<LoginResponse> me() {
+        return ResponseEntity.ok(authService.me());
     }
 }

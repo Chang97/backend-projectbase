@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseCookie;
 
 import com.base.api.auth.dto.LoginRequest;
+import com.base.api.auth.dto.LoginResponse;
 import com.base.api.auth.dto.LoginResult;
 
 /**
@@ -21,4 +22,7 @@ public interface AuthService {
 
     /** 세션 종료 시 클라이언트 쿠키를 만료시키기 위한 쿠키 목록을 반환한다. */
     List<ResponseCookie> logout(String refreshTokenValue);
+
+    /** 현재 인증된 사용자 정보를 조회한다. */
+    LoginResponse me();
 }

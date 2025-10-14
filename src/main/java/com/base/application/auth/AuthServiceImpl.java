@@ -113,6 +113,28 @@ public class AuthServiceImpl implements AuthService {
         return List.of(clearAccessCookie(), clearRefreshCookie());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public LoginResponse me() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserPrincipal principal)) {
+            throw new ValidationException("Authentication is missing.");
+        }
+
+        var userEntity = userRepository.findById(principal.getId())
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        UserResponse user = userMapper.toResponse(userEntity);
+        UserMenuQueryService.UserMenuAccessResult menuAccess =
+                userMenuQueryService.getAccessibleMenus(principal.getId());
+
+        return new LoginResponse(
+                user,
+                menuAccess.menuTree(),
+                menuAccess.flatMenus()
+        );
+    }
+
     private ResponseCookie buildAccessCookie(String tokenValue) {
         // Access 토큰은 짧은 수명을 가지며, 모든 요청에 자동 포함되도록 HttpOnly 쿠키에 저장한다.
         return ResponseCookie.from("ACCESS_TOKEN", tokenValue)

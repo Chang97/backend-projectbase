@@ -9,5 +9,6 @@ public record MenuResponse(
         String menuCn,
         String url,
         Integer srt,
-        Boolean useYn
+        Boolean useYn,
+        Integer lvl
 ) {}

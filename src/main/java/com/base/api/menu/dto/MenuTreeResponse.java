@@ -14,6 +14,7 @@ public record MenuTreeResponse(
         String url,
         Integer srt,
         Boolean useYn,
+        Integer lvl,
         List<MenuTreeResponse> children
 ) {
 }

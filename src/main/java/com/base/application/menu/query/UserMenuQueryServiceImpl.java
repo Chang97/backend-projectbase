@@ -80,7 +80,7 @@ public class UserMenuQueryServiceImpl implements UserMenuQueryService {
                 .toList();
 
         List<MenuTreeResponse> menuTree = rootNodes.stream()
-                .map(this::sortAndConvert)
+                .map(node -> sortAndConvert(node, 0))
                 .toList();
 
         return new UserMenuAccessResult(menuTree, flatMenus);
@@ -109,10 +109,10 @@ public class UserMenuQueryServiceImpl implements UserMenuQueryService {
         });
     }
 
-    private MenuTreeResponse sortAndConvert(MenuTreeNode node) {
+    private MenuTreeResponse sortAndConvert(MenuTreeNode node, int depth) {
         node.children.sort(NODE_ORDER);
         List<MenuTreeResponse> children = node.children.stream()
-                .map(this::sortAndConvert)
+                .map(child -> sortAndConvert(child, depth + 1))
                 .toList();
         Menu menu = node.menu;
         return new MenuTreeResponse(
@@ -124,6 +124,7 @@ public class UserMenuQueryServiceImpl implements UserMenuQueryService {
                 menu.getUrl(),
                 menu.getSrt(),
                 menu.getUseYn(),
+                depth,
                 children
         );
     }
