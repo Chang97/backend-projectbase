@@ -19,6 +19,7 @@ import com.base.application.code.command.CodeCommandService;
 import com.base.application.code.query.CodeQueryService;
 import com.base.application.code.query.CodeSearchCondition;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,12 +31,12 @@ public class CodeController {
     private final CodeQueryService codeQueryService;
 
     @PostMapping
-    public ResponseEntity<CodeResponse> createCode(@RequestBody CodeRequest request) {
+    public ResponseEntity<CodeResponse> createCode(@Valid @RequestBody CodeRequest request) {
         return ResponseEntity.ok(codeCommandService.createCode(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CodeResponse> updateCode(@PathVariable Long id, @RequestBody CodeRequest request) {
+    public ResponseEntity<CodeResponse> updateCode(@PathVariable Long id, @Valid @RequestBody CodeRequest request) {
         return ResponseEntity.ok(codeCommandService.updateCode(id, request));
     }
 

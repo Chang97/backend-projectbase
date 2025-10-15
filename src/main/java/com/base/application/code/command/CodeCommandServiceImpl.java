@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import com.base.api.code.dto.CodeRequest;
 import com.base.api.code.dto.CodeResponse;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class CodeCommandServiceImpl implements CodeCommandService {
 
     private final CodeRepository codeRepository;
