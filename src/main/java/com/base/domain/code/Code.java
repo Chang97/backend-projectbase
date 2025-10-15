@@ -37,6 +37,9 @@ public class Code extends BaseEntity {
 
     private Integer srt;
 
+    @Column(name = "order_path", length = 1000, nullable = false)
+    private String orderPath;
+
     @Column(length = 100)
     private String etc1;
 

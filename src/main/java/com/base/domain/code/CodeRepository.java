@@ -17,5 +17,7 @@ public interface CodeRepository extends JpaRepository<Code, Long>, JpaSpecificat
 
     // 그룹코드 문자열로 바로 하위 조회도 가능하게
     List<Code> findByUpperCode_CodeAndUseYnTrueOrderBySrtAsc(String upperCode);
+
+    List<Code> findByUpperCode_CodeId(Long upperCodeId);
     
 }

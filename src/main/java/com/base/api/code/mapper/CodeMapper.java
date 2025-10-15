@@ -13,6 +13,7 @@ import java.util.List;
 public interface CodeMapper {
 
     @Mapping(target = "upperCode", ignore = true)
+    @Mapping(target = "orderPath", ignore = true)
     Code toEntity(CodeRequest request);
 
     @Mapping(source = "upperCode.codeId", target = "upperCodeId")
@@ -21,7 +22,8 @@ public interface CodeMapper {
     CodeResponse toResponse(Code code);
 
     @Mapping(target = "upperCode", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "orderPath", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     void updateFromRequest(CodeRequest request, @MappingTarget Code entity);
 
     /**

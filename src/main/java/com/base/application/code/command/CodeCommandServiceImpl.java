@@ -1,5 +1,7 @@
 package com.base.application.code.command;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +33,9 @@ public class CodeCommandServiceImpl implements CodeCommandService {
         }
         Code code = codeMapper.toEntity(request);
         applyUpperCode(code, request.upperCodeId());
-        return codeMapper.toResponse(codeRepository.save(code));
+        refreshOrderPath(code);
+        Code saved = codeRepository.save(code);
+        return codeMapper.toResponse(saved);
     }
 
     @Override
@@ -47,7 +51,8 @@ public class CodeCommandServiceImpl implements CodeCommandService {
 
         codeMapper.updateFromRequest(request, existing);
         applyUpperCode(existing, request.upperCodeId());
-        return codeMapper.toResponse(codeRepository.save(existing));
+        refreshOrderPathRecursively(existing);
+        return codeMapper.toResponse(existing);
     }
 
     @Override
@@ -67,6 +72,31 @@ public class CodeCommandServiceImpl implements CodeCommandService {
         }
     }
 
-    
-}
+    private void refreshOrderPathRecursively(Code code) {
+        refreshOrderPath(code);
+        if (code.getCodeId() == null) {
+            return;
+        }
+        List<Code> children = codeRepository.findByUpperCode_CodeId(code.getCodeId());
+        for (Code child : children) {
+            refreshOrderPathRecursively(child);
+        }
+    }
 
+    private void refreshOrderPath(Code code) {
+        String segment = buildOrderSegment(code.getSrt(), code.getCode());
+        Code parent = code.getUpperCode();
+        if (parent != null) {
+            String parentPath = parent.getOrderPath();
+            code.setOrderPath(parentPath != null && !parentPath.isBlank() ? parentPath + ">" + segment : segment);
+        } else {
+            code.setOrderPath(segment);
+        }
+    }
+
+    private String buildOrderSegment(Integer srt, String codeValue) {
+        int order = srt != null ? srt : 999999;
+        String padded = String.format("%06d", Math.min(order, 999999));
+        return padded + ":" + (codeValue == null ? "" : codeValue);
+    }
+}

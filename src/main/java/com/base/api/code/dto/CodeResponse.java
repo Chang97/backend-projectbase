@@ -7,6 +7,7 @@ public record CodeResponse(
         String codeName,
         String description,
         Integer srt,
+        String orderPath,
         String etc1,
         String etc2,
         String etc3,
