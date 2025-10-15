@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,12 +17,12 @@ import com.base.api.code.dto.CodeRequest;
 import com.base.api.code.dto.CodeResponse;
 import com.base.application.code.command.CodeCommandService;
 import com.base.application.code.query.CodeQueryService;
+import com.base.application.code.query.CodeSearchCondition;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/code")
+@RequestMapping("/api/codes")
 @RequiredArgsConstructor
 public class CodeController {
     
@@ -48,9 +50,15 @@ public class CodeController {
         return ResponseEntity.ok(codeQueryService.getCode(id));
     }
 
+    /**
+     * 코드 목록을 조회한다. 화면에서 전달되는 검색 조건은 {@link CodeSearchCondition}에 수집되며
+     * 조건이 비어 있으면 전체 목록을 반환한다.
+     */
     @GetMapping
-    public ResponseEntity<List<CodeResponse>> getCodes() {
-        return ResponseEntity.ok(codeQueryService.getCodes());
+    public ResponseEntity<List<CodeResponse>> getCodes(
+            @ModelAttribute CodeSearchCondition condition
+    ) {
+        return ResponseEntity.ok(codeQueryService.getCodes(condition));
     }
 
     @GetMapping("/group/{upperCodeId}")

@@ -2,6 +2,7 @@ package com.base.application.code.query;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +29,16 @@ public class CodeQueryServiceImpl implements CodeQueryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CodeResponse> getCodes() {
-        return codeRepository.findAll().stream()
+    public List<CodeResponse> getCodes(CodeSearchCondition condition) {
+        CodeSearchCondition criteria = condition != null ? condition : new CodeSearchCondition();
+        criteria.normalize();
+        // 상위 코드 → 정렬 순서 → 코드값 순으로 정렬해 계층 구조가 자연스럽게 보이도록 구성한다.
+        Sort sort = Sort.by(
+                Sort.Order.asc("upperCode.codeId"),
+                Sort.Order.asc("srt"),
+                Sort.Order.asc("code")
+        );
+        return codeRepository.findAll(CodeSpecifications.withCondition(criteria), sort).stream()
                 .map(codeMapper::toResponse)
                 .toList();
     }

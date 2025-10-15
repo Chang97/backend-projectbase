@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface CodeRepository extends JpaRepository<Code, Long> {
+public interface CodeRepository extends JpaRepository<Code, Long>, JpaSpecificationExecutor<Code> {
 
     Optional<Code> findByCode(String code);
 

@@ -11,5 +11,7 @@ public record CodeResponse(
         String etc2,
         String etc3,
         String etc4,
-        Boolean useYn
+        Boolean useYn,
+        Integer depth,
+        String path
 ) {}
