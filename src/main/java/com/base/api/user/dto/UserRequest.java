@@ -1,5 +1,7 @@
 package com.base.api.user.dto;
 
+import java.util.List;
+
 public record UserRequest(
         String email,
         String loginId,
@@ -10,5 +12,6 @@ public record UserRequest(
         String pstnName,
         String tel,
         Long userStatusId,
-        Boolean useYn
+        Boolean useYn,
+        List<Long> roleIds
 ) {}

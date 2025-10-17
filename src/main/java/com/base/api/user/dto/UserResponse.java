@@ -1,5 +1,7 @@
 package com.base.api.user.dto;
 
+import java.util.List;
+
 public record UserResponse(
         Long userId,
         String email,
@@ -12,5 +14,8 @@ public record UserResponse(
         String tel,
         Long userStatusId,
         String userStatusName,
-        Boolean useYn
+        Boolean useYn,
+        List<Long> roleIds,
+        List<String> roleNames,
+        String roleNameList
 ) {}

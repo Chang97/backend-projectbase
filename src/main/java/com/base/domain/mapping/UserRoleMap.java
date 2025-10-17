@@ -1,14 +1,23 @@
 package com.base.domain.mapping;
 
-import com.base.domain.user.User;
 import com.base.domain.role.Role;
-import jakarta.persistence.*;
-import lombok.*;
-import java.io.Serializable;
+import com.base.domain.user.User;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "user_role_map")
-@IdClass(UserRoleId.class)
+@IdClass(UserRoleMapId.class)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,12 +33,4 @@ public class UserRoleMap {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
-}
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class UserRoleId implements Serializable {
-    private Long user;
-    private Long role;
 }

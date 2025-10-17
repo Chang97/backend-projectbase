@@ -7,5 +7,6 @@ import com.base.api.user.dto.UserResponse;
 public interface UserQueryService {
 
     UserResponse getUser(Long id);
-    List<UserResponse> getUsers();
+    List<UserResponse> getUsers(UserSearchCondition condition);
+    boolean isLoginIdAvailable(String loginId);
 }
