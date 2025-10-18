@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.base.api.user.dto.PasswordChangeRequest;
 import com.base.api.user.dto.UserRequest;
 import com.base.api.user.dto.UserResponse;
 import com.base.api.user.dto.LoginIdCheckResponse;
@@ -40,6 +41,13 @@ public class UserController {
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id, @RequestBody UserRequest request) {
         return ResponseEntity.ok(userCommandService.updateUser(id, request));
+    }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<Void> changePassword(
+            @PathVariable Long id, @RequestBody PasswordChangeRequest request) {
+        userCommandService.changePassword(id, request);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

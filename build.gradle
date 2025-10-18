@@ -22,13 +22,14 @@ dependencies {
     // Spring Boot 기본
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'       // REST API + Tomcat
-    implementation 'org.springframework.boot:spring-boot-starter-validation' // @Valid ???�효??검�?
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // @Valid ???�효??검�?
 
     // 보안
-    implementation 'org.springframework.boot:spring-boot-starter-security'   // ����
+    implementation 'org.springframework.boot:spring-boot-starter-security'   // ����
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation "org.bouncycastle:bcprov-jdk18on:1.78.1"
 
     // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -37,11 +38,11 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' // MyBatis + Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'          // JDBC 지??
     
-    // DB ?�라?�버
+    // DB ?�라?�버
     runtimeOnly 'org.postgresql:postgresql:42.7.4'
 
-    // ?�틸리티
-    implementation 'com.google.guava:guava:32.1.2-jre' // ?�요 ??
+    // ?�틸리티
+    implementation 'com.google.guava:guava:32.1.2-jre' // ?�요 ??
     implementation "com.fasterxml.jackson.core:jackson-databind"
 
     annotationProcessor 'org.projectlombok:lombok'
@@ -58,11 +59,11 @@ dependencies {
     // API 문서
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
-    // 공통 ?�틸
+    // 공통 ?�틸
     implementation 'org.apache.commons:commons-lang3:3.14.0'
     implementation 'commons-io:commons-io:2.15.1'
 
-    // ?�스??
+    // ?�스??
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
