@@ -100,13 +100,15 @@ public class UserMenuQueryServiceImpl implements UserMenuQueryService {
         if (menu == null || menu.getMenuId() == null) {
             return 0;
         }
-        return cache.computeIfAbsent(menu.getMenuId(), id -> {
-            Menu parent = menu.getUpperMenu();
-            if (parent == null) {
-                return 0;
-            }
-            return resolveDepth(parent, cache) + 1;
-        });
+        Long id = menu.getMenuId();
+        Integer cached = cache.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        Menu parent = menu.getUpperMenu();
+        int depth = parent == null ? 0 : resolveDepth(parent, cache) + 1;
+        cache.put(id, depth);
+        return depth;
     }
 
     private MenuTreeResponse sortAndConvert(MenuTreeNode node, int depth) {

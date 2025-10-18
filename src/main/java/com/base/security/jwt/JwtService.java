@@ -7,6 +7,7 @@ import java.time.ZoneOffset;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.base.security.userdetails.UserPrincipal;
 
@@ -20,6 +21,9 @@ import javax.crypto.SecretKey;
 @Component
 public class JwtService {
 
+    private static final int MIN_SECRET_LENGTH = 64;
+    private static final String DEFAULT_SECRET_PREFIX = "change-me";
+
     private final JwtProperties properties; // 설정 값
     private SecretKey secretKey;            // 서명 키
 
@@ -30,7 +34,17 @@ public class JwtService {
     // 애플리케이션 시작 시 비밀키 객체 생성
     @PostConstruct
     void init() {
-        this.secretKey = Keys.hmacShaKeyFor(properties.secret().getBytes(StandardCharsets.UTF_8));
+        String secret = properties.secret();
+        if (!StringUtils.hasText(secret)) {
+            throw new IllegalStateException("JWT secret must be provided via the JWT_SECRET environment variable or jwt.secret property.");
+        }
+        if (secret.startsWith(DEFAULT_SECRET_PREFIX)) {
+            throw new IllegalStateException("JWT secret uses an insecure default value. Provide a unique, random value (>=64 chars).");
+        }
+        if (secret.length() < MIN_SECRET_LENGTH) {
+            throw new IllegalStateException("JWT secret must be at least " + MIN_SECRET_LENGTH + " characters long.");
+        }
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -43,8 +57,11 @@ public class JwtService {
         Instant now = Instant.now();
         Instant expiresAt = now.plusSeconds(properties.accessTokenExpirationSeconds());
         return Jwts.builder()
+                .setHeaderParam("alg", SignatureAlgorithm.HS256.getValue())
+                .setHeaderParam("typ", "JWT")
                 .setSubject(principal.getUsername())
                 .claim("uid", principal.getId())
+                .claim("cs", now.getEpochSecond())
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiresAt))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
@@ -52,12 +69,15 @@ public class JwtService {
     }
 
     // 리프레시 토큰 생성(Access와 동일 구조지만 유효기간만 길게 설정)
-    public String generateRefreshToken(UserPrincipal principal) {
+    public String generateRefreshToken(UserPrincipal principal, String tokenId) {
         Instant now = Instant.now();
         Instant expiresAt = now.plusSeconds(properties.refreshTokenExpirationSeconds());
         return Jwts.builder()
+                .setHeaderParam("alg", SignatureAlgorithm.HS256.getValue())
+                .setHeaderParam("typ", "JWT")
                 .setSubject(principal.getUsername())
                 .claim("uid", principal.getId())
+                .claim("tid", tokenId)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiresAt))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
@@ -82,6 +102,14 @@ public class JwtService {
     // 토큰에서 로그인 ID(subject) 추출
     public String extractLoginId(String token) {
         return parseClaims(token).getSubject();
+    }
+
+    public String extractTokenId(String token) {
+        String tokenId = parseClaims(token).get("tid", String.class);
+        if (!StringUtils.hasText(tokenId)) {
+            throw new IllegalStateException("Refresh token is missing token identifier.");
+        }
+        return tokenId;
     }
 
     // 토큰 만료 시각(UTC) 반환

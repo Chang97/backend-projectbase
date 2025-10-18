@@ -3,6 +3,7 @@ package com.base.api.atchFile;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,27 +29,32 @@ public class AtchFileController {
     private final AtchFileQueryService atchFileQueryService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ATCH_FILE_CREATE')")
     public ResponseEntity<AtchFileResponse> create(@RequestBody AtchFileRequest request) {
         return ResponseEntity.ok(atchFileCommandService.createAtchFile(request));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ATCH_FILE_UPDATE')")
     public ResponseEntity<AtchFileResponse> update(@PathVariable Long id, @RequestBody AtchFileRequest request) {
         return ResponseEntity.ok(atchFileCommandService.updateAtchFile(id, request));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ATCH_FILE_DELETE')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         atchFileCommandService.deleteAtchFile(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ATCH_FILE_READ')")
     public ResponseEntity<AtchFileResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(atchFileQueryService.getAtchFile(id));
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ATCH_FILE_LIST')")
     public ResponseEntity<List<AtchFileResponse>> getList() {
         return ResponseEntity.ok(atchFileQueryService.getAtchFileList());
     }

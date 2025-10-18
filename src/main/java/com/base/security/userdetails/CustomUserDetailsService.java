@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.base.application.auth.UserAuthorityService;
 import com.base.domain.user.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository; // 로그인 ID 기반 조회
+    private final UserAuthorityService userAuthorityService;
 
     /**
      * 로그인/필터 검증 시 호출.
@@ -25,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByLoginId(username)
                 .filter(user -> Boolean.TRUE.equals(user.getUseYn()))
-                .map(UserPrincipal::from)
+                .map(user -> UserPrincipal.from(user, userAuthorityService.loadAuthoritiesOrEmpty(user.getUserId())))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 }
