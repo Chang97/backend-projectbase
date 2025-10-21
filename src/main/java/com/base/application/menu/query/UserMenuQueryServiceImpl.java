@@ -28,6 +28,7 @@ public class UserMenuQueryServiceImpl implements UserMenuQueryService {
 
     private final MenuRepository menuRepository;
     private final MenuMapper menuMapper;
+    private final MenuResponseAssembler menuResponseAssembler;
 
     // 하위 노드 정렬 기준: 메뉴 정렬순서 → 메뉴명 → PK
     private static final Comparator<MenuTreeNode> NODE_ORDER = Comparator
@@ -76,7 +77,7 @@ public class UserMenuQueryServiceImpl implements UserMenuQueryService {
 
         // 5) 평면 리스트와 트리형 구조를 동시에 반환한다.
         List<MenuResponse> flatMenus = orderedMenus.stream()
-                .map(menuMapper::toResponse)
+                .map(menu -> menuResponseAssembler.assemble(menu, List.of()))
                 .toList();
 
         List<MenuTreeResponse> menuTree = rootNodes.stream()

@@ -13,6 +13,7 @@ public interface RoleMapper {
     Role toEntity(RoleRequest request);
 
     // Entity → Response
+    @Mapping(target = "permissionIds", ignore = true)
     RoleResponse toResponse(Role role);
 
     // Update (Null 무시)

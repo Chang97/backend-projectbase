@@ -13,6 +13,8 @@ public interface MenuMapper {
 
     @Mapping(source = "upperMenu.menuId", target = "upperMenuId")
     @Mapping(target = "lvl", expression = "java(calculateLevel(menu))")
+    @Mapping(target = "path", ignore = true)
+    @Mapping(target = "permissionIds", ignore = true)
     MenuResponse toResponse(Menu menu);
 
     @Mapping(target = "upperMenu", ignore = true)

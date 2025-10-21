@@ -1,6 +1,8 @@
 // MenuResponse.java
 package com.base.api.menu.dto;
 
+import java.util.List;
+
 public record MenuResponse(
         Long menuId,
         String menuCode,
@@ -10,5 +12,7 @@ public record MenuResponse(
         String url,
         Integer srt,
         Boolean useYn,
-        Integer lvl
+        Integer lvl,
+        String path,
+        List<Long> permissionIds
 ) {}
