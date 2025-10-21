@@ -6,7 +6,7 @@ import com.base.api.menu.dto.MenuResponse;
 
 public interface MenuQueryService {
 
-    List<MenuResponse> getMenus();
+    List<MenuResponse> getMenus(MenuSearchCondition condition);
     MenuResponse getMenu(Long id);
     List<MenuResponse> getMenusByUpperId(Long upperMenuId);
     List<MenuResponse> getMenusByUpperMenu(String upperMenu);

@@ -28,9 +28,12 @@ public class RoleQueryServiceImpl implements RoleQueryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RoleResponse> getRoles() {
-        return roleRepository.findAll().stream()
-            .map(roleMapper::toResponse)
-            .toList();
+    public List<RoleResponse> getRoles(RoleSearchCondition condition) {
+        if (condition != null) {
+            condition.normalize();
+        }
+        return roleRepository.findAll(RoleSpecifications.withCondition(condition)).stream()
+                .map(roleMapper::toResponse)
+                .toList();
     }
 }

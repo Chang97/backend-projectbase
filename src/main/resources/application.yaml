@@ -43,6 +43,8 @@ logging:
     # org.springframework.http.converter: DEBUG
     # base.work: TRACE
     p6spy: INFO
+    com.base.security.csrf.CsrfDebugFilter: DEBUG
+    com.base.security.csrf.HeaderAwareCookieCsrfTokenRepository: DEBUG
 
 
 jwt:
@@ -55,8 +57,8 @@ cors:
   allowed-origins:
     - "http://localhost:5173"
   allowed-methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"]
-  allowed-headers: ["Authorization","Content-Type"]
-  exposed-headers: ["Authorization"]
+  allowed-headers: ["Authorization","Content-Type","X-XSRF-TOKEN","X-CSRF-TOKEN"]
+  exposed-headers: ["Authorization","X-CSRF-TOKEN"]
   allow-credentials: true   # 쿠키 쓸 때 true
   max-age: 3600
 

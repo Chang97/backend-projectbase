@@ -13,16 +13,18 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.base.security.RestAccessDeniedHandler;
 import com.base.security.csrf.CsrfCookieFilter;
+import com.base.security.csrf.HeaderAwareCookieCsrfTokenRepository;
+import com.base.security.csrf.CsrfDebugFilter;
 import com.base.security.jwt.JwtAuthenticationEntryPoint;
 import com.base.security.jwt.JwtAuthenticationFilter;
 import com.base.security.jwt.JwtProperties;
@@ -37,36 +39,42 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CorsProperties corsProperties;
     private final CsrfCookieFilter csrfCookieFilter;
+    private final CsrfDebugFilter csrfDebugFilter;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
                           CorsProperties corsProperties,
-                          CsrfCookieFilter csrfCookieFilter) {
+                          CsrfCookieFilter csrfCookieFilter,
+                          CsrfDebugFilter csrfDebugFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.corsProperties = corsProperties;
         this.csrfCookieFilter = csrfCookieFilter;
+        this.csrfDebugFilter = csrfDebugFilter;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        CsrfTokenRequestAttributeHandler requestHandler = new XorCsrfTokenRequestAttributeHandler();
-        requestHandler.setCsrfRequestAttributeName(null);
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   CsrfTokenRepository csrfTokenRepository,
+                                                   RestAccessDeniedHandler accessDeniedHandler) throws Exception {
+        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                    .csrfTokenRepository(csrfTokenRepository)
                     .csrfTokenRequestHandler(requestHandler)
                     .ignoringRequestMatchers(
-                            pathMatcher("/api/auth/login"),
-                            pathMatcher("/api/auth/refresh"),
-                            pathMatcher("/api/auth/logout")
+                            new AntPathRequestMatcher("/api/auth/login"),
+                            new AntPathRequestMatcher("/api/auth/refresh"),
+                            new AntPathRequestMatcher("/api/auth/logout")
                     )
             )
             .httpBasic(httpBasic -> httpBasic.disable())
             .formLogin(form -> form.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .exceptionHandling(handler -> handler.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+            .exceptionHandling(handler -> handler
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .accessDeniedHandler(accessDeniedHandler))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers(
@@ -79,6 +87,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, CsrfFilter.class)
+            .addFilterBefore(csrfDebugFilter, CsrfFilter.class)
             .addFilterAfter(csrfCookieFilter, CsrfFilter.class);
         return http.build();
     }
@@ -108,7 +117,9 @@ public class SecurityConfig {
         return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
     }
 
-    private PathPatternRequestMatcher pathMatcher(String pattern) {
-        return PathPatternRequestMatcher.withDefaults().matcher(pattern);
+    @Bean
+    public CsrfTokenRepository cookieCsrfTokenRepository() {
+        return new HeaderAwareCookieCsrfTokenRepository();
     }
+
 }

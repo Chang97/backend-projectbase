@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface MenuRepository extends JpaRepository<Menu, Long> {
+public interface MenuRepository extends JpaRepository<Menu, Long>, JpaSpecificationExecutor<Menu> {
     Optional<Menu> findByMenuCode(String menuCode);
     Boolean existsByMenuCode(String menuCode);
     List<Menu> findByUpperMenu_MenuIdAndUseYnTrueOrderBySrtAsc(Long upperMenuId);

@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +18,9 @@ import com.base.api.menu.dto.MenuRequest;
 import com.base.api.menu.dto.MenuResponse;
 import com.base.application.menu.command.MenuCommandService;
 import com.base.application.menu.query.MenuQueryService;
+import com.base.application.menu.query.MenuSearchCondition;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,14 +33,14 @@ public class MenuController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('MENU_CREATE')")
-    public ResponseEntity<MenuResponse> createMenu(@RequestBody MenuRequest request) {
+    public ResponseEntity<MenuResponse> createMenu(@Valid @RequestBody MenuRequest request) {
         return ResponseEntity.ok(menuCommandService.createMenu(request));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('MENU_UPDATE')")
     public ResponseEntity<MenuResponse> updateMenu(
-            @PathVariable Long id, @RequestBody MenuRequest request) {
+            @PathVariable Long id, @Valid @RequestBody MenuRequest request) {
         return ResponseEntity.ok(menuCommandService.updateMenu(id, request));
     }
 
@@ -56,7 +59,7 @@ public class MenuController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('MENU_LIST')")
-    public ResponseEntity<List<MenuResponse>> getMenus() {
-        return ResponseEntity.ok(menuQueryService.getMenus());
+    public ResponseEntity<List<MenuResponse>> getMenus(@ModelAttribute MenuSearchCondition condition) {
+        return ResponseEntity.ok(menuQueryService.getMenus(condition));
     }
 }

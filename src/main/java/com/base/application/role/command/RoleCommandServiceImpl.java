@@ -11,11 +11,14 @@ import com.base.exception.ConflictException;
 import com.base.exception.NotFoundException;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
 import lombok.RequiredArgsConstructor;
 
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class RoleCommandServiceImpl implements RoleCommandService {
 
     private final RoleRepository roleRepository;
@@ -28,6 +31,9 @@ public class RoleCommandServiceImpl implements RoleCommandService {
             throw new ConflictException("Role name already exists: " + request.roleName());
         }
         Role role = roleMapper.toEntity(request);
+        if (role.getUseYn() == null) {
+            role.setUseYn(Boolean.TRUE);
+        }
         return roleMapper.toResponse(roleRepository.save(role));
     }
 
@@ -44,7 +50,9 @@ public class RoleCommandServiceImpl implements RoleCommandService {
         }
 
         existing.setRoleName(request.roleName());
-        existing.setUseYn(request.useYn());
+        if (request.useYn() != null) {
+            existing.setUseYn(request.useYn());
+        }
         return roleMapper.toResponse(roleRepository.save(existing));
     }
 

@@ -7,6 +7,6 @@ import com.base.api.role.dto.RoleResponse;
 public interface RoleQueryService {
 
     RoleResponse getRole(Long id);
-    List<RoleResponse> getRoles();
+    List<RoleResponse> getRoles(RoleSearchCondition condition);
 
 }

@@ -22,6 +22,11 @@ import com.base.api.auth.dto.LoginRequest;
 import com.base.api.auth.dto.LoginResponse;
 import com.base.api.auth.dto.LoginResult;
 import com.base.application.auth.AuthService;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,6 +36,7 @@ public class AuthController {
 
     // 인증 업무 위임 대상 서비스
     private final AuthService authService;
+    private final CsrfTokenRepository csrfTokenRepository;
 
     /**
      * 로그인 엔드포인트.
@@ -38,12 +44,18 @@ public class AuthController {
      * - 인증 실패 시 AuthService 내부에서 ValidationException 발생.
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(HttpServletRequest httpRequest,
+                                               HttpServletResponse httpResponse,
+                                               @RequestBody @Valid LoginRequest request) {
         LoginResult loginResult = authService.login(request);
 
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         loginResult.cookies().forEach(cookie ->
                 builder.header(HttpHeaders.SET_COOKIE, cookie.toString()));
+
+        CsrfToken csrfToken = csrfTokenRepository.generateToken(httpRequest);
+        csrfTokenRepository.saveToken(csrfToken, httpRequest, httpResponse);
+        builder.header("X-CSRF-TOKEN", csrfToken.getToken());
 
         return builder.body(loginResult.body());
     }
@@ -52,7 +64,9 @@ public class AuthController {
      * 브라우저에서 쿠키를 함께 전송해야 하므로 withCredentials 설정이 필요하다.
      */
     @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refresh(@CookieValue(name = "REFRESH_TOKEN", required = false) String refreshToken) {
+    public ResponseEntity<LoginResponse> refresh(HttpServletRequest httpRequest,
+                                                 HttpServletResponse httpResponse,
+                                                 @CookieValue(name = "REFRESH_TOKEN", required = false) String refreshToken) {
         if (!StringUtils.hasText(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -61,6 +75,10 @@ public class AuthController {
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         refreshResult.cookies().forEach(cookie ->
                 builder.header(HttpHeaders.SET_COOKIE, cookie.toString()));
+
+        CsrfToken csrfToken = csrfTokenRepository.generateToken(httpRequest);
+        csrfTokenRepository.saveToken(csrfToken, httpRequest, httpResponse);
+        builder.header("X-CSRF-TOKEN", csrfToken.getToken());
 
         return builder.body(refreshResult.body());
     }

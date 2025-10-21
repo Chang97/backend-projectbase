@@ -21,8 +21,11 @@ public class MenuQueryServiceImpl implements MenuQueryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MenuResponse> getMenus() {
-        return menuRepository.findAll().stream()
+    public List<MenuResponse> getMenus(MenuSearchCondition condition) {
+        if (condition != null) {
+            condition.normalize();
+        }
+        return menuRepository.findAll(MenuSpecifications.withCondition(condition)).stream()
                 .map(menuMapper::toResponse)
                 .toList();
     }
