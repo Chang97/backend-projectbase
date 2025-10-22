@@ -2,6 +2,7 @@ package com.base.application.permission.query;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +30,15 @@ public class PermissionQueryServiceImpl implements PermissionQueryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PermissionResponse> getPermissions() {
-        return permissionRepository.findAll().stream()
+    public List<PermissionResponse> getPermissions(PermissionSearchCondition condition) {
+        PermissionSearchCondition criteria = condition != null ? condition : new PermissionSearchCondition();
+        criteria.normalize();
+
+        return permissionRepository.findAll(
+                    PermissionSpecifications.withCondition(criteria),
+                    Sort.by(Sort.Order.asc("permissionCode"))
+                )
+            .stream()
             .map(permissionMapper::toResponse)
             .toList();
     }

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.base.api.permission.dto.PermissionRequest;
 import com.base.api.permission.dto.PermissionResponse;
 import com.base.application.permission.command.PermissionCommandService;
+import com.base.application.permission.query.PermissionSearchCondition;
 import com.base.application.permission.query.PermissionQueryService;
 
 import lombok.RequiredArgsConstructor;
@@ -56,7 +58,9 @@ public class PermissionController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('PERMISSION_LIST')")
-    public ResponseEntity<List<PermissionResponse>> getPermissions() {
-        return ResponseEntity.ok(permissionQueryService.getPermissions());
+    public ResponseEntity<List<PermissionResponse>> getPermissions(
+            @ModelAttribute PermissionSearchCondition condition
+    ) {
+        return ResponseEntity.ok(permissionQueryService.getPermissions(condition));
     }
 }
