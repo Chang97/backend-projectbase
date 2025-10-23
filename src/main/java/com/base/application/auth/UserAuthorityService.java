@@ -2,7 +2,6 @@ package com.base.application.auth;
 
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -12,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.base.domain.mapping.UserRoleMapRepository;
-import com.base.domain.permission.Permission;
-import com.base.domain.permission.PermissionRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 public class UserAuthorityService {
 
     private final UserRoleMapRepository userRoleMapRepository;
-    private final PermissionRepository permissionRepository;
 
     public Set<GrantedAuthority> loadAuthorities(Long userId) {
         Set<GrantedAuthority> authorities = new LinkedHashSet<>();
@@ -36,9 +32,6 @@ public class UserAuthorityService {
                 .forEach(authorities::add);
 
         userRoleMapRepository.findPermissionCodesByUserId(userId).stream()
-                .map(permissionRepository::findByPermissionCode)
-                .flatMap(Optional::stream)
-                .map(Permission::getPermissionCode)
                 .filter(StringUtils::hasText)
                 .map(SimpleGrantedAuthority::new)
                 .forEach(authorities::add);

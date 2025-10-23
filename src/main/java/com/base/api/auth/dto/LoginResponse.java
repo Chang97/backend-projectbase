@@ -9,6 +9,7 @@ import com.base.api.user.dto.UserResponse;
 public record LoginResponse(
         UserResponse user,
         List<MenuTreeResponse> menus,
-        List<MenuResponse> accessibleMenus
+        List<MenuResponse> accessibleMenus,
+        List<String> permissions
 ) {
 }

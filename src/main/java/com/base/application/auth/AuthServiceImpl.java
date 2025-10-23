@@ -2,6 +2,7 @@ package com.base.application.auth;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -86,7 +88,8 @@ public class AuthServiceImpl implements AuthService {
         LoginResponse responseBody = new LoginResponse(
                 user,
                 menuAccess.menuTree(),
-                menuAccess.flatMenus()
+                menuAccess.flatMenus(),
+                resolvePermissions(principal.getId(), principal.getAuthorities())
         );
 
         return new LoginResult(responseBody, List.of(accessCookie, refreshCookie));
@@ -158,7 +161,8 @@ public class AuthServiceImpl implements AuthService {
         LoginResponse responseBody = new LoginResponse(
                 user,
                 menuAccess.menuTree(),
-                menuAccess.flatMenus()
+                menuAccess.flatMenus(),
+                resolvePermissions(userId, principal.getAuthorities())
         );
 
         return new LoginResult(responseBody, List.of(accessCookie, refreshCookie));
@@ -189,7 +193,8 @@ public class AuthServiceImpl implements AuthService {
         return new LoginResponse(
                 user,
                 menuAccess.menuTree(),
-                menuAccess.flatMenus()
+                menuAccess.flatMenus(),
+                resolvePermissions(principal.getId(), principal.getAuthorities())
         );
     }
 
@@ -276,5 +281,19 @@ public class AuthServiceImpl implements AuthService {
         } catch (Exception ignored) {
             // 토큰 파싱에 실패하면 이미 유효하지 않다고 판단하고 넘어간다.
         }
+    }
+
+    private List<String> resolvePermissions(Long userId, Collection<? extends GrantedAuthority> authorities) {
+        Collection<? extends GrantedAuthority> source =
+                (authorities == null || authorities.isEmpty())
+                        ? userAuthorityService.loadAuthoritiesOrEmpty(userId)
+                        : authorities;
+
+        return source.stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(StringUtils::hasText)
+                .map(String::trim)
+                .distinct()
+                .toList();
     }
 }
