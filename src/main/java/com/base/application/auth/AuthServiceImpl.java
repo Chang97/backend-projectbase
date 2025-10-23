@@ -1,7 +1,6 @@
 package com.base.application.auth;
 
 import java.time.Duration;
-import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -25,8 +24,8 @@ import com.base.api.auth.dto.LoginResult;
 import com.base.api.user.dto.UserResponse;
 import com.base.api.user.mapper.UserMapper;
 import com.base.application.menu.query.UserMenuQueryService;
-import com.base.domain.auth.RefreshToken;
-import com.base.domain.auth.RefreshTokenRepository;
+import com.base.domain.auth.RefreshTokenStore;
+import com.base.domain.auth.RefreshTokenStore.StoredRefreshToken;
 import com.base.domain.user.UserRepository;
 import com.base.exception.NotFoundException;
 import com.base.exception.ValidationException;
@@ -47,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;                       // 사용자 응답 변환
     private final UserMenuQueryService userMenuQueryService;   // 사용자별 메뉴 조회
     private final JwtProperties jwtProperties;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenStore refreshTokenStore;
     private final PasswordEncoder passwordEncoder;
     private final UserAuthorityService userAuthorityService;
 
@@ -76,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
         String accessTokenValue = jwtService.generateAccessToken(principal);
         String refreshTokenValue = jwtService.generateRefreshToken(principal, refreshTokenId);
 
-        persistRefreshToken(userEntity, refreshTokenValue, refreshTokenId);
+        persistRefreshToken(userEntity.getUserId(), refreshTokenValue, refreshTokenId);
 
         ResponseCookie accessCookie = buildAccessCookie(accessTokenValue);
         ResponseCookie refreshCookie = buildRefreshCookie(refreshTokenValue);
@@ -113,28 +112,13 @@ public class AuthServiceImpl implements AuthService {
         var userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new ValidationException("User not found."));
 
-        RefreshToken storedToken = refreshTokenRepository.findByTokenId(tokenId)
+        StoredRefreshToken storedToken = refreshTokenStore.find(userId, tokenId)
                 .orElseThrow(() -> new ValidationException("Invalid refresh token."));
 
-        if (!storedToken.getUser().getUserId().equals(userId)) {
-            storedToken.revoke(null);
-            refreshTokenRepository.save(storedToken);
+        if (!passwordEncoder.matches(refreshTokenValue, storedToken.tokenHash())) {
+            refreshTokenStore.revoke(userId, tokenId);
             throw new ValidationException("Invalid refresh token.");
         }
-
-        if (!storedToken.isActive()) {
-            storedToken.revoke(null);
-            refreshTokenRepository.save(storedToken);
-            throw new ValidationException("Refresh token has expired.");
-        }
-
-        if (!passwordEncoder.matches(refreshTokenValue, storedToken.getTokenHash())) {
-            storedToken.revoke(null);
-            refreshTokenRepository.save(storedToken);
-            throw new ValidationException("Invalid refresh token.");
-        }
-
-        storedToken.markUsedNow();
 
         // Refresh 토큰에는 사용자 PK/로그인ID가 담겨 있으므로 그대로 재발급에 활용한다.
         UserPrincipal principal = UserPrincipal.from(
@@ -146,10 +130,8 @@ public class AuthServiceImpl implements AuthService {
         String accessTokenValue = jwtService.generateAccessToken(principal);
         String newRefreshTokenValue = jwtService.generateRefreshToken(principal, newRefreshTokenId);
 
-        storedToken.revoke(newRefreshTokenId);
-        refreshTokenRepository.save(storedToken);
-
-        persistRefreshToken(userEntity, newRefreshTokenValue, newRefreshTokenId);
+        refreshTokenStore.revoke(userId, tokenId);
+        persistRefreshToken(userId, newRefreshTokenValue, newRefreshTokenId);
 
         ResponseCookie accessCookie = buildAccessCookie(accessTokenValue);
         ResponseCookie refreshCookie = buildRefreshCookie(newRefreshTokenValue);
@@ -256,14 +238,13 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    private void persistRefreshToken(com.base.domain.user.User user, String tokenValue, String tokenId) {
-        RefreshToken refreshToken = RefreshToken.builder()
-                .tokenId(tokenId)
-                .tokenHash(passwordEncoder.encode(tokenValue))
-                .user(user)
-                .expiresAt(OffsetDateTime.now().plusSeconds(jwtProperties.refreshTokenExpirationSeconds()))
-                .build();
-        refreshTokenRepository.save(refreshToken);
+    private void persistRefreshToken(Long userId, String tokenValue, String tokenId) {
+        refreshTokenStore.save(
+                userId,
+                tokenId,
+                passwordEncoder.encode(tokenValue),
+                Duration.ofSeconds(jwtProperties.refreshTokenExpirationSeconds())
+        );
     }
 
     private void revokeRefreshToken(String refreshTokenValue) {
@@ -271,13 +252,9 @@ public class AuthServiceImpl implements AuthService {
             return;
         }
         try {
+            Long userId = jwtService.extractUserId(refreshTokenValue);
             String tokenId = jwtService.extractTokenId(refreshTokenValue);
-            refreshTokenRepository.findByTokenId(tokenId).ifPresent(token -> {
-                if (!token.isRevoked()) {
-                    token.revoke(null);
-                    refreshTokenRepository.save(token);
-                }
-            });
+            refreshTokenStore.revoke(userId, tokenId);
         } catch (Exception ignored) {
             // 토큰 파싱에 실패하면 이미 유효하지 않다고 판단하고 넘어간다.
         }

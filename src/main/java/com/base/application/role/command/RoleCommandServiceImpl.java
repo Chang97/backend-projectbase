@@ -13,9 +13,11 @@ import org.springframework.validation.annotation.Validated;
 import com.base.api.role.dto.RoleRequest;
 import com.base.api.role.dto.RoleResponse;
 import com.base.api.role.mapper.RoleMapper;
+import com.base.application.auth.cache.AuthorityCacheService;
 import com.base.application.role.query.RoleResponseAssembler;
 import com.base.domain.mapping.RolePermissionMap;
 import com.base.domain.mapping.RolePermissionMapRepository;
+import com.base.domain.mapping.UserRoleMapRepository;
 import com.base.domain.permission.Permission;
 import com.base.domain.permission.PermissionRepository;
 import com.base.domain.role.Role;
@@ -36,6 +38,8 @@ public class RoleCommandServiceImpl implements RoleCommandService {
     private final RolePermissionMapRepository rolePermissionMapRepository;
     private final PermissionRepository permissionRepository;
     private final RoleResponseAssembler roleResponseAssembler;
+    private final UserRoleMapRepository userRoleMapRepository;
+    private final AuthorityCacheService authorityCacheService;
 
     @Override
     @Transactional
@@ -49,6 +53,7 @@ public class RoleCommandServiceImpl implements RoleCommandService {
         }
         Role saved = roleRepository.save(role);
         syncRolePermissions(saved, request.permissionIds());
+        evictAuthorityCacheForRole(saved.getRoleId());
         List<Long> permissionIds = rolePermissionMapRepository.findPermissionIdsByRoleId(saved.getRoleId());
         return roleResponseAssembler.assemble(saved, permissionIds);
     }
@@ -70,6 +75,7 @@ public class RoleCommandServiceImpl implements RoleCommandService {
         }
         Role saved = roleRepository.save(existing);
         syncRolePermissions(saved, request.permissionIds());
+        evictAuthorityCacheForRole(saved.getRoleId());
         List<Long> permissionIds = rolePermissionMapRepository.findPermissionIdsByRoleId(saved.getRoleId());
         return roleResponseAssembler.assemble(saved, permissionIds);
     }
@@ -82,6 +88,7 @@ public class RoleCommandServiceImpl implements RoleCommandService {
         existing.setUseYn(false);
         roleRepository.save(existing);
         rolePermissionMapRepository.deleteByRoleRoleId(id);
+        evictAuthorityCacheForRole(id);
     }
 
     private void syncRolePermissions(Role role, List<Long> permissionIds) {
@@ -114,5 +121,10 @@ public class RoleCommandServiceImpl implements RoleCommandService {
                                 .build())
                         .toList()
         );
+    }
+
+    private void evictAuthorityCacheForRole(Long roleId) {
+        List<Long> userIds = userRoleMapRepository.findUserIdsByRoleIds(List.of(roleId));
+        authorityCacheService.evictAll(userIds);
     }
 }

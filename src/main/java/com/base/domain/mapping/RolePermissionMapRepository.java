@@ -16,6 +16,9 @@ public interface RolePermissionMapRepository extends JpaRepository<RolePermissio
     @Query("SELECT rpm.role.roleId AS roleId, rpm.permission.permissionId AS permissionId FROM RolePermissionMap rpm WHERE rpm.role.roleId IN :roleIds")
     List<Object[]> findMappingsByRoleIds(@Param("roleIds") Collection<Long> roleIds);
 
+    @Query("SELECT DISTINCT rpm.role.roleId FROM RolePermissionMap rpm WHERE rpm.permission.permissionId = :permissionId")
+    List<Long> findRoleIdsByPermissionId(@Param("permissionId") Long permissionId);
+
     @Modifying
     void deleteByRoleRoleId(Long roleId);
 }

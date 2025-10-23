@@ -1,5 +1,6 @@
 package com.base.domain.mapping;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,4 +35,11 @@ public interface UserRoleMapRepository extends JpaRepository<UserRoleMap, UserRo
               AND COALESCE(p.useYn, true) = true
             """)
     List<String> findPermissionCodesByUserId(@Param("userId") Long userId);
+
+    @Query("""
+            SELECT DISTINCT urm.user.userId
+            FROM UserRoleMap urm
+            WHERE urm.role.roleId IN :roleIds
+            """)
+    List<Long> findUserIdsByRoleIds(@Param("roleIds") Collection<Long> roleIds);
 }

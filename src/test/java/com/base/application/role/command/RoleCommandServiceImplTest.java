@@ -16,11 +16,15 @@ import com.base.api.role.dto.RoleRequest;
 import com.base.api.role.dto.RoleResponse;
 import com.base.api.role.mapper.RoleMapper;
 import com.base.api.role.mapper.RoleMapperImpl;
+import com.base.application.auth.cache.AuthorityCacheService;
 import com.base.application.role.query.RoleResponseAssembler;
 import com.base.domain.mapping.RolePermissionMapRepository;
+import com.base.domain.mapping.UserRoleMapRepository;
 import com.base.domain.permission.Permission;
 import com.base.domain.permission.PermissionRepository;
 import com.base.domain.role.RoleRepository;
+
+import static org.mockito.Mockito.mock;
 
 @Disabled("Requires JPA test schema configuration for embedded database; enable when shared test profile is available.")
 @DataJpaTest(properties = {
@@ -55,12 +59,16 @@ class RoleCommandServiceImplTest {
     void setUp() {
         RoleMapper roleMapper = new RoleMapperImpl();
         RoleResponseAssembler roleResponseAssembler = new RoleResponseAssembler(roleMapper);
+        UserRoleMapRepository userRoleMapRepository = mock(UserRoleMapRepository.class);
+        AuthorityCacheService authorityCacheService = mock(AuthorityCacheService.class);
         roleCommandService = new RoleCommandServiceImpl(
                 roleRepository,
                 roleMapper,
                 rolePermissionMapRepository,
                 permissionRepository,
-                roleResponseAssembler
+                roleResponseAssembler,
+                userRoleMapRepository,
+                authorityCacheService
         );
     }
 

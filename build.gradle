@@ -22,10 +22,11 @@ dependencies {
     // Spring Boot 기본
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'       // REST API + Tomcat
-    implementation 'org.springframework.boot:spring-boot-starter-validation' // @Valid ???�효??검�?
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // @Valid 유효성 검사
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor' // @ConfigurationProperties 바인딩을 위해
 
     // 보안
-    implementation 'org.springframework.boot:spring-boot-starter-security'   // ����
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
@@ -38,11 +39,14 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' // MyBatis + Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'          // JDBC 지??
     
-    // DB ?�라?�버
+    // DB 드라이버
     runtimeOnly 'org.postgresql:postgresql:42.7.4'
 
-    // ?�틸리티
-    implementation 'com.google.guava:guava:32.1.2-jre' // ?�요 ??
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // 유틸리티
+    implementation 'com.google.guava:guava:32.1.2-jre'
     implementation "com.fasterxml.jackson.core:jackson-databind"
 
     annotationProcessor 'org.projectlombok:lombok'
@@ -59,15 +63,16 @@ dependencies {
     // API 문서
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
-    // 공통 ?�틸
+    // 공통 유틸
     implementation 'org.apache.commons:commons-lang3:3.14.0'
     implementation 'commons-io:commons-io:2.15.1'
 
-    // ?�스??
+    // 테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // 빌드
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     
     // 로그
