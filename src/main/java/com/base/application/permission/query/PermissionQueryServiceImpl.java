@@ -10,6 +10,7 @@ import com.base.api.permission.dto.PermissionResponse;
 import com.base.api.permission.mapper.PermissionMapper;
 import com.base.domain.permission.PermissionRepository;
 import com.base.exception.NotFoundException;
+import com.base.infra.redis.cache.PermissionCacheService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,7 @@ public class PermissionQueryServiceImpl implements PermissionQueryService {
 
     private final PermissionRepository permissionRepository;
     private final PermissionMapper permissionMapper;
+    private final PermissionCacheService permissionCacheService;
 
 
     @Override
@@ -34,12 +36,20 @@ public class PermissionQueryServiceImpl implements PermissionQueryService {
         PermissionSearchCondition criteria = condition != null ? condition : new PermissionSearchCondition();
         criteria.normalize();
 
-        return permissionRepository.findAll(
-                    PermissionSpecifications.withCondition(criteria),
-                    Sort.by(Sort.Order.asc("permissionCode"))
-                )
-            .stream()
-            .map(permissionMapper::toResponse)
-            .toList();
+        Boolean useYnFilter = criteria.getUseYnBoolean();
+        String nameFilter = criteria.getPermissionName();
+
+        return permissionCacheService.get(nameFilter, useYnFilter)
+                .orElseGet(() -> {
+                    List<PermissionResponse> responses = permissionRepository.findAll(
+                                    PermissionSpecifications.withCondition(criteria),
+                                    Sort.by(Sort.Order.asc("permissionCode"))
+                            )
+                            .stream()
+                            .map(permissionMapper::toResponse)
+                            .toList();
+                    permissionCacheService.put(nameFilter, useYnFilter, responses);
+                    return responses;
+                });
     }
 }

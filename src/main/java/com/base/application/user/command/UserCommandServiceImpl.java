@@ -19,7 +19,7 @@ import com.base.api.user.dto.PasswordChangeRequest;
 import com.base.api.user.dto.UserRequest;
 import com.base.api.user.dto.UserResponse;
 import com.base.api.user.mapper.UserMapper;
-import com.base.application.auth.cache.AuthorityCacheService;
+import com.base.application.event.publisher.CacheInvalidationEventPublisher;
 import com.base.domain.code.Code;
 import com.base.domain.mapping.UserRoleMap;
 import com.base.domain.org.Org;
@@ -43,7 +43,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final UserMapper userMapper;
     private final EntityManager entityManager;
     private final PasswordEncoder passwordEncoder;
-    private final AuthorityCacheService authorityCacheService;
+    private final CacheInvalidationEventPublisher cacheInvalidationEventPublisher;
 
     @Override
     @Transactional
@@ -60,7 +60,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         syncUserRoles(user, request.roleIds());
         try {
             User saved = userRepository.save(user);
-            authorityCacheService.evict(saved.getUserId());
+            cacheInvalidationEventPublisher.publishRoleAuthorityChanged(List.of(saved.getUserId()));
             return userMapper.toResponse(saved);
         } catch (DataIntegrityViolationException ex) {
             throw new ValidationException(resolveDataIntegrityMessage(ex));
@@ -88,7 +88,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         syncUserRoles(existing, request.roleIds());
         try {
             User saved = userRepository.save(existing);
-            authorityCacheService.evict(saved.getUserId());
+            cacheInvalidationEventPublisher.publishRoleAuthorityChanged(List.of(saved.getUserId()));
             return userMapper.toResponse(saved);
         } catch (DataIntegrityViolationException ex) {
             throw new ValidationException(resolveDataIntegrityMessage(ex));
@@ -102,7 +102,7 @@ public class UserCommandServiceImpl implements UserCommandService {
                 .orElseThrow(() -> new NotFoundException("User not found"));
         existing.setUseYn(false); // soft delete
         userRepository.save(existing);
-        authorityCacheService.evict(existing.getUserId());
+        cacheInvalidationEventPublisher.publishRoleAuthorityChanged(List.of(existing.getUserId()));
     }
 
     @Override

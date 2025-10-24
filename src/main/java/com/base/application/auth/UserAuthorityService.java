@@ -11,8 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import com.base.application.auth.cache.AuthorityCacheService;
+import com.base.infra.redis.cache.AuthorityCacheService;
 import com.base.domain.mapping.UserRoleMapRepository;
 
 import lombok.RequiredArgsConstructor;

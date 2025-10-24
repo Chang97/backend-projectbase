@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import com.base.api.role.dto.RoleRequest;
 import com.base.api.role.dto.RoleResponse;
 import com.base.api.role.mapper.RoleMapper;
-import com.base.application.auth.cache.AuthorityCacheService;
+import com.base.application.event.publisher.CacheInvalidationEventPublisher;
 import com.base.application.role.query.RoleResponseAssembler;
 import com.base.domain.mapping.RolePermissionMap;
 import com.base.domain.mapping.RolePermissionMapRepository;
@@ -39,7 +39,7 @@ public class RoleCommandServiceImpl implements RoleCommandService {
     private final PermissionRepository permissionRepository;
     private final RoleResponseAssembler roleResponseAssembler;
     private final UserRoleMapRepository userRoleMapRepository;
-    private final AuthorityCacheService authorityCacheService;
+    private final CacheInvalidationEventPublisher cacheInvalidationEventPublisher;
 
     @Override
     @Transactional
@@ -125,6 +125,6 @@ public class RoleCommandServiceImpl implements RoleCommandService {
 
     private void evictAuthorityCacheForRole(Long roleId) {
         List<Long> userIds = userRoleMapRepository.findUserIdsByRoleIds(List.of(roleId));
-        authorityCacheService.evictAll(userIds);
+        cacheInvalidationEventPublisher.publishRoleAuthorityChanged(userIds);
     }
 }

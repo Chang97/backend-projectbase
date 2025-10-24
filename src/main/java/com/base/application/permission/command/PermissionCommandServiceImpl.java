@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.base.api.permission.dto.PermissionRequest;
 import com.base.api.permission.dto.PermissionResponse;
 import com.base.api.permission.mapper.PermissionMapper;
-import com.base.application.auth.cache.AuthorityCacheService;
+import com.base.application.event.publisher.CacheInvalidationEventPublisher;
 import com.base.domain.mapping.RolePermissionMapRepository;
 import com.base.domain.mapping.UserRoleMapRepository;
 import com.base.domain.permission.Permission;
@@ -27,7 +27,7 @@ public class PermissionCommandServiceImpl implements PermissionCommandService {
     private final PermissionMapper permissionMapper;
     private final RolePermissionMapRepository rolePermissionMapRepository;
     private final UserRoleMapRepository userRoleMapRepository;
-    private final AuthorityCacheService authorityCacheService;
+    private final CacheInvalidationEventPublisher cacheInvalidationEventPublisher;
 
     @Override
     @Transactional
@@ -70,10 +70,8 @@ public class PermissionCommandServiceImpl implements PermissionCommandService {
     
     private void evictAuthorityCacheForPermission(Long permissionId) {
         List<Long> roleIds = rolePermissionMapRepository.findRoleIdsByPermissionId(permissionId);
-        if (roleIds.isEmpty()) {
-            return;
-        }
-        List<Long> userIds = userRoleMapRepository.findUserIdsByRoleIds(roleIds);
-        authorityCacheService.evictAll(userIds);
+        List<Long> userIds = roleIds.isEmpty() ? List.of() : userRoleMapRepository.findUserIdsByRoleIds(roleIds);
+        cacheInvalidationEventPublisher.publishRoleAuthorityChanged(userIds);
+        cacheInvalidationEventPublisher.publishPermissionChanged(userIds);
     }
 }

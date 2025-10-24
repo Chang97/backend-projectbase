@@ -1,4 +1,4 @@
-package com.base.config;
+package com.base.infra.redis.config;
 
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,11 +12,12 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import com.base.application.auth.AuthorityCacheProperties;
-import com.base.application.auth.RefreshTokenProperties;
+import com.base.infra.redis.property.AuthorityCacheProperties;
+import com.base.infra.redis.property.PermissionCacheProperties;
+import com.base.infra.redis.property.RefreshTokenProperties;
 
 @Configuration
-@EnableConfigurationProperties({RefreshTokenProperties.class, AuthorityCacheProperties.class})
+@EnableConfigurationProperties({RefreshTokenProperties.class, AuthorityCacheProperties.class, PermissionCacheProperties.class})
 @ConfigurationProperties()
 public class RedisConfig {
 

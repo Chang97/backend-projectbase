@@ -1,4 +1,4 @@
-package com.base.application.auth;
+package com.base.infra.redis.property;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

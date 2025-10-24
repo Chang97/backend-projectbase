@@ -1,4 +1,4 @@
-package com.base.domain.auth;
+package com.base.infra.redis.token;
 
 import java.time.Duration;
 import java.util.Optional;

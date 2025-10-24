@@ -1,4 +1,4 @@
-package com.base.application.auth.token;
+package com.base.infra.redis.token;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -7,9 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import com.base.application.auth.RefreshTokenProperties;
-import com.base.domain.auth.RefreshTokenStore;
-import com.base.domain.auth.RefreshTokenStore.StoredRefreshToken;
+import com.base.infra.redis.property.RefreshTokenProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -1,4 +1,4 @@
-package com.base.application.auth.cache;
+package com.base.infra.redis.cache;
 
 import java.time.Duration;
 import java.util.Collection;
@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.base.application.auth.AuthorityCacheProperties;
+import com.base.infra.redis.property.AuthorityCacheProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

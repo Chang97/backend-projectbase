@@ -16,7 +16,7 @@ import com.base.api.role.dto.RoleRequest;
 import com.base.api.role.dto.RoleResponse;
 import com.base.api.role.mapper.RoleMapper;
 import com.base.api.role.mapper.RoleMapperImpl;
-import com.base.application.auth.cache.AuthorityCacheService;
+import com.base.application.event.publisher.CacheInvalidationEventPublisher;
 import com.base.application.role.query.RoleResponseAssembler;
 import com.base.domain.mapping.RolePermissionMapRepository;
 import com.base.domain.mapping.UserRoleMapRepository;
@@ -60,7 +60,7 @@ class RoleCommandServiceImplTest {
         RoleMapper roleMapper = new RoleMapperImpl();
         RoleResponseAssembler roleResponseAssembler = new RoleResponseAssembler(roleMapper);
         UserRoleMapRepository userRoleMapRepository = mock(UserRoleMapRepository.class);
-        AuthorityCacheService authorityCacheService = mock(AuthorityCacheService.class);
+        CacheInvalidationEventPublisher cacheInvalidationEventPublisher = mock(CacheInvalidationEventPublisher.class);
         roleCommandService = new RoleCommandServiceImpl(
                 roleRepository,
                 roleMapper,
@@ -68,7 +68,7 @@ class RoleCommandServiceImplTest {
                 permissionRepository,
                 roleResponseAssembler,
                 userRoleMapRepository,
-                authorityCacheService
+                cacheInvalidationEventPublisher
         );
     }
 

@@ -37,10 +37,14 @@ app:
   auth:
     refresh-token:
       ttl-seconds: 604800           # 7일: JWT refresh 만료와 맞춰주세요
-      key-prefix: auth:refresh      # 키 네임스페이스용 (선택)
+      key-prefix: auth:refresh_token
     authority:
       cache-ttl-seconds: 600        # 권한 캐시 TTL 10분 예시
       key-prefix: auth:perm         # 권한 캐시 키 prefix
+  permission:
+    cache:
+      ttl-seconds: 600
+      key-prefix: app:permission
 
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
