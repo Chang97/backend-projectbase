@@ -23,8 +23,6 @@ public class RoleResponseAssembler {
                 base.roleId(),
                 base.roleName(),
                 base.useYn(),
-                base.createdDt(),
-                base.updatedDt(),
                 permissionIds
         );
     }

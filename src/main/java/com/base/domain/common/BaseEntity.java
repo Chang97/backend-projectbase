@@ -5,11 +5,15 @@ import java.time.OffsetDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @MappedSuperclass
 @Getter
 @Setter
+@NoArgsConstructor
+@SuperBuilder
 public abstract class BaseEntity {
     
     @Column(name = "use_yn", nullable = false)

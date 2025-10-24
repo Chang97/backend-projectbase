@@ -19,6 +19,9 @@ import com.base.api.role.dto.RoleResponse;
 import com.base.application.role.command.RoleCommandService;
 import com.base.application.role.query.RoleQueryService;
 import com.base.application.role.query.RoleSearchCondition;
+import com.base.application.role.usecase.CreateRoleUseCase;
+import com.base.application.role.usecase.command.CreateRoleCommand;
+import com.base.application.role.usecase.result.RoleResult;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class RoleController {
 
     private final RoleCommandService roleCommandService;
+    private final CreateRoleUseCase createRoleUseCase;
     private final RoleQueryService roleQueryService;
 
     @GetMapping
@@ -45,8 +49,20 @@ public class RoleController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_CREATE')")
-    public ResponseEntity<RoleResponse> createRole(@Valid @RequestBody RoleRequest request) {
-        return ResponseEntity.ok(roleCommandService.createRole(request));
+    public ResponseEntity<RoleResponse> createRole(@RequestBody RoleRequest request) {
+        CreateRoleCommand command = new CreateRoleCommand(
+                request.roleName(),
+                request.useYn(),
+                request.permissionIds());
+        RoleResult result = createRoleUseCase.handle(command);
+
+        RoleResponse response = new RoleResponse(
+                result.roleId(),
+                result.roleName(),
+                result.useYn(),
+                result.permissionIds()
+        );
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")

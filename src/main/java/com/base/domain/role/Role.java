@@ -2,7 +2,7 @@ package com.base.domain.role;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import lombok.experimental.SuperBuilder;
 
 import com.base.domain.common.BaseEntity;
 
@@ -12,7 +12,7 @@ import com.base.domain.common.BaseEntity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Role extends BaseEntity{
 
     @Id
