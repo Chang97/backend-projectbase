@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.base.api.permission.dto.PermissionResponse;
+import com.base.application.permission.usecase.result.PermissionResult;
 import com.base.infra.redis.property.PermissionCacheProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -24,13 +24,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PermissionCacheService {
 
-    private static final TypeReference<List<PermissionResponse>> LIST_TYPE = new TypeReference<>() {};
+    private static final TypeReference<List<PermissionResult>> LIST_TYPE = new TypeReference<>() {};
 
     private final RedisTemplate<String, String> redisTemplate;
     private final PermissionCacheProperties properties;
     private final ObjectMapper objectMapper;
 
-    public Optional<List<PermissionResponse>> get(String permissionName, Boolean useYn) {
+    public Optional<List<PermissionResult>> get(String permissionName, Boolean useYn) {
         String key = buildKey(permissionName, useYn);
         try {
             String json = redisTemplate.opsForValue().get(key);
@@ -48,7 +48,7 @@ public class PermissionCacheService {
         }
     }
 
-    public void put(String permissionName, Boolean useYn, List<PermissionResponse> responses) {
+    public void put(String permissionName, Boolean useYn, List<PermissionResult> responses) {
         String key = buildKey(permissionName, useYn);
         if (responses == null || responses.isEmpty()) {
             redisTemplate.delete(key);

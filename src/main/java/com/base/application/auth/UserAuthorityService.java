@@ -11,7 +11,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import com.base.infra.redis.cache.AuthorityCacheService;
+
+import com.base.application.auth.port.AuthorityCachePort;
 import com.base.domain.mapping.UserRoleMapRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,14 +23,14 @@ import lombok.RequiredArgsConstructor;
 public class UserAuthorityService {
 
     private final UserRoleMapRepository userRoleMapRepository;
-    private final AuthorityCacheService authorityCacheService;
+    private final AuthorityCachePort authorityCachePort;
 
     public Set<GrantedAuthority> loadAuthorities(Long userId) {
         if (userId == null) {
             return Set.of();
         }
 
-        return authorityCacheService.get(userId)
+        return authorityCachePort.get(userId)
                 .map(this::toGrantedAuthorities)
                 .orElseGet(() -> populateAndCache(userId));
     }
@@ -53,7 +54,7 @@ public class UserAuthorityService {
                 .forEach(codes::add);
 
         List<String> serialized = new ArrayList<>(codes);
-        authorityCacheService.put(userId, serialized);
+        authorityCachePort.put(userId, serialized);
 
         return serialized.stream()
                 .map(SimpleGrantedAuthority::new)

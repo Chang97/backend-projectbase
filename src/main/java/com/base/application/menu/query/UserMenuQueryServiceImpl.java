@@ -13,9 +13,9 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.base.api.menu.dto.MenuResponse;
-import com.base.api.menu.dto.MenuTreeResponse;
-import com.base.api.menu.mapper.MenuMapper;
+import com.base.application.menu.usecase.query.assembler.MenuResultAssembler;
+import com.base.application.menu.usecase.result.MenuResult;
+import com.base.application.menu.usecase.result.MenuTreeResult;
 import com.base.domain.menu.Menu;
 import com.base.domain.menu.MenuRepository;
 
@@ -27,8 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class UserMenuQueryServiceImpl implements UserMenuQueryService {
 
     private final MenuRepository menuRepository;
-    private final MenuMapper menuMapper;
-    private final MenuResponseAssembler menuResponseAssembler;
+    private final MenuResultAssembler menuResultAssembler;
 
     // 하위 노드 정렬 기준: 메뉴 정렬순서 → 메뉴명 → PK
     private static final Comparator<MenuTreeNode> NODE_ORDER = Comparator
@@ -76,11 +75,11 @@ public class UserMenuQueryServiceImpl implements UserMenuQueryService {
         }
 
         // 5) 평면 리스트와 트리형 구조를 동시에 반환한다.
-        List<MenuResponse> flatMenus = orderedMenus.stream()
-                .map(menu -> menuResponseAssembler.assemble(menu, List.of()))
+        List<MenuResult> flatMenus = orderedMenus.stream()
+                .map(menu -> menuResultAssembler.toResult(menu, List.of()))
                 .toList();
 
-        List<MenuTreeResponse> menuTree = rootNodes.stream()
+        List<MenuTreeResult> menuTree = rootNodes.stream()
                 .map(node -> sortAndConvert(node, 0))
                 .toList();
 
@@ -112,13 +111,13 @@ public class UserMenuQueryServiceImpl implements UserMenuQueryService {
         return depth;
     }
 
-    private MenuTreeResponse sortAndConvert(MenuTreeNode node, int depth) {
+    private MenuTreeResult sortAndConvert(MenuTreeNode node, int depth) {
         node.children.sort(NODE_ORDER);
-        List<MenuTreeResponse> children = node.children.stream()
+        List<MenuTreeResult> children = node.children.stream()
                 .map(child -> sortAndConvert(child, depth + 1))
                 .toList();
         Menu menu = node.menu;
-        return new MenuTreeResponse(
+        return new MenuTreeResult(
                 menu.getMenuId(),
                 menu.getMenuCode(),
                 menu.getUpperMenu() != null ? menu.getUpperMenu().getMenuId() : null,

@@ -5,7 +5,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.base.domain") // JPA 리포지토리 위치
+@EnableJpaRepositories(basePackages = {
+        "com.base.domain",          // 과거 도메인 패키지 위치
+        "com.base.infra.persistence" // 신규 헥사고날 어댑터 위치
+}) // JPA 리포지토리 위치
 @EnableJpaAuditing // createdDt, updatedDt 자동 관리하려면 필요
 public class JpaConfig {
     // 보통 여기서는 특별히 커스터마이징할 게 많지 않음

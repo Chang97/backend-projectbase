@@ -2,8 +2,8 @@ package com.base.application.menu.query;
 
 import java.util.List;
 
-import com.base.api.menu.dto.MenuResponse;
-import com.base.api.menu.dto.MenuTreeResponse;
+import com.base.application.menu.usecase.result.MenuResult;
+import com.base.application.menu.usecase.result.MenuTreeResult;
 
 public interface UserMenuQueryService {
 
@@ -13,8 +13,8 @@ public interface UserMenuQueryService {
     UserMenuAccessResult getAccessibleMenus(Long userId);
 
     record UserMenuAccessResult(
-            List<MenuTreeResponse> menuTree,
-            List<MenuResponse> flatMenus
+            List<MenuTreeResult> menuTree,
+            List<MenuResult> flatMenus
     ) {
     }
 }

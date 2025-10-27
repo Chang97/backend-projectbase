@@ -14,13 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.base.api.role.assembler.RoleCommandAssembler;
+import com.base.api.role.assembler.RoleResponseAssembler;
 import com.base.api.role.dto.RoleRequest;
 import com.base.api.role.dto.RoleResponse;
-import com.base.application.role.command.RoleCommandService;
-import com.base.application.role.query.RoleQueryService;
-import com.base.application.role.query.RoleSearchCondition;
-import com.base.application.role.usecase.CreateRoleUseCase;
+import com.base.application.role.port.in.CreateRoleUseCase;
+import com.base.application.role.port.in.DeleteRoleUseCase;
+import com.base.application.role.port.in.GetRoleUseCase;
+import com.base.application.role.port.in.GetRolesUseCase;
+import com.base.application.role.port.in.UpdateRoleUseCase;
 import com.base.application.role.usecase.command.CreateRoleCommand;
+import com.base.application.role.usecase.command.UpdateRoleCommand;
+import com.base.application.role.usecase.query.condition.RoleSearchCondition;
 import com.base.application.role.usecase.result.RoleResult;
 
 import jakarta.validation.Valid;
@@ -31,50 +36,53 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RoleController {
 
-    private final RoleCommandService roleCommandService;
+    private final GetRoleUseCase getRoleUseCase;
+    private final GetRolesUseCase getRolesUseCase;
     private final CreateRoleUseCase createRoleUseCase;
-    private final RoleQueryService roleQueryService;
+    private final UpdateRoleUseCase updateRoleUseCase;
+    private final DeleteRoleUseCase deleteRoleUseCase;
+    private final RoleCommandAssembler roleCommandAssembler;
+    private final RoleResponseAssembler roleResponseAssembler;
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_LIST')")
     public ResponseEntity<List<RoleResponse>> getRoles(@ModelAttribute RoleSearchCondition condition) {
-        return ResponseEntity.ok(roleQueryService.getRoles(condition));
+        return ResponseEntity.ok(
+                roleResponseAssembler.toResponses(
+                        getRolesUseCase.handle(condition)
+                )
+        );
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_READ')")
     public ResponseEntity<RoleResponse> getRole(@PathVariable Long id) {
-        return ResponseEntity.ok(roleQueryService.getRole(id));
+        RoleResult result = getRoleUseCase.handle(id);
+        return ResponseEntity.ok(roleResponseAssembler.toResponse(result));
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_CREATE')")
     public ResponseEntity<RoleResponse> createRole(@RequestBody RoleRequest request) {
-        CreateRoleCommand command = new CreateRoleCommand(
-                request.roleName(),
-                request.useYn(),
-                request.permissionIds());
+        CreateRoleCommand command = roleCommandAssembler.toCreateCommand(request);
         RoleResult result = createRoleUseCase.handle(command);
 
-        RoleResponse response = new RoleResponse(
-                result.roleId(),
-                result.roleName(),
-                result.useYn(),
-                result.permissionIds()
-        );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(roleResponseAssembler.toResponse(result));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_UPDATE')")
     public ResponseEntity<RoleResponse> updateRole(@PathVariable Long id, @Valid @RequestBody RoleRequest request) {
-        return ResponseEntity.ok(roleCommandService.updateRole(id, request));
+        UpdateRoleCommand command = roleCommandAssembler.toUpdateCommand(request);
+        RoleResult result = updateRoleUseCase.handle(id, command);
+
+        return ResponseEntity.ok(roleResponseAssembler.toResponse(result));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_DELETE')")
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
-        roleCommandService.deleteRole(id);
+        deleteRoleUseCase.handle(id);
         return ResponseEntity.noContent().build();
     }
 }

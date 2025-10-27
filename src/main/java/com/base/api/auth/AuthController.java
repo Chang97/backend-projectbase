@@ -18,10 +18,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.base.api.auth.assembler.AuthCommandAssembler;
+import com.base.api.auth.assembler.AuthResponseAssembler;
 import com.base.api.auth.dto.LoginRequest;
 import com.base.api.auth.dto.LoginResponse;
 import com.base.api.auth.dto.LoginResult;
-import com.base.application.auth.AuthService;
+import com.base.application.auth.usecase.command.LogoutCommand;
+import com.base.application.auth.usecase.command.RefreshTokenCommand;
+import com.base.application.auth.usecase.login.LoginUseCase;
+import com.base.application.auth.usecase.logout.LogoutUseCase;
+import com.base.application.auth.usecase.refresh.RefreshTokenUseCase;
+import com.base.application.auth.usecase.result.AuthExecutionResult;
+import com.base.application.auth.usecase.result.AuthSession;
+import com.base.application.auth.usecase.result.LogoutExecutionResult;
+import com.base.application.auth.usecase.session.GetSessionUseCase;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 
@@ -34,20 +44,25 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class AuthController {
 
-    // 인증 업무 위임 대상 서비스
-    private final AuthService authService;
+    private final LoginUseCase loginUseCase;
+    private final RefreshTokenUseCase refreshTokenUseCase;
+    private final LogoutUseCase logoutUseCase;
+    private final GetSessionUseCase getSessionUseCase;
+    private final AuthCommandAssembler authCommandAssembler;
+    private final AuthResponseAssembler authResponseAssembler;
     private final CsrfTokenRepository csrfTokenRepository;
 
     /**
      * 로그인 엔드포인트.
      * - 응답 본문에는 사용자/메뉴 정보만 담고, 토큰은 HttpOnly 쿠키로 내려보낸다.
-     * - 인증 실패 시 AuthService 내부에서 ValidationException 발생.
+     * - 인증 실패 시 {@link LoginUseCase} 내부에서 ValidationException을 던진다.
      */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(HttpServletRequest httpRequest,
                                                HttpServletResponse httpResponse,
                                                @RequestBody @Valid LoginRequest request) {
-        LoginResult loginResult = authService.login(request);
+        AuthExecutionResult executionResult = loginUseCase.handle(authCommandAssembler.toLoginCommand(request));
+        LoginResult loginResult = authResponseAssembler.toLoginResult(executionResult);
 
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         loginResult.cookies().forEach(cookie ->
@@ -71,7 +86,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        LoginResult refreshResult = authService.refresh(refreshToken);
+        AuthExecutionResult executionResult = refreshTokenUseCase.handle(authCommandAssembler.toRefreshCommand(refreshToken));
+        LoginResult refreshResult = authResponseAssembler.toLoginResult(executionResult);
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         refreshResult.cookies().forEach(cookie ->
                 builder.header(HttpHeaders.SET_COOKIE, cookie.toString()));
@@ -89,7 +105,8 @@ public class AuthController {
      */
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@CookieValue(name = "REFRESH_TOKEN", required = false) String refreshToken) {
-        List<ResponseCookie> cookies = authService.logout(refreshToken);
+        LogoutExecutionResult logoutResult = logoutUseCase.handle(authCommandAssembler.toLogoutCommand(refreshToken));
+        List<ResponseCookie> cookies = logoutResult.cookies();
         ResponseEntity.BodyBuilder builder = ResponseEntity.status(HttpStatus.NO_CONTENT);
         cookies.forEach(cookie -> builder.header(HttpHeaders.SET_COOKIE, cookie.toString()));
         return builder.build();
@@ -98,6 +115,8 @@ public class AuthController {
     /** 현재 인증된 사용자 정보를 조회한다. */
     @GetMapping("/me")
     public ResponseEntity<LoginResponse> me() {
-        return ResponseEntity.ok(authService.me());
+        AuthSession session = getSessionUseCase.handle();
+        LoginResponse response = authResponseAssembler.toLoginResponse(session);
+        return ResponseEntity.ok(response);
     }
 }

@@ -4,10 +4,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import com.base.application.auth.port.AuthorityCachePort;
+import com.base.application.auth.port.PermissionCachePort;
 import com.base.application.event.model.PermissionChangedEvent;
 import com.base.application.event.model.RoleAuthorityChangedEvent;
-import com.base.infra.redis.cache.AuthorityCacheService;
-import com.base.infra.redis.cache.PermissionCacheService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,21 +15,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthorityCacheEventListener {
 
-    private final AuthorityCacheService authorityCacheService;
-    private final PermissionCacheService permissionCacheService;
+    private final AuthorityCachePort authorityCachePort;
+    private final PermissionCachePort permissionCachePort;
 
     @EventListener
     public void handlePermissionChanged(PermissionChangedEvent event) {
         if (!CollectionUtils.isEmpty(event.affectedUserIds())) {
-            authorityCacheService.evictAll(event.affectedUserIds());
+            authorityCachePort.evictAll(event.affectedUserIds());
         }
-        permissionCacheService.evictAll();
+        permissionCachePort.evictAll();
     }
 
     @EventListener
     public void handleRoleAuthorityChanged(RoleAuthorityChangedEvent event) {
         if (!CollectionUtils.isEmpty(event.userIds())) {
-            authorityCacheService.evictAll(event.userIds());
+            authorityCachePort.evictAll(event.userIds());
         }
     }
 }

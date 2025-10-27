@@ -14,11 +14,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.base.api.permission.assembler.PermissionCommandAssembler;
+import com.base.api.permission.assembler.PermissionResponseAssembler;
 import com.base.api.permission.dto.PermissionRequest;
 import com.base.api.permission.dto.PermissionResponse;
-import com.base.application.permission.command.PermissionCommandService;
-import com.base.application.permission.query.PermissionSearchCondition;
-import com.base.application.permission.query.PermissionQueryService;
+import com.base.application.permission.usecase.create.CreatePermissionUseCase;
+import com.base.application.permission.usecase.delete.DeletePermissionUseCase;
+import com.base.application.permission.usecase.query.condition.PermissionSearchCondition;
+import com.base.application.permission.usecase.query.detail.GetPermissionUseCase;
+import com.base.application.permission.usecase.query.list.GetPermissionsUseCase;
+import com.base.application.permission.usecase.result.PermissionResult;
+import com.base.application.permission.usecase.update.UpdatePermissionUseCase;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,33 +33,41 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PermissionController {
     
-    private final PermissionCommandService permissionCommandService;
-    private final PermissionQueryService permissionQueryService;
+    private final CreatePermissionUseCase createPermissionUseCase;
+    private final UpdatePermissionUseCase updatePermissionUseCase;
+    private final DeletePermissionUseCase deletePermissionUseCase;
+    private final GetPermissionUseCase getPermissionUseCase;
+    private final GetPermissionsUseCase getPermissionsUseCase;
+    private final PermissionCommandAssembler permissionCommandAssembler;
+    private final PermissionResponseAssembler permissionResponseAssembler;
 
     @PostMapping
     @PreAuthorize("hasAuthority('PERMISSION_CREATE')")
     public ResponseEntity<PermissionResponse> createPermission(@RequestBody PermissionRequest request) {
-        return ResponseEntity.ok(permissionCommandService.createPermission(request));
+        PermissionResult result = createPermissionUseCase.handle(permissionCommandAssembler.toCreateCommand(request));
+        return ResponseEntity.ok(permissionResponseAssembler.toResponse(result));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('PERMISSION_UPDATE')")
     public ResponseEntity<PermissionResponse> updatePermission(
             @PathVariable Long id, @RequestBody PermissionRequest request) {
-        return ResponseEntity.ok(permissionCommandService.updatePermission(id, request));
+        PermissionResult result = updatePermissionUseCase.handle(id, permissionCommandAssembler.toUpdateCommand(request));
+        return ResponseEntity.ok(permissionResponseAssembler.toResponse(result));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('PERMISSION_DELETE')")
     public ResponseEntity<Void> deletePermission(@PathVariable Long id) {
-        permissionCommandService.deletePermission(id);
+        deletePermissionUseCase.handle(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('PERMISSION_READ')")
     public ResponseEntity<PermissionResponse> getPermission(@PathVariable Long id) {
-        return ResponseEntity.ok(permissionQueryService.getPermission(id));
+        PermissionResult result = getPermissionUseCase.handle(id);
+        return ResponseEntity.ok(permissionResponseAssembler.toResponse(result));
     }
 
     @GetMapping
@@ -61,6 +75,8 @@ public class PermissionController {
     public ResponseEntity<List<PermissionResponse>> getPermissions(
             @ModelAttribute PermissionSearchCondition condition
     ) {
-        return ResponseEntity.ok(permissionQueryService.getPermissions(condition));
+        return ResponseEntity.ok(
+                permissionResponseAssembler.toResponses(getPermissionsUseCase.handle(condition))
+        );
     }
 }
