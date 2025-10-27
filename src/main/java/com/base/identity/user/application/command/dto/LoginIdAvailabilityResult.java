@@ -1,0 +1,6 @@
+package com.base.identity.user.application.command.dto;
+
+public record LoginIdAvailabilityResult(
+        boolean available
+) {
+}

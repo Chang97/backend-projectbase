@@ -3,8 +3,8 @@ package com.base.application.permission.usecase.query.detail;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.base.application.permission.result.PermissionResult;
 import com.base.application.permission.usecase.query.assembler.PermissionResultAssembler;
-import com.base.application.permission.usecase.result.PermissionResult;
 import com.base.domain.permission.Permission;
 import com.base.domain.permission.PermissionRepository;
 import com.base.exception.NotFoundException;

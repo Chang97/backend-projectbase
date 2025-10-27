@@ -2,7 +2,7 @@ package com.base.application.permission.usecase.query.assembler;
 
 import org.springframework.stereotype.Component;
 
-import com.base.application.permission.usecase.result.PermissionResult;
+import com.base.application.permission.result.PermissionResult;
 import com.base.domain.permission.Permission;
 
 @Component

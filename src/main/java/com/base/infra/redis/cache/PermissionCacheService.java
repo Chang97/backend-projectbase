@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.base.application.permission.usecase.result.PermissionResult;
+import com.base.application.permission.result.PermissionResult;
 import com.base.infra.redis.property.PermissionCacheProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

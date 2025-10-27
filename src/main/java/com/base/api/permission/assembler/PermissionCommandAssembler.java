@@ -3,8 +3,8 @@ package com.base.api.permission.assembler;
 import org.springframework.stereotype.Component;
 
 import com.base.api.permission.dto.PermissionRequest;
-import com.base.application.permission.usecase.command.CreatePermissionCommand;
-import com.base.application.permission.usecase.command.UpdatePermissionCommand;
+import com.base.application.permission.command.CreatePermissionCommand;
+import com.base.application.permission.command.UpdatePermissionCommand;
 
 @Component
 public class PermissionCommandAssembler {

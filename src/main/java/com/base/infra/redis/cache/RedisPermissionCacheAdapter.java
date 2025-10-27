@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.base.application.auth.port.PermissionCachePort;
-import com.base.application.permission.usecase.result.PermissionResult;
+import com.base.application.permission.result.PermissionResult;
 
 import lombok.RequiredArgsConstructor;
 

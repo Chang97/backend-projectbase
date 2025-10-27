@@ -3,7 +3,7 @@ package com.base.application.auth.port;
 import java.util.List;
 import java.util.Optional;
 
-import com.base.application.permission.usecase.result.PermissionResult;
+import com.base.application.permission.result.PermissionResult;
 
 public interface PermissionCachePort {
 

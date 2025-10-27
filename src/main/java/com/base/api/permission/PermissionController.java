@@ -18,13 +18,13 @@ import com.base.api.permission.assembler.PermissionCommandAssembler;
 import com.base.api.permission.assembler.PermissionResponseAssembler;
 import com.base.api.permission.dto.PermissionRequest;
 import com.base.api.permission.dto.PermissionResponse;
-import com.base.application.permission.usecase.create.CreatePermissionUseCase;
-import com.base.application.permission.usecase.delete.DeletePermissionUseCase;
+import com.base.application.permission.port.in.CreatePermissionUseCase;
+import com.base.application.permission.port.in.DeletePermissionUseCase;
+import com.base.application.permission.port.in.UpdatePermissionUseCase;
+import com.base.application.permission.result.PermissionResult;
 import com.base.application.permission.usecase.query.condition.PermissionSearchCondition;
 import com.base.application.permission.usecase.query.detail.GetPermissionUseCase;
 import com.base.application.permission.usecase.query.list.GetPermissionsUseCase;
-import com.base.application.permission.usecase.result.PermissionResult;
-import com.base.application.permission.usecase.update.UpdatePermissionUseCase;
 
 import lombok.RequiredArgsConstructor;
 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.base.api.permission.dto.PermissionResponse;
-import com.base.application.permission.usecase.result.PermissionResult;
+import com.base.application.permission.result.PermissionResult;
 
 @Component
 public class PermissionResponseAssembler {

@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.base.application.auth.port.PermissionCachePort;
+import com.base.application.permission.result.PermissionResult;
 import com.base.application.permission.usecase.query.assembler.PermissionResultAssembler;
 import com.base.application.permission.usecase.query.condition.PermissionSearchCondition;
 import com.base.application.permission.usecase.query.condition.PermissionSpecifications;
-import com.base.application.permission.usecase.result.PermissionResult;
 import com.base.domain.permission.PermissionRepository;
 
 import lombok.RequiredArgsConstructor;
