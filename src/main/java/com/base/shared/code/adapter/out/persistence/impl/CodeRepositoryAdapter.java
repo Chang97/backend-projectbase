@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.base.exception.ConflictException;
 import com.base.exception.NotFoundException;
 import com.base.shared.code.adapter.out.persistence.entity.CodeEntity;
 import com.base.shared.code.adapter.out.persistence.mapper.CodeEntityMapper;

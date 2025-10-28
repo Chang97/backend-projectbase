@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.base.shared.code.adapter.in.web.command.dto.CodeCommandRequest;
 import com.base.shared.code.adapter.in.web.command.dto.CodeCommandResponse;
-import com.base.shared.code.adapter.in.web.command.mapper.CodeCommandRequestMapper;
-import com.base.shared.code.adapter.in.web.command.mapper.CodeCommandResponseMapper;
+import com.base.shared.code.adapter.in.web.command.mapper.CodeCommandWebMapper;
 import com.base.shared.code.application.command.dto.CodeCommandResult;
 import com.base.shared.code.application.command.port.in.CreateCodeUseCase;
 import com.base.shared.code.application.command.port.in.DeleteCodeUseCase;
@@ -34,25 +33,24 @@ public class CodeCommandController {
     private final CreateCodeUseCase createCodeUseCase;
     private final UpdateCodeUseCase updateCodeUseCase;
     private final DeleteCodeUseCase deleteCodeUseCase;
-    private final CodeCommandRequestMapper codeCommandRequestMapper;
-    private final CodeCommandResponseMapper codeCommandResponseMapper;
+    private final CodeCommandWebMapper codeCommandWebMapper;
 
     @PostMapping
     @PreAuthorize("hasAuthority('CODE_CREATE')")
     public ResponseEntity<CodeCommandResponse> createCode(@Valid @RequestBody CodeCommandRequest request) {
-        CodeCommand command = codeCommandRequestMapper.toCommand(request);
+        CodeCommand command = codeCommandWebMapper.toCommand(request);
         CodeCommandResult result = createCodeUseCase.handle(command);
         URI location = URI.create("/api/codes/" + result.codeId());
         return ResponseEntity.created(location)
-                .body(codeCommandResponseMapper.toResponse(result));
+                .body(codeCommandWebMapper.toResponse(result));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('CODE_UPDATE')")
     public ResponseEntity<CodeCommandResponse> updateCode(@PathVariable Long id, @Valid @RequestBody CodeCommandRequest request) {
-        CodeCommand command = codeCommandRequestMapper.toCommand(request);
+        CodeCommand command = codeCommandWebMapper.toCommand(request);
         CodeCommandResult result = updateCodeUseCase.handle(id, command);
-        return ResponseEntity.ok(codeCommandResponseMapper.toResponse(result));
+        return ResponseEntity.ok(codeCommandWebMapper.toResponse(result));
     }
 
     @DeleteMapping("/{id}")

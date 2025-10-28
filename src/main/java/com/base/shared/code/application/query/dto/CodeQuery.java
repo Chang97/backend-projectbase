@@ -6,14 +6,4 @@ public record CodeQuery(
         String code,
         String codeName,
         Boolean useYn
-) {
-    public CodeQuery normalize() {
-        return new CodeQuery(
-                upperCodeId,
-                upperCode != null ? upperCode.trim() : null,
-                code != null ? code.trim() : null,
-                codeName != null ? codeName.trim() : null,
-                useYn
-        );
-    }
-}
+) {}

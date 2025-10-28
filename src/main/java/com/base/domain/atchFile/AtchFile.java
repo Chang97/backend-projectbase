@@ -1,7 +1,8 @@
 package com.base.domain.atchFile;
 
-import com.base.domain.code.Code;
 import com.base.domain.common.BaseEntity;
+import com.base.shared.code.adapter.out.persistence.entity.CodeEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,5 +22,5 @@ public class AtchFile extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "file_grp_code_id")
-    private Code fileGrpCode;
+    private CodeEntity fileGrpCode;
 }
