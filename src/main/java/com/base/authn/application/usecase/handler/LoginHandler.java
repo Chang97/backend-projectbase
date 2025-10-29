@@ -1,15 +1,19 @@
 package com.base.authn.application.usecase.handler;
 
+import java.util.Collection;
 import java.util.List;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import com.base.authn.application.UserAuthorityService;
 import com.base.authn.application.usecase.dto.LoginCommand;
 import com.base.authn.application.usecase.port.in.LoginUseCase;
 import com.base.authn.application.usecase.result.AuthExecutionResult;
@@ -35,6 +39,7 @@ class LoginHandler implements LoginUseCase {
 
     private final AuthenticationManager authenticationManager;
     private final AuthSupport authSupport;
+    private final UserAuthorityService userAuthorityService;
 
     @Override
     public AuthExecutionResult handle(LoginCommand command) {
@@ -51,6 +56,8 @@ class LoginHandler implements LoginUseCase {
         // 3. 현재 사용자가 접근 가능한 메뉴/권한 정보를 구성한다.
         AuthSession session = authSupport.buildSession(principal.getId(), principal.getAuthorities());
         List<ResponseCookie> cookies = authSupport.buildIssueCookies(tokenBundle);
+        resolvePermissions(principal.getId(), principal.getAuthorities());
+
 
         return new AuthExecutionResult(session, cookies);
     }
@@ -63,5 +70,18 @@ class LoginHandler implements LoginUseCase {
         } catch (AuthenticationException ex) {
             throw new ValidationException("Invalid login credentials.");
         }
+    }
+
+    private List<String> resolvePermissions(Long userId, Collection<? extends GrantedAuthority> authorities) {
+        Collection<? extends GrantedAuthority> source =
+                (authorities == null || authorities.isEmpty())
+                        ? userAuthorityService.loadAuthoritiesOrEmpty(userId)
+                        : authorities;
+        return source.stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(StringUtils::hasText)
+                .map(String::trim)
+                .distinct()
+                .toList();
     }
 }

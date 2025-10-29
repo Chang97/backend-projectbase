@@ -1,8 +1,8 @@
-package com.base.authr.adapter.in.web.dto;
+package com.base.authr.application.dto;
 
 import java.util.List;
 
-public record MenuResponse(
+public record MenuResult(
     Long menuId,
     String menuCode,
     Long upperMenuId,
@@ -14,5 +14,4 @@ public record MenuResponse(
     Integer depth,
     String path,
     List<Long> permissionIds
-) {
-}
+) {}

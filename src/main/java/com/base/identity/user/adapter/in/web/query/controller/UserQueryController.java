@@ -22,7 +22,7 @@ import com.base.identity.user.application.query.port.in.GetUsersUseCase;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/identity/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserQueryController {
 

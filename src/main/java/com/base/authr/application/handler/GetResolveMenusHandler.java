@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +14,9 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.base.authr.application.dto.MenuResult;
 import com.base.authr.application.dto.MenuTreeResult;
+import com.base.authr.application.dto.UserMenuAccessResult;
 import com.base.authr.application.port.in.GetResolveMenusUseCase;
 import com.base.exception.NotFoundException;
 import com.base.shared.menu.domain.model.Menu;
@@ -35,10 +38,10 @@ public class GetResolveMenusHandler implements GetResolveMenusUseCase {
         .thenComparing(node -> node.menu.getMenuId().value());
 
     @Override
-    public List<MenuTreeResult> handle(Long userId) {
+    public UserMenuAccessResult handle(Long userId) {
         List<Menu> accessibleMenus = menuRepository.findAccessibleMenusByUserId(userId);
         if (accessibleMenus.isEmpty()) {
-            return List.of(new MenuTreeResult(null, null, null, null, List.of()));
+            return new UserMenuAccessResult(List.of(), List.of());
         }
 
         // 2) 상위 메뉴를 반복적으로 수집해 트리를 구성할 준비를 한다.
@@ -63,10 +66,15 @@ public class GetResolveMenusHandler implements GetResolveMenusUseCase {
 
         for (Menu menu : orderedMenus) {
             MenuTreeNode node = nodeMap.computeIfAbsent(menu.getMenuId().value(), id -> new MenuTreeNode(menu));
-            Menu parent = menuRepository.findById(menu.getUpperMenuId().value())
-                    .orElseThrow(() -> new NotFoundException("Upper Menu Not Found") );
-            if (parent != null && collectedMenus.containsKey(parent.getMenuId().value())) {
-                MenuTreeNode parentNode = nodeMap.computeIfAbsent(parent.getMenuId().value(), id -> new MenuTreeNode(parent));
+            Menu _parent;
+            if (menu.getUpperMenuId() != null) {
+                _parent = menuRepository.findById(menu.getUpperMenuId().value())
+                        .orElseThrow(() -> new NotFoundException("Upper Menu Not Found") );
+            } else {
+                _parent = null;
+            }
+            if (_parent != null && collectedMenus.containsKey(_parent.getMenuId().value())) {
+                MenuTreeNode parentNode = nodeMap.computeIfAbsent(_parent.getMenuId().value(), id -> new MenuTreeNode(_parent));
                 parentNode.children.add(node);
             } else {
                 rootNodes.add(node);
@@ -74,15 +82,15 @@ public class GetResolveMenusHandler implements GetResolveMenusUseCase {
         }
 
         // 5) 평면 리스트와 트리형 구조를 동시에 반환한다.
-        // List<MenuResult> flatMenus = orderedMenus.stream()
-        //         .map(menu -> menuResultAssembler.toResult(menu, List.of()))
-        //         .toList();
+        List<MenuResult> flatMenus = orderedMenus.stream()
+                .map(menu -> toResult(menu, List.of()))
+                .toList();
 
         List<MenuTreeResult> menuTree = rootNodes.stream()
                 .map(node -> sortAndConvert(node, 0))
                 .toList();
 
-        return menuTree;
+        return new UserMenuAccessResult(menuTree, flatMenus);
         
     }
 
@@ -92,9 +100,14 @@ public class GetResolveMenusHandler implements GetResolveMenusUseCase {
         }
         if (visited.add(menu.getMenuId().value())) {
             collected.put(menu.getMenuId().value(), menu);
-            Menu parent = menuRepository.findById(menu.getUpperMenuId().value())
-                    .orElseThrow(() -> new NotFoundException("Upper Menu Not Found") );
-            collectWithAncestors(parent, collected, visited);
+            System.out.println("##################################" + menu.getUpperMenuId());
+            if (menu.getUpperMenuId() == null) {
+                collectWithAncestors(null, collected, visited);
+            } else {
+                Menu parent = menuRepository.findById(menu.getUpperMenuId().value())
+                        .orElseThrow(() -> new NotFoundException("Upper Menu Not Found") );
+                collectWithAncestors(parent, collected, visited);
+            }
         }
     }
 
@@ -107,8 +120,11 @@ public class GetResolveMenusHandler implements GetResolveMenusUseCase {
         if (cached != null) {
             return cached;
         }
-        Menu parent = menuRepository.findById(menu.getUpperMenuId().value())
+        Menu parent = null;
+        if (menu.getUpperMenuId() != null) {
+            parent = menuRepository.findById(menu.getUpperMenuId().value())
                     .orElseThrow(() -> new NotFoundException("Upper Menu Not Found") );
+        }
         int depth = parent == null ? 0 : resolveDepth(parent, cache) + 1;
         cache.put(id, depth);
         return depth;
@@ -136,6 +152,71 @@ public class GetResolveMenusHandler implements GetResolveMenusUseCase {
         private MenuTreeNode(Menu menu) {
             this.menu = menu;
         }
+    }
+
+    public MenuResult toResult(Menu menu, List<Long> permissionIds) {
+        return new MenuResult(
+                menu.getMenuId().value(),
+                menu.getMenuCode(),
+                resolveUpperMenuId(menu),
+                menu.getMenuName(),
+                menu.getMenuCn(),
+                menu.getUrl(),
+                menu.getSrt(),
+                menu.getUseYn(),
+                calculateDepth(menu),
+                buildPath(menu),
+                permissionIds == null ? List.of() : List.copyOf(permissionIds)
+        );
+    }
+
+    public String buildOrderKey(Menu menu) {
+        LinkedList<String> segments = new LinkedList<>();
+        Menu current = menu;
+        while (current != null) {
+            String srtPart = current.getSrt() != null ? String.format("%05d", current.getSrt()) : "99999";
+            segments.addFirst(srtPart + "-" + String.format("%06d", current.getMenuId()));
+            if (current.getUpperMenuId() != null) {
+                Menu parent = menuRepository.findById(menu.getUpperMenuId().value())
+                        .orElseThrow(() -> new NotFoundException("Upper Menu Not Found") );
+                current = parent;
+            } else {
+                current = null;
+            }
+        }
+        return String.join("/", segments);
+    }
+
+    private Long resolveUpperMenuId(Menu menu) {
+        return menu.getUpperMenuId() != null ? menu.getUpperMenuId().value() : null;
+    }
+
+    private int calculateDepth(Menu menu) {
+        int depth = 0;
+        Menu current = menu;
+        while (current != null && current.getUpperMenuId() != null) {
+            depth++;
+            Menu parent = menuRepository.findById(menu.getUpperMenuId().value())
+                        .orElseThrow(() -> new NotFoundException("Upper Menu Not Found") );
+            current = parent;
+        }
+        return depth;
+    }
+
+    private String buildPath(Menu menu) {
+        LinkedList<String> segments = new LinkedList<>();
+        Menu current = menu;
+        while (current != null) {
+            segments.addFirst(current.getMenuName());
+            if (current.getUpperMenuId() != null) {
+                Menu parent = menuRepository.findById(menu.getUpperMenuId().value())
+                            .orElseThrow(() -> new NotFoundException("Upper Menu Not Found") );
+                current = parent;
+            } else {
+                current = null;
+            }
+        }
+        return String.join(" > ", segments);
     }
     
     

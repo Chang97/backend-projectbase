@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import com.base.shared.menu.adapter.out.persistence.entity.MenuEntity;
-import com.base.shared.menu.domain.model.Menu;
 
 import io.lettuce.core.dynamic.annotation.Param;
 
@@ -39,5 +38,5 @@ public interface MenuJpaRepository extends JpaRepository<MenuEntity, Long>, JpaS
               AND COALESCE(p.useYn, true) = true
               AND COALESCE(u.useYn, true) = true
             """)
-    List<Menu> findAccessibleMenusByUserId(@Param("userId") Long userId);
+    List<MenuEntity> findAccessibleMenusByUserId(@Param("userId") Long userId);
 }

@@ -1,9 +1,7 @@
 package com.base.authr.application.port.in;
 
-import java.util.List;
-
-import com.base.authr.application.dto.MenuTreeResult;
+import com.base.authr.application.dto.UserMenuAccessResult;
 
 public interface GetResolveMenusUseCase {
-    List<MenuTreeResult> handle(Long userId);
+    UserMenuAccessResult handle(Long userId);
 }

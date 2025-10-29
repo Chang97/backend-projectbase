@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component;
 
 import com.base.authn.adapter.in.web.dto.LoginResponse;
 import com.base.authn.adapter.in.web.dto.LoginResult;
+import com.base.authn.adapter.in.web.dto.UserSummaryResponse;
 import com.base.authn.application.usecase.result.AuthExecutionResult;
 import com.base.authn.application.usecase.result.AuthSession;
 import com.base.authn.application.usecase.result.AuthUserSnapshot;
-import com.base.authr.adapter.in.web.dto.UserSummaryResponse;
 
 @Component
 public class AuthResponseAssembler {

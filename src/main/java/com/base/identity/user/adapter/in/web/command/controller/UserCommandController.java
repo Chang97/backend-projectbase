@@ -23,7 +23,7 @@ import com.base.identity.user.application.command.port.in.UpdateUserUseCase;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/identity/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserCommandController {
 
