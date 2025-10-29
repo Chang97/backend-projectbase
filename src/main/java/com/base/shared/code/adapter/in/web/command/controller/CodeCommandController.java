@@ -1,7 +1,6 @@
 package com.base.shared.code.adapter.in.web.command.controller;
 
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

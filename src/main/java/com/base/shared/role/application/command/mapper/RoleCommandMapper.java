@@ -6,7 +6,6 @@ import com.base.shared.core.util.StringNormalizer;
 import com.base.shared.role.application.command.dto.RoleCommand;
 import com.base.shared.role.application.command.dto.RoleCommandResult;
 import com.base.shared.role.domain.model.Role;
-import com.base.shared.role.domain.model.RoleId;
 
 @Component
 public class RoleCommandMapper {

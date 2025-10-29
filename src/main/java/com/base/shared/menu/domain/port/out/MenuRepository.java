@@ -1,6 +1,5 @@
 package com.base.shared.menu.domain.port.out;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

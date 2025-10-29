@@ -1,7 +1,5 @@
 package com.base.shared.menu.application.query.handler;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

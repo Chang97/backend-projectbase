@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.base.exception.NotFoundException;
-import java.util.List;
 
 import com.base.shared.role.application.query.dto.RoleQueryResult;
 import com.base.shared.role.application.query.mapper.RoleQueryMapper;

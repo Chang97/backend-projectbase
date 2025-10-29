@@ -1,4 +1,4 @@
-package com.base.authn.application.usecase.command;
+package com.base.authn.application.usecase.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

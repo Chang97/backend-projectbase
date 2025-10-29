@@ -1,4 +1,4 @@
-package com.base.authn.application.usecase.login;
+package com.base.authn.application.usecase.handler;
 
 import java.util.List;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,7 +10,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.base.authn.application.usecase.command.LoginCommand;
+import com.base.authn.application.usecase.dto.LoginCommand;
+import com.base.authn.application.usecase.port.in.LoginUseCase;
 import com.base.authn.application.usecase.result.AuthExecutionResult;
 import com.base.authn.application.usecase.result.AuthSession;
 import com.base.authn.application.usecase.support.AuthSupport;
@@ -30,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-class LoginUseCaseImpl implements LoginUseCase {
+class LoginHandler implements LoginUseCase {
 
     private final AuthenticationManager authenticationManager;
     private final AuthSupport authSupport;

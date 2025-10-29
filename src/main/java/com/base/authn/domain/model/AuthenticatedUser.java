@@ -1,6 +1,5 @@
 package com.base.authn.domain.model;
 
-import java.util.Collection;
 import java.util.List;
 
 public record AuthenticatedUser(
@@ -15,7 +14,7 @@ public record AuthenticatedUser(
         authorities = authorities == null ? List.of() : List.copyOf(authorities);
     }
 
-    public Collection<String> authorities() {
+    public List<String> authorities() {
         return authorities;
     }
 }

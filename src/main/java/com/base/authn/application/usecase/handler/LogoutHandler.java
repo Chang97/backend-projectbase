@@ -1,4 +1,4 @@
-package com.base.authn.application.usecase.logout;
+package com.base.authn.application.usecase.handler;
 
 import java.util.List;
 
@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.base.authn.application.usecase.command.LogoutCommand;
+import com.base.authn.application.usecase.dto.LogoutCommand;
+import com.base.authn.application.usecase.port.in.LogoutUseCase;
 import com.base.authn.application.usecase.result.LogoutExecutionResult;
 import com.base.authn.application.usecase.support.AuthSupport;
 import com.base.authn.application.usecase.support.AuthSupport.ParsedRefreshToken;
@@ -22,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-class LogoutUseCaseImpl implements LogoutUseCase {
+class LogoutHandler implements LogoutUseCase {
 
     private final AuthSupport authSupport;
 

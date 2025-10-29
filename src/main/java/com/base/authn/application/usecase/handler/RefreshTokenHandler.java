@@ -1,4 +1,4 @@
-package com.base.authn.application.usecase.refresh;
+package com.base.authn.application.usecase.handler;
 
 import java.util.List;
 
@@ -6,7 +6,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.base.authn.application.usecase.command.RefreshTokenCommand;
+import com.base.authn.application.usecase.dto.RefreshTokenCommand;
+import com.base.authn.application.usecase.port.in.RefreshTokenUseCase;
 import com.base.authn.application.usecase.result.AuthExecutionResult;
 import com.base.authn.application.usecase.result.AuthSession;
 import com.base.authn.application.usecase.support.AuthSupport;
@@ -26,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-class RefreshTokenUseCaseImpl implements RefreshTokenUseCase {
+class RefreshTokenHandler implements RefreshTokenUseCase {
 
     private final AuthSupport authSupport;
 

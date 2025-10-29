@@ -3,9 +3,9 @@ package com.base.authn.adapter.in.web.mapper;
 import org.springframework.stereotype.Component;
 
 import com.base.authn.adapter.in.web.dto.LoginRequest;
-import com.base.authn.application.usecase.command.LoginCommand;
-import com.base.authn.application.usecase.command.LogoutCommand;
-import com.base.authn.application.usecase.command.RefreshTokenCommand;
+import com.base.authn.application.usecase.dto.LoginCommand;
+import com.base.authn.application.usecase.dto.LogoutCommand;
+import com.base.authn.application.usecase.dto.RefreshTokenCommand;
 
 @Component
 public class AuthCommandRequestMapper {

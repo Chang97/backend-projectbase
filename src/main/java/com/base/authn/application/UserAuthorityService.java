@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.base.shared.cache.domain.port.out.AuthorityCachePort;
+import com.base.shared.core.util.StringNormalizer;
 import com.base.shared.permission.domain.port.out.PermissionRepository;
 import com.base.shared.role.domain.port.out.RoleRepository;
 import com.base.shared.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
@@ -61,7 +62,7 @@ public class UserAuthorityService {
 
             if (!permissionIds.isEmpty()) {
                 permissionRepository.findAllByIds(permissionIds).stream()
-                        .map(permission -> StringUtils.trimWhitespace(permission.getPermissionCode()))
+                        .map(permission -> StringNormalizer.trimToNull(permission.getPermissionCode()))
                         .filter(StringUtils::hasText)
                         .forEach(codes::add);
             }
