@@ -1,6 +1,5 @@
 package com.base.shared.rolepermissionmap.adapter.out.persistence.entity;
 
-import com.base.domain.common.BaseEntity;
 import com.base.shared.permission.adapter.out.persistence.entity.PermissionEntity;
 import com.base.shared.role.adapter.out.persistence.entity.RoleEntity;
 
@@ -21,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RolePermissionMapEntity extends BaseEntity {
+public class RolePermissionMapEntity {
 
     @EmbeddedId
     private RolePermissionMapEntityId id = new RolePermissionMapEntityId();

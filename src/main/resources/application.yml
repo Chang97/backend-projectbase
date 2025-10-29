@@ -59,9 +59,14 @@ logging:
     # org.apache.ibatis: DEBUG
     # org.springframework.http.converter: DEBUG
     # base.work: TRACE
+    org.springframework.security: DEBUG
+    org.springframework.security.authentication: DEBUG
+    org.springframework.security.web.authentication: DEBUG
+
     p6spy: INFO
     com.base.security.csrf.CsrfDebugFilter: DEBUG
     com.base.security.csrf.HeaderAwareCookieCsrfTokenRepository: DEBUG
+    
 
 
 jwt:

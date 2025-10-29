@@ -21,7 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserRoleMapEntity extends BaseEntity {
+public class UserRoleMapEntity {
 
     @EmbeddedId
     private UserRoleMapEntityId id = new UserRoleMapEntityId();
