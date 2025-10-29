@@ -13,18 +13,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.base.security.RestAccessDeniedHandler;
-import com.base.security.csrf.CsrfCookieFilter;
-import com.base.security.csrf.HeaderAwareCookieCsrfTokenRepository;
-import com.base.security.csrf.CsrfDebugFilter;
 import com.base.security.jwt.JwtAuthenticationEntryPoint;
 import com.base.security.jwt.JwtAuthenticationFilter;
 import com.base.security.jwt.JwtProperties;
@@ -38,37 +31,22 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CorsProperties corsProperties;
-    private final CsrfCookieFilter csrfCookieFilter;
-    private final CsrfDebugFilter csrfDebugFilter;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-                          CorsProperties corsProperties,
-                          CsrfCookieFilter csrfCookieFilter,
-                          CsrfDebugFilter csrfDebugFilter) {
+            JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+            CorsProperties corsProperties) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.corsProperties = corsProperties;
-        this.csrfCookieFilter = csrfCookieFilter;
-        this.csrfDebugFilter = csrfDebugFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   CsrfTokenRepository csrfTokenRepository,
-                                                   RestAccessDeniedHandler accessDeniedHandler) throws Exception {
-        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+            RestAccessDeniedHandler accessDeniedHandler) throws Exception {
+
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf
-                    .csrfTokenRepository(csrfTokenRepository)
-                    .csrfTokenRequestHandler(requestHandler)
-                    .ignoringRequestMatchers(
-                            new AntPathRequestMatcher("/api/auth/login"),
-                            new AntPathRequestMatcher("/api/auth/refresh"),
-                            new AntPathRequestMatcher("/api/auth/logout")
-                    )
-            )
+            .csrf(csrf -> csrf.disable())
             .httpBasic(httpBasic -> httpBasic.disable())
             .formLogin(form -> form.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -85,10 +63,7 @@ public class SecurityConfig {
                             "/v3/api-docs/**"
                     ).permitAll()
                     .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthenticationFilter, CsrfFilter.class)
-            .addFilterBefore(csrfDebugFilter, CsrfFilter.class)
-            .addFilterAfter(csrfCookieFilter, CsrfFilter.class);
+            );
         return http.build();
     }
 
@@ -115,11 +90,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
-    }
-
-    @Bean
-    public CsrfTokenRepository cookieCsrfTokenRepository() {
-        return new HeaderAwareCookieCsrfTokenRepository();
     }
 
 }

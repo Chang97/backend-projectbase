@@ -1,6 +1,5 @@
 package com.base.shared.userrolemap.adapter.out.persistence.entity;
 
-import com.base.domain.common.BaseEntity;
 import com.base.identity.user.adapter.out.persistence.entity.UserEntity;
 import com.base.shared.role.adapter.out.persistence.entity.RoleEntity;
 

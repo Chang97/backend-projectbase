@@ -1,4 +1,4 @@
-package com.base.authn.adapter.in.web.dto;
+package com.base.authr.adapter.in.web.dto;
 
 import java.util.List;
 

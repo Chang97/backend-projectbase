@@ -30,8 +30,6 @@ import com.base.authn.application.usecase.result.AuthExecutionResult;
 import com.base.authn.application.usecase.result.AuthSession;
 import com.base.authn.application.usecase.result.LogoutExecutionResult;
 import com.base.authn.application.usecase.session.GetSessionUseCase;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,7 +38,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("/api/auth")
 @Validated
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthenticationController {
 
     private final LoginUseCase loginUseCase;
     private final RefreshTokenUseCase refreshTokenUseCase;
@@ -48,7 +46,6 @@ public class AuthController {
     private final GetSessionUseCase getSessionUseCase;
     private final AuthCommandRequestMapper authCommandAssembler;
     private final AuthResponseAssembler authResponseAssembler;
-    private final CsrfTokenRepository csrfTokenRepository;
 
     /**
      * 로그인 엔드포인트.
@@ -57,18 +54,14 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(HttpServletRequest httpRequest,
-                                               HttpServletResponse httpResponse,
-                                               @RequestBody @Valid LoginRequest request) {
+            HttpServletResponse httpResponse,
+            @RequestBody @Valid LoginRequest request) {
         AuthExecutionResult executionResult = loginUseCase.handle(authCommandAssembler.toLoginCommand(request));
         LoginResult loginResult = authResponseAssembler.toLoginResult(executionResult);
 
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         loginResult.cookies().forEach(cookie ->
                 builder.header(HttpHeaders.SET_COOKIE, cookie.toString()));
-
-        CsrfToken csrfToken = csrfTokenRepository.generateToken(httpRequest);
-        csrfTokenRepository.saveToken(csrfToken, httpRequest, httpResponse);
-        builder.header("X-CSRF-TOKEN", csrfToken.getToken());
 
         return builder.body(loginResult.body());
     }
@@ -78,8 +71,8 @@ public class AuthController {
      */
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refresh(HttpServletRequest httpRequest,
-                                                 HttpServletResponse httpResponse,
-                                                 @CookieValue(name = "REFRESH_TOKEN", required = false) String refreshToken) {
+            HttpServletResponse httpResponse,
+            @CookieValue(name = "REFRESH_TOKEN", required = false) String refreshToken) {
         if (!StringUtils.hasText(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -89,10 +82,6 @@ public class AuthController {
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         refreshResult.cookies().forEach(cookie ->
                 builder.header(HttpHeaders.SET_COOKIE, cookie.toString()));
-
-        CsrfToken csrfToken = csrfTokenRepository.generateToken(httpRequest);
-        csrfTokenRepository.saveToken(csrfToken, httpRequest, httpResponse);
-        builder.header("X-CSRF-TOKEN", csrfToken.getToken());
 
         return builder.body(refreshResult.body());
     }

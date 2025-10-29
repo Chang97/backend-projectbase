@@ -19,4 +19,6 @@ public interface MenuRepository {
     List<Menu> findByUpperMenuId(Long upperMenuId);
 
     List<Menu> search(MenuFilter filter);
+
+    List<Menu> findAccessibleMenusByUserId(Long userId);
 }

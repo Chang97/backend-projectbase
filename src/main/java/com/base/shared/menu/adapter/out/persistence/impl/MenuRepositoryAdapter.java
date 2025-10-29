@@ -81,4 +81,9 @@ class MenuRepositoryAdapter implements MenuRepository {
                 .map(mapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public List<Menu> findAccessibleMenusByUserId(Long userId) {
+        return jpaRepository.findAccessibleMenusByUserId(userId);
+    }
 }
