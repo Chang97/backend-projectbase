@@ -14,28 +14,28 @@ public interface RolePermissionMapJpaRepository extends JpaRepository<RolePermis
 
     @Query("""
             SELECT entity
-            FROM RolePermissionEntity entity
+            FROM RolePermissionMapEntity entity
             WHERE entity.roleId = :roleId
             """)
     List<RolePermissionMapEntity> findByRoleId(@Param("roleId") Long roleId);
 
     @Query("""
             SELECT entity
-            FROM RolePermissionEntity entity
+            FROM RolePermissionMapEntity entity
             WHERE entity.permissionId = :permissionId
             """)
     List<RolePermissionMapEntity> findByPermissionId(@Param("permissionId") Long permissionId);
 
     @Query("""
             SELECT entity
-            FROM RolePermissionEntity entity
+            FROM RolePermissionMapEntity entity
             WHERE entity.roleId IN :roleIds
             """)
     List<RolePermissionMapEntity> findByRoleIds(@Param("roleIds") Collection<Long> roleIds);
 
     @Query("""
             SELECT DISTINCT entity.roleId
-            FROM RolePermissionEntity entity
+            FROM RolePermissionMapEntity entity
             WHERE entity.permissionId = :permissionId
             """)
     List<Long> findRoleIdsByPermissionId(@Param("permissionId") Long permissionId);

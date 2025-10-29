@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = {
         "com.base.domain",          // 과거 도메인 패키지 위치
         "com.base.infra.persistence", // 신규 헥사고날 어댑터 위치
-        "com.base.shared"             // 공유 모듈 아웃고잉 어댑터
+        "com.base.shared",             // 공유 모듈 아웃고잉 어댑터
+        "com.base.identity",           // 인증 아웃고잉 어댑터
+        "com.base.authn"             // 인증 아웃고잉 어댑터
 }) // JPA 리포지토리 위치
 @EnableJpaAuditing // createdDt, updatedDt 자동 관리하려면 필요
 public class JpaConfig {

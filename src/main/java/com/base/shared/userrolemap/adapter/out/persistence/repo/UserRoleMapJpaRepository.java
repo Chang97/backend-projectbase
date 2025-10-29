@@ -14,21 +14,21 @@ public interface UserRoleMapJpaRepository extends JpaRepository<UserRoleMapEntit
 
     @Query("""
             SELECT entity
-            FROM UserRoleEntity entity
+            FROM UserRoleMapEntity entity
             WHERE entity.userId = :userId
             """)
     List<UserRoleMapEntity> findByUserId(@Param("userId") Long userId);
 
     @Query("""
             SELECT entity.roleId
-            FROM UserRoleEntity entity
+            FROM UserRoleMapEntity entity
             WHERE entity.userId = :userId
             """)
     List<Long> findRoleIdsByUserId(@Param("userId") Long userId);
 
     @Query("""
             SELECT DISTINCT entity.userId
-            FROM UserRoleEntity entity
+            FROM UserRoleMapEntity entity
             WHERE entity.roleId IN :roleIds
             """)
     List<Long> findUserIdsByRoleIds(@Param("roleIds") Collection<Long> roleIds);
