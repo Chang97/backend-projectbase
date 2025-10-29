@@ -10,7 +10,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 
-import com.base.domain.user.User;
+import com.base.identity.user.domain.model.User;
+import com.base.identity.user.domain.model.UserId;
+
 
 /**
  * 스프링 시큐리티가 쓰는 사용자 어댑터.
@@ -44,13 +46,9 @@ public class UserPrincipal implements UserDetails {
     }
 
     public static UserPrincipal from(User user, Collection<? extends GrantedAuthority> authorities) {
-        return new UserPrincipal(
-                user.getUserId(),
-                user.getLoginId(),
-                user.getUserPassword(),
-                Boolean.TRUE.equals(user.getUseYn()),
-                authorities
-        );
+        Long id = extractUserId(user.getUserId());
+        boolean enabled = Boolean.TRUE.equals(user.getUseYn());
+        return new UserPrincipal(id, user.getLoginId(), user.getPassword(), enabled, authorities);
     }
 
     @Deprecated(forRemoval = true)
@@ -95,5 +93,9 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    private static Long extractUserId(UserId userId) {
+        return userId != null ? userId.value() : null;
     }
 }

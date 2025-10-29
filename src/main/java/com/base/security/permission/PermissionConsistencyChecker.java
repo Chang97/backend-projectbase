@@ -19,8 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import com.base.domain.permission.Permission;
-import com.base.domain.permission.PermissionRepository;
+import com.base.shared.permission.application.query.dto.PermissionQueryResult;
+import com.base.shared.permission.application.query.port.in.GetPermissionsUseCase;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,12 +35,12 @@ public class PermissionConsistencyChecker implements ApplicationRunner {
             Pattern.compile("hasAuthority\\(['\"]([A-Z0-9_:.-]+)['\"]\\)");
 
     private final ApplicationContext applicationContext;
-    private final PermissionRepository permissionRepository;
+    private final GetPermissionsUseCase getPermissionsUseCase;
 
     @Override
     public void run(ApplicationArguments args) {
-        Set<String> dbPermissions = permissionRepository.findAll().stream()
-                .map(Permission::getPermissionCode)
+        Set<String> dbPermissions = getPermissionsUseCase.handle(null).stream()
+                .map(PermissionQueryResult::permissionCode)
                 .collect(Collectors.toUnmodifiableSet());
 
         Set<String> referencedPermissions = resolvePermissionsFromAnnotations();

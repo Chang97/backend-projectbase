@@ -1,6 +1,9 @@
 package com.base.shared.userrolemap.adapter.out.persistence.entity;
 
 import com.base.domain.common.BaseEntity;
+import com.base.identity.user.adapter.out.persistence.entity.UserEntity;
+import com.base.shared.role.adapter.out.persistence.entity.RoleEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -26,12 +29,12 @@ public class UserRoleMapEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
     @JoinColumn(name = "user_id", nullable = false)
-    private com.base.domain.user.User user;
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("roleId")
     @JoinColumn(name = "role_id", nullable = false)
-    private com.base.domain.role.Role role;
+    private RoleEntity role;
 
     @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;

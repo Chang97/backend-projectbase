@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.base.application.auth.port.RefreshTokenStorePort;
+import com.base.shared.cache.domain.port.out.RefreshTokenStorePort;
 
 import lombok.RequiredArgsConstructor;
 

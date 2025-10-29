@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.base.application.auth.UserAuthorityService;
-import com.base.application.user.port.out.UserPersistencePort;
+import com.base.authn.application.UserAuthorityService;
+import com.base.identity.user.domain.port.out.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserPersistencePort userPersistencePort; // 로그인 ID 기반 조회
+    private final UserRepository userRepository; // 로그인 ID 기반 조회
     private final UserAuthorityService userAuthorityService;
 
     /**
@@ -25,9 +25,12 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userPersistencePort.findByLoginId(username)
+        return userRepository.findByLoginId(username)
                 .filter(user -> Boolean.TRUE.equals(user.getUseYn()))
-                .map(user -> UserPrincipal.from(user, userAuthorityService.loadAuthoritiesOrEmpty(user.getUserId())))
+                .map(user -> {
+                    Long userId = user.getUserId() != null ? user.getUserId().value() : null;
+                    return UserPrincipal.from(user, userAuthorityService.loadAuthoritiesOrEmpty(userId));
+                })
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 }

@@ -1,7 +1,5 @@
 package com.base.identity.user.adapter.in.web.command.mapper;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.base.identity.user.adapter.in.web.command.dto.UserCommandRequest;

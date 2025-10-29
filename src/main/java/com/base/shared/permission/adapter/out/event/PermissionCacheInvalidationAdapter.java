@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.base.application.event.publisher.CacheInvalidationEventPublisher;
+import com.base.shared.cache.domain.port.out.AuthorityCacheEventPort;
 import com.base.shared.permission.domain.port.out.PermissionCacheInvalidationPort;
 
 import lombok.RequiredArgsConstructor;
@@ -13,18 +13,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class PermissionCacheInvalidationAdapter implements PermissionCacheInvalidationPort {
 
-    private final CacheInvalidationEventPublisher cacheInvalidationEventPublisher;
+    private final AuthorityCacheEventPort authorityCacheEventPort;
 
     @Override
     public void invalidateRoleAuthorities(List<Long> userIds) {
         if (userIds == null || userIds.isEmpty()) {
             return;
         }
-        cacheInvalidationEventPublisher.publishRoleAuthorityChanged(userIds);
+        authorityCacheEventPort.publishRoleAuthoritiesChanged(userIds);
     }
 
     @Override
     public void invalidatePermissions(List<Long> userIds) {
-        cacheInvalidationEventPublisher.publishPermissionChanged(userIds);
+        authorityCacheEventPort.publishPermissionsChanged(userIds);
     }
 }
