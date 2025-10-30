@@ -18,15 +18,15 @@ import com.base.authn.application.usecase.result.AuthMenuItem;
 import com.base.authn.application.usecase.result.AuthMenuTreeNode;
 import com.base.authn.application.usecase.result.AuthSession;
 import com.base.authn.application.usecase.result.AuthUserSnapshot;
+import com.base.contexts.authr.cache.domain.port.out.RefreshTokenStorePort;
+import com.base.contexts.authr.cache.domain.port.out.RefreshTokenStorePort.StoredRefreshToken;
+import com.base.contexts.identity.user.domain.model.User;
+import com.base.contexts.identity.user.domain.port.out.UserRepository;
 import com.base.exception.NotFoundException;
 import com.base.exception.ValidationException;
-import com.base.identity.user.domain.model.User;
-import com.base.identity.user.domain.port.out.UserRepository;
 import com.base.security.jwt.JwtProperties;
 import com.base.security.jwt.JwtService;
 import com.base.security.userdetails.UserPrincipal;
-import com.base.shared.cache.domain.port.out.RefreshTokenStorePort;
-import com.base.shared.cache.domain.port.out.RefreshTokenStorePort.StoredRefreshToken;
 
 import lombok.RequiredArgsConstructor;
 

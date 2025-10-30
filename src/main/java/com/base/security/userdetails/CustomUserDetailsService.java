@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.base.authn.application.UserAuthorityService;
-import com.base.identity.user.domain.port.out.UserRepository;
+import com.base.contexts.identity.user.domain.port.out.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
