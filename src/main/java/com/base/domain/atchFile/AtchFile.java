@@ -1,7 +1,7 @@
 package com.base.domain.atchFile;
 
+import com.base.contexts.authr.code.adapter.out.persistence.entity.CodeEntity;
 import com.base.domain.common.BaseEntity;
-import com.base.shared.code.adapter.out.persistence.entity.CodeEntity;
 
 import jakarta.persistence.*;
 import lombok.*;

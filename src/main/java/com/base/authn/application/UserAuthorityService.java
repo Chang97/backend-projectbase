@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.base.shared.cache.domain.port.out.AuthorityCachePort;
+import com.base.contexts.authr.cache.domain.port.out.AuthorityCachePort;
+import com.base.contexts.authr.permission.domain.port.out.PermissionRepository;
+import com.base.contexts.authr.role.domain.port.out.RoleRepository;
+import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
+import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapRepository;
 import com.base.shared.core.util.StringNormalizer;
-import com.base.shared.permission.domain.port.out.PermissionRepository;
-import com.base.shared.role.domain.port.out.RoleRepository;
-import com.base.shared.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
-import com.base.shared.userrolemap.domain.port.out.UserRoleMapRepository;
 
 import lombok.RequiredArgsConstructor;
 

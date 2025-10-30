@@ -19,8 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import com.base.shared.permission.application.query.dto.PermissionQueryResult;
-import com.base.shared.permission.application.query.port.in.GetPermissionsUseCase;
+import com.base.contexts.authr.permission.application.query.dto.PermissionQueryResult;
+import com.base.contexts.authr.permission.application.query.port.in.GetPermissionsUseCase;
 
 import lombok.RequiredArgsConstructor;
 
