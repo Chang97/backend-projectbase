@@ -1,4 +1,4 @@
-package com.base.contexts.authr.menupermissionmap.domain.model;
+package com.base.contexts.authr.menu.domain.model;
 
 public record MenuPermissionMapId(Long menuId, Long permissionId) {
 

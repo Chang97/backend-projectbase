@@ -1,4 +1,4 @@
-package com.base.contexts.authr.menupermissionmap.adapter.out.persistence.impl;
+package com.base.contexts.authr.menu.adapter.out.persistence.impl;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.base.contexts.authr.menu.adapter.out.persistence.entity.MenuEntity;
+import com.base.contexts.authr.menu.adapter.out.persistence.entity.MenuPermissionMapEntity;
+import com.base.contexts.authr.menu.adapter.out.persistence.mapper.MenuPermissionMapEntityMapper;
 import com.base.contexts.authr.menu.adapter.out.persistence.repo.MenuJpaRepository;
-import com.base.contexts.authr.menupermissionmap.adapter.out.persistence.entity.MenuPermissionMapEntity;
-import com.base.contexts.authr.menupermissionmap.adapter.out.persistence.mapper.MenuPermissionMapEntityMapper;
-import com.base.contexts.authr.menupermissionmap.adapter.out.persistence.repo.MenuPermissionMapJpaRepository;
-import com.base.contexts.authr.menupermissionmap.domain.model.MenuPermissionMap;
-import com.base.contexts.authr.menupermissionmap.domain.port.out.MenuPermissionMapRepository;
+import com.base.contexts.authr.menu.adapter.out.persistence.repo.MenuPermissionMapJpaRepository;
+import com.base.contexts.authr.menu.domain.model.MenuPermissionMap;
+import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapRepository;
 import com.base.contexts.authr.permission.adapter.out.persistence.repo.PermissionJpaRepository;
 
 import lombok.RequiredArgsConstructor;

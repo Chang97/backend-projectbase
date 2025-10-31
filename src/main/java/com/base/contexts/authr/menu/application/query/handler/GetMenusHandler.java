@@ -13,9 +13,9 @@ import com.base.contexts.authr.menu.application.query.mapper.MenuQueryMapper;
 import com.base.contexts.authr.menu.application.query.port.in.GetMenusUseCase;
 import com.base.contexts.authr.menu.domain.model.Menu;
 import com.base.contexts.authr.menu.domain.model.MenuFilter;
+import com.base.contexts.authr.menu.domain.model.MenuPermissionMap;
+import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapRepository;
 import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
-import com.base.contexts.authr.menupermissionmap.domain.model.MenuPermissionMap;
-import com.base.contexts.authr.menupermissionmap.domain.port.out.MenuPermissionMapRepository;
 
 import lombok.RequiredArgsConstructor;
 

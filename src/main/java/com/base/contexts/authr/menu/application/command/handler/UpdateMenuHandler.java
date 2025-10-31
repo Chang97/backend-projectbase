@@ -13,9 +13,9 @@ import com.base.contexts.authr.menu.application.command.mapper.MenuCommandMapper
 import com.base.contexts.authr.menu.application.command.port.in.UpdateMenuUseCase;
 import com.base.contexts.authr.menu.domain.model.Menu;
 import com.base.contexts.authr.menu.domain.model.MenuId;
+import com.base.contexts.authr.menu.domain.model.MenuPermissionMap;
+import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapRepository;
 import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
-import com.base.contexts.authr.menupermissionmap.domain.model.MenuPermissionMap;
-import com.base.contexts.authr.menupermissionmap.domain.port.out.MenuPermissionMapRepository;
 import com.base.contexts.authr.permission.domain.port.out.PermissionRepository;
 import com.base.platform.exception.ConflictException;
 import com.base.platform.exception.NotFoundException;

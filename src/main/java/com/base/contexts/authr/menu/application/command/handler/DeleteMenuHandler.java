@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.base.contexts.authr.cache.domain.port.out.AuthorityCacheEventPort;
 import com.base.contexts.authr.menu.application.command.port.in.DeleteMenuUseCase;
 import com.base.contexts.authr.menu.domain.model.Menu;
+import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapRepository;
 import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
-import com.base.contexts.authr.menupermissionmap.domain.port.out.MenuPermissionMapRepository;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;

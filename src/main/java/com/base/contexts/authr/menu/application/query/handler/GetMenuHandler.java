@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.base.contexts.authr.menu.application.query.dto.MenuQueryResult;
 import com.base.contexts.authr.menu.application.query.mapper.MenuQueryMapper;
 import com.base.contexts.authr.menu.application.query.port.in.GetMenuUseCase;
+import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapRepository;
 import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
-import com.base.contexts.authr.menupermissionmap.domain.port.out.MenuPermissionMapRepository;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;

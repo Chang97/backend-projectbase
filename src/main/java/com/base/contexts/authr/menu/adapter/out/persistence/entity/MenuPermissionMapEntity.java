@@ -1,6 +1,5 @@
-package com.base.contexts.authr.menupermissionmap.adapter.out.persistence.entity;
+package com.base.contexts.authr.menu.adapter.out.persistence.entity;
 
-import com.base.contexts.authr.menu.adapter.out.persistence.entity.MenuEntity;
 import com.base.contexts.authr.permission.adapter.out.persistence.entity.PermissionEntity;
 
 import jakarta.persistence.Column;

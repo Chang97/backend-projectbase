@@ -1,4 +1,4 @@
-package com.base.contexts.authr.menupermissionmap.adapter.out.persistence.entity;
+package com.base.contexts.authr.menu.adapter.out.persistence.entity;
 
 import java.io.Serializable;
 import java.util.Objects;

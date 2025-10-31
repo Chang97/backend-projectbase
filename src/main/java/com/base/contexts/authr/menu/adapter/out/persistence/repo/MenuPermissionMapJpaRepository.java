@@ -1,4 +1,4 @@
-package com.base.contexts.authr.menupermissionmap.adapter.out.persistence.repo;
+package com.base.contexts.authr.menu.adapter.out.persistence.repo;
 
 import java.util.Collection;
 import java.util.List;
@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.base.contexts.authr.menupermissionmap.adapter.out.persistence.entity.MenuPermissionMapEntity;
-import com.base.contexts.authr.menupermissionmap.adapter.out.persistence.entity.MenuPermissionMapEntityId;
+import com.base.contexts.authr.menu.adapter.out.persistence.entity.MenuPermissionMapEntity;
+import com.base.contexts.authr.menu.adapter.out.persistence.entity.MenuPermissionMapEntityId;
 
 public interface MenuPermissionMapJpaRepository extends JpaRepository<MenuPermissionMapEntity, MenuPermissionMapEntityId> {
 

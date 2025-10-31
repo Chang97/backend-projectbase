@@ -1,11 +1,11 @@
-package com.base.contexts.authr.menupermissionmap.adapter.out.persistence.mapper;
+package com.base.contexts.authr.menu.adapter.out.persistence.mapper;
 
 import org.springframework.stereotype.Component;
 
 import com.base.contexts.authr.menu.adapter.out.persistence.entity.MenuEntity;
-import com.base.contexts.authr.menupermissionmap.adapter.out.persistence.entity.MenuPermissionMapEntity;
-import com.base.contexts.authr.menupermissionmap.adapter.out.persistence.entity.MenuPermissionMapEntityId;
-import com.base.contexts.authr.menupermissionmap.domain.model.MenuPermissionMap;
+import com.base.contexts.authr.menu.adapter.out.persistence.entity.MenuPermissionMapEntity;
+import com.base.contexts.authr.menu.adapter.out.persistence.entity.MenuPermissionMapEntityId;
+import com.base.contexts.authr.menu.domain.model.MenuPermissionMap;
 import com.base.contexts.authr.permission.adapter.out.persistence.entity.PermissionEntity;
 
 @Component

@@ -1,9 +1,9 @@
-package com.base.contexts.authr.menupermissionmap.domain.port.out;
+package com.base.contexts.authr.menu.domain.port.out;
 
 import java.util.Collection;
 import java.util.List;
 
-import com.base.contexts.authr.menupermissionmap.domain.model.MenuPermissionMap;
+import com.base.contexts.authr.menu.domain.model.MenuPermissionMap;
 
 public interface MenuPermissionMapRepository {
 
