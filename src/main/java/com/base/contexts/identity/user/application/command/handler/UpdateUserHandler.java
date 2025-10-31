@@ -20,9 +20,9 @@ import com.base.contexts.identity.user.application.command.mapper.UserCommandMap
 import com.base.contexts.identity.user.application.command.port.in.UpdateUserUseCase;
 import com.base.contexts.identity.user.domain.model.User;
 import com.base.contexts.identity.user.domain.port.out.UserRepository;
-import com.base.exception.ConflictException;
-import com.base.exception.NotFoundException;
-import com.base.exception.ValidationException;
+import com.base.platform.exception.ConflictException;
+import com.base.platform.exception.NotFoundException;
+import com.base.platform.exception.ValidationException;
 import com.base.shared.core.util.StringNormalizer;
 
 import lombok.RequiredArgsConstructor;

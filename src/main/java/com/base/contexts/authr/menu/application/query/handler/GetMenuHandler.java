@@ -8,7 +8,7 @@ import com.base.contexts.authr.menu.application.query.mapper.MenuQueryMapper;
 import com.base.contexts.authr.menu.application.query.port.in.GetMenuUseCase;
 import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
 import com.base.contexts.authr.menupermissionmap.domain.port.out.MenuPermissionMapRepository;
-import com.base.exception.NotFoundException;
+import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +24,7 @@ class GetMenuHandler implements GetMenuUseCase {
     @Override
     public MenuQueryResult handle(Long menuId) {
         return menuRepository.findById(menuId)
-                .map(menu -> menuQueryMapper.toResult(
+                .map(menu -> menuQueryMapper.toQueryResult(
                         menu,
                         menuPermissionRepository.findPermissionIdsByMenuId(menuId)
                 ))

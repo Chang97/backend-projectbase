@@ -9,7 +9,7 @@ import com.base.contexts.authr.role.application.query.port.in.GetRoleUseCase;
 import com.base.contexts.authr.role.domain.port.out.RoleRepository;
 import com.base.contexts.authr.rolepermissionmap.domain.model.RolePermissionMap;
 import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
-import com.base.exception.NotFoundException;
+import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

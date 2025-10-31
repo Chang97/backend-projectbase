@@ -13,7 +13,7 @@ import com.base.contexts.identity.user.adapter.out.persistence.spec.UserEntitySp
 import com.base.contexts.identity.user.domain.model.User;
 import com.base.contexts.identity.user.domain.model.UserFilter;
 import com.base.contexts.identity.user.domain.port.out.UserRepository;
-import com.base.exception.NotFoundException;
+import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

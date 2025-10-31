@@ -44,7 +44,7 @@ class GetMenusHandler implements GetMenusUseCase {
                         Collectors.mapping(MenuPermissionMap::getPermissionId, Collectors.toList())
                 ));
         return menus.stream()
-                .map(menu -> menuQueryMapper.toResult(
+                .map(menu -> menuQueryMapper.toQueryResult(
                         menu,
                         permissionsByMenu.getOrDefault(menu.getMenuId().value(), List.of())
                 ))

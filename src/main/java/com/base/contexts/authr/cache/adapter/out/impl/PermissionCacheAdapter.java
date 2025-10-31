@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.base.contexts.authr.permission.application.query.dto.PermissionQueryResult;
-import com.base.infra.redis.property.PermissionCacheProperties;
+import com.base.platform.redis.property.PermissionCacheProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

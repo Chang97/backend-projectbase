@@ -10,7 +10,7 @@ import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapRepository
 import com.base.contexts.identity.user.application.command.port.in.DeleteUserUseCase;
 import com.base.contexts.identity.user.domain.model.User;
 import com.base.contexts.identity.user.domain.port.out.UserRepository;
-import com.base.exception.NotFoundException;
+import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

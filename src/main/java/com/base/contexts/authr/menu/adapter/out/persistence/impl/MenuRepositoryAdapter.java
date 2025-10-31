@@ -13,7 +13,7 @@ import com.base.contexts.authr.menu.adapter.out.persistence.spec.MenuEntitySpeci
 import com.base.contexts.authr.menu.domain.model.Menu;
 import com.base.contexts.authr.menu.domain.model.MenuFilter;
 import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
-import com.base.exception.NotFoundException;
+import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

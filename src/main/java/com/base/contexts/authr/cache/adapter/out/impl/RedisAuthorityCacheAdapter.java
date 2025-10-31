@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.base.contexts.authr.cache.domain.port.out.AuthorityCachePort;
-import com.base.infra.redis.property.AuthorityCacheProperties;
+import com.base.platform.redis.property.AuthorityCacheProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

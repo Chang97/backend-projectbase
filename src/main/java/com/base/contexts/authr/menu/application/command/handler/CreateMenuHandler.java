@@ -16,8 +16,8 @@ import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
 import com.base.contexts.authr.menupermissionmap.domain.model.MenuPermissionMap;
 import com.base.contexts.authr.menupermissionmap.domain.port.out.MenuPermissionMapRepository;
 import com.base.contexts.authr.permission.domain.port.out.PermissionRepository;
-import com.base.exception.ConflictException;
-import com.base.exception.ValidationException;
+import com.base.platform.exception.ConflictException;
+import com.base.platform.exception.ValidationException;
 
 import lombok.RequiredArgsConstructor;
 

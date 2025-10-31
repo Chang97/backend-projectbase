@@ -15,7 +15,7 @@ import com.base.contexts.authr.permission.domain.model.PermissionId;
 import com.base.contexts.authr.permission.domain.port.out.PermissionRepository;
 import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
 import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapRepository;
-import com.base.exception.ConflictException;
+import com.base.platform.exception.ConflictException;
 
 import lombok.RequiredArgsConstructor;
 

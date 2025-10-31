@@ -12,7 +12,7 @@ import com.base.contexts.identity.authn.application.usecase.port.in.LogoutUseCas
 import com.base.contexts.identity.authn.application.usecase.result.LogoutExecutionResult;
 import com.base.contexts.identity.authn.application.usecase.support.AuthSupport;
 import com.base.contexts.identity.authn.application.usecase.support.AuthSupport.ParsedRefreshToken;
-import com.base.exception.ValidationException;
+import com.base.platform.exception.ValidationException;
 
 import lombok.RequiredArgsConstructor;
 /**

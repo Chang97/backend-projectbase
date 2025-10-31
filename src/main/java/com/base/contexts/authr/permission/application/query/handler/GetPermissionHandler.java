@@ -8,7 +8,7 @@ import com.base.contexts.authr.permission.application.query.mapper.PermissionQue
 import com.base.contexts.authr.permission.application.query.port.in.GetPermissionUseCase;
 import com.base.contexts.authr.permission.domain.model.Permission;
 import com.base.contexts.authr.permission.domain.port.out.PermissionRepository;
-import com.base.exception.NotFoundException;
+import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

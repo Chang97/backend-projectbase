@@ -20,8 +20,8 @@ import com.base.contexts.identity.authn.application.usecase.result.AuthExecution
 import com.base.contexts.identity.authn.application.usecase.result.AuthSession;
 import com.base.contexts.identity.authn.application.usecase.support.AuthSupport;
 import com.base.contexts.identity.authn.application.usecase.support.AuthSupport.TokenBundle;
-import com.base.exception.ValidationException;
-import com.base.security.userdetails.UserPrincipal;
+import com.base.platform.exception.ValidationException;
+import com.base.platform.security.userdetails.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 

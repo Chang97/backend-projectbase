@@ -10,8 +10,8 @@ import com.base.contexts.identity.user.application.command.dto.UserPasswordComma
 import com.base.contexts.identity.user.application.command.port.in.ChangePasswordUseCase;
 import com.base.contexts.identity.user.domain.model.User;
 import com.base.contexts.identity.user.domain.port.out.UserRepository;
-import com.base.exception.NotFoundException;
-import com.base.exception.ValidationException;
+import com.base.platform.exception.NotFoundException;
+import com.base.platform.exception.ValidationException;
 import com.base.shared.core.util.StringNormalizer;
 
 import lombok.RequiredArgsConstructor;

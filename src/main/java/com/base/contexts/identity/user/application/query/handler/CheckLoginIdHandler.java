@@ -7,7 +7,7 @@ import com.base.contexts.identity.user.application.query.dto.LoginIdAvailability
 import com.base.contexts.identity.user.application.query.mapper.UserQueryMapper;
 import com.base.contexts.identity.user.application.query.port.in.CheckLoginIdUseCase;
 import com.base.contexts.identity.user.domain.port.out.UserRepository;
-import com.base.exception.ValidationException;
+import com.base.platform.exception.ValidationException;
 import com.base.shared.core.util.StringNormalizer;
 
 import lombok.RequiredArgsConstructor;

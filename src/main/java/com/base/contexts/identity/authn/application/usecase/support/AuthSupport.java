@@ -22,11 +22,11 @@ import com.base.contexts.identity.authn.application.usecase.result.AuthSession;
 import com.base.contexts.identity.authn.application.usecase.result.AuthUserSnapshot;
 import com.base.contexts.identity.user.domain.model.User;
 import com.base.contexts.identity.user.domain.port.out.UserRepository;
-import com.base.exception.NotFoundException;
-import com.base.exception.ValidationException;
-import com.base.security.jwt.JwtProperties;
-import com.base.security.jwt.JwtService;
-import com.base.security.userdetails.UserPrincipal;
+import com.base.platform.exception.NotFoundException;
+import com.base.platform.exception.ValidationException;
+import com.base.platform.security.jwt.JwtProperties;
+import com.base.platform.security.jwt.JwtService;
+import com.base.platform.security.userdetails.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 

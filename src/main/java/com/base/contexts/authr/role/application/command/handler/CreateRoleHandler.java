@@ -18,8 +18,8 @@ import com.base.contexts.authr.role.domain.port.out.RoleRepository;
 import com.base.contexts.authr.rolepermissionmap.domain.model.RolePermissionMap;
 import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
 import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapRepository;
-import com.base.exception.ConflictException;
-import com.base.exception.ValidationException;
+import com.base.platform.exception.ConflictException;
+import com.base.platform.exception.ValidationException;
 
 import lombok.RequiredArgsConstructor;
 

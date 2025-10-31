@@ -8,7 +8,7 @@ import com.base.contexts.identity.user.application.query.dto.UserQueryResult;
 import com.base.contexts.identity.user.application.query.mapper.UserQueryMapper;
 import com.base.contexts.identity.user.application.query.port.in.GetUserUseCase;
 import com.base.contexts.identity.user.domain.port.out.UserRepository;
-import com.base.exception.NotFoundException;
+import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

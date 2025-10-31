@@ -10,7 +10,7 @@ import com.base.contexts.authr.menu.application.command.port.in.DeleteMenuUseCas
 import com.base.contexts.authr.menu.domain.model.Menu;
 import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
 import com.base.contexts.authr.menupermissionmap.domain.port.out.MenuPermissionMapRepository;
-import com.base.exception.NotFoundException;
+import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
