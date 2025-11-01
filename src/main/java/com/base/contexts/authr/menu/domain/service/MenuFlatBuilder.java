@@ -22,6 +22,7 @@ public final class MenuFlatBuilder {
             m.getUpperMenuId() != null ? m.getUpperMenuId().value() : null,
             m.getMenuCode(),
             m.getMenuName(),
+            m.getMenuCn(),
             m.getUrl(),
             m.getSrt(),
             Boolean.TRUE.equals(m.getUseYn()),

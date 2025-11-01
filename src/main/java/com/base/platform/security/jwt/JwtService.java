@@ -22,7 +22,6 @@ import javax.crypto.SecretKey;
 public class JwtService {
 
     private static final int MIN_SECRET_LENGTH = 64;
-    private static final String DEFAULT_SECRET_PREFIX = "change-me";
 
     private final JwtProperties properties; // 설정 값
     private SecretKey secretKey;            // 서명 키
@@ -37,9 +36,6 @@ public class JwtService {
         String secret = properties.secret();
         if (!StringUtils.hasText(secret)) {
             throw new IllegalStateException("JWT secret must be provided via the JWT_SECRET environment variable or jwt.secret property.");
-        }
-        if (secret.startsWith(DEFAULT_SECRET_PREFIX)) {
-            throw new IllegalStateException("JWT secret uses an insecure default value. Provide a unique, random value (>=64 chars).");
         }
         if (secret.length() < MIN_SECRET_LENGTH) {
             throw new IllegalStateException("JWT secret must be at least " + MIN_SECRET_LENGTH + " characters long.");

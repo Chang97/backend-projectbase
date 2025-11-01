@@ -33,13 +33,13 @@ public class MenuQueryMapper {
             v.menuCode(),
             v.upperMenuId(),
             v.menuName(),
-            /* menuCn */ null,        // 필요하면 도메인 뷰에 추가
+            v.menuCn(),
             v.url(),
             v.srt(),
             v.useYn(),
             v.depth(),
             v.path(),
-            List.of()                 // 권한 ID는 별도 조합 시 주입
+            List.of()
         );
     }
 
@@ -49,7 +49,7 @@ public class MenuQueryMapper {
             v.menuCode(),
             v.upperMenuId(),
             v.menuName(),
-            /* menuCn */ null,        // 필요하면 도메인 뷰에 추가
+            v.menuCn(),
             v.url(),
             v.srt(),
             v.useYn(),
@@ -68,9 +68,14 @@ public class MenuQueryMapper {
 
         return new MenuTreeResult(
                 t.menuId(),
+                t.upperMenuId(),
                 t.menuCode(),
                 t.menuName(),
+                t.menuCn(),
                 t.url(),
+                t.srt(),
+                t.useYn(),
+                t.lvl(),
                 children
         );
     }

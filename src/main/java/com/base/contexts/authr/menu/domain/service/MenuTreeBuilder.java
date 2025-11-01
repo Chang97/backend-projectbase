@@ -20,31 +20,35 @@ public final class MenuTreeBuilder {
     public static List<MenuTree> build(Map<Long, Menu> menus) {
         Map<Long, List<Menu>> children = new LinkedHashMap<>();
         for (Menu m : menus.values()) {
-        Long parentId = m.getUpperMenuId() != null ? m.getUpperMenuId().value() : null;
-        children.computeIfAbsent(parentId, k -> new ArrayList<>()).add(m);
+            Long parentId = m.getUpperMenuId() != null ? m.getUpperMenuId().value() : null;
+            children.computeIfAbsent(parentId, k -> new ArrayList<>()).add(m);
         }
         List<Menu> roots = children.getOrDefault(null, List.of()).stream().sorted(ORDER).toList();
         List<MenuTree> tree = new ArrayList<>(roots.size());
         for (Menu root : roots) {
-        tree.add(toTree(root, children));
+            tree.add(toTree(root, children, 0));
         }
         return List.copyOf(tree);
     }
 
-    private static MenuTree toTree(Menu menu, Map<Long, List<Menu>> children) {
+    private static MenuTree toTree(Menu menu, Map<Long, List<Menu>> children, int depth) {
         var kidMenus = children.getOrDefault(menu.getMenuId().value(), List.of()).stream()
             .sorted(ORDER).toList();
         var kidTrees = new ArrayList<MenuTree>(kidMenus.size());
         for (Menu m : kidMenus) {
-        kidTrees.add(toTree(m, children));
+            kidTrees.add(toTree(m, children, depth + 1));
         }
         return new MenuTree(
             menu.getMenuId().value(),
+            menu.getUpperMenuId() != null ? menu.getUpperMenuId().value() : null,
             menu.getMenuCode(),
             menu.getMenuName(),
+            menu.getMenuCn(),
             menu.getUrl(),
+            menu.getSrt(),
+            Boolean.valueOf(Boolean.TRUE.equals(menu.getUseYn())),
+            depth,
             List.copyOf(kidTrees)
         );
     }
 }
-

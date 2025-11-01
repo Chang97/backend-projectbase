@@ -59,9 +59,22 @@ public class MenuQueryWebMapper {
     }
 
     private MenuTreeResponse toMenuTreeResponse(MenuTreeResult node) {
-        if (node == null) return null;
+        if (node == null) {
+            return null;
+        }
         var children = toMenuTreeResponses(node.children());
-        return new MenuTreeResponse(node.menuId(), node.menuCode(), node.menuName(), node.url(), children);
+        return new MenuTreeResponse(
+                node.menuId(),
+                node.upperMenuId(),
+                node.menuCode(),
+                node.menuName(),
+                node.menuCn(),
+                node.url(),
+                node.srt(),
+                node.useYn(),
+                node.lvl(),
+                children
+        );
     }
 
     public UserMenuAccessResponse toUserMenuAccessResponse(UserMenuAccessResult result) {
