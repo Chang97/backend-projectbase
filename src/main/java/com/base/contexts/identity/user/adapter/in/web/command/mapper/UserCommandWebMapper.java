@@ -16,7 +16,7 @@ public class UserCommandWebMapper {
         return new UserCommand(
                 request.email(),
                 request.loginId(),
-                request.password(),
+                request.userPassword(),
                 request.userName(),
                 request.orgId(),
                 request.empNo(),

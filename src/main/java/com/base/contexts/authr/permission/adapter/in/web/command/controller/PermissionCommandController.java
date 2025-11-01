@@ -23,7 +23,7 @@ import com.base.contexts.authr.permission.application.command.port.in.UpdatePerm
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/permission")
+@RequestMapping("/api/authr/permissions")
 @RequiredArgsConstructor
 public class PermissionCommandController {
     
@@ -36,7 +36,7 @@ public class PermissionCommandController {
     @PreAuthorize("hasAuthority('PERMISSION_CREATE')")
     public ResponseEntity<PermissionCommandResponse> createPermission(@RequestBody PermissionCommandRequest request) {
         PermissionCommandResult result = createPermissionUseCase.handle(permissionCommandWebMapper.toCommand(request));
-        URI location = URI.create("/api/permission/" + result.permissionId());
+        URI location = URI.create("/api/authr/permissions/" + result.permissionId());
         return ResponseEntity.created(location)
                 .body(permissionCommandWebMapper.toResponse(result));
     }

@@ -2,6 +2,8 @@ package com.base.contexts.authr.rolepermissionmap.adapter.out.persistence.mapper
 
 import org.springframework.stereotype.Component;
 
+import com.base.contexts.authr.permission.adapter.out.persistence.entity.PermissionEntity;
+import com.base.contexts.authr.role.adapter.out.persistence.entity.RoleEntity;
 import com.base.contexts.authr.rolepermissionmap.adapter.out.persistence.entity.RolePermissionMapEntity;
 import com.base.contexts.authr.rolepermissionmap.adapter.out.persistence.entity.RolePermissionMapEntityId;
 import com.base.contexts.authr.rolepermissionmap.domain.model.RolePermissionMap;
@@ -15,6 +17,15 @@ public class RolePermissionMapEntityMapper {
         entity.setId(toEntityId(domain.getId()));
         entity.setRoleId(domain.getRoleId());
         entity.setPermissionId(domain.getPermissionId());
+
+        RoleEntity roleEntity = new RoleEntity();
+        roleEntity.setRoleId(domain.getRoleId());
+        entity.setRole(roleEntity);
+
+        PermissionEntity permissionEntity = new PermissionEntity();
+        permissionEntity.setPermissionId(domain.getPermissionId());
+        entity.setPermission(permissionEntity);
+
         return entity;
     }
 

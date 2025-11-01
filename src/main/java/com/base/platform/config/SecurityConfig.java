@@ -3,6 +3,7 @@ package com.base.platform.config;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -54,17 +55,16 @@ public class SecurityConfig {
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     .accessDeniedHandler(accessDeniedHandler))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/**").permitAll()
-                    // .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    // .requestMatchers(
-                    //         "/api/auth/login",
-                    //         "/api/auth/refresh",
-                    //         "/api/auth/logout",
-                    //         "/api/authr/**",
-                    //         "/swagger-ui/**",
-                    //         "/v3/api-docs/**"
-                    // ).permitAll()
-                    // .anyRequest().authenticated()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers(
+                            "/api/auth/login",
+                            "/api/auth/refresh",
+                            "/api/auth/logout",
+                            "/api/authr/**",
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**"
+                    ).permitAll()
+                    .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);;
         return http.build();

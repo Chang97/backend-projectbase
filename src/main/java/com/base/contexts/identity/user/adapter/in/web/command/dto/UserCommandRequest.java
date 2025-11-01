@@ -5,7 +5,7 @@ import java.util.List;
 public record UserCommandRequest(
         String email,
         String loginId,
-        String password,
+        String userPassword,
         String userName,
         Long orgId,
         String empNo,

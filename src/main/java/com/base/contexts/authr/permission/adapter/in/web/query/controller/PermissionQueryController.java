@@ -20,7 +20,7 @@ import com.base.contexts.authr.permission.application.query.port.in.GetPermissio
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/permission")
+@RequestMapping("/api/authr/permissions")
 @RequiredArgsConstructor
 public class PermissionQueryController {
     

@@ -36,7 +36,13 @@ public final class UserEntitySpecifications {
                     predicates.add(cb.equal(cb.lower(root.get("loginId")), filter.loginId().toLowerCase()));
                 }
                 if (StringUtils.hasText(filter.userName())) {
-                    predicates.add(cb.like(cb.lower(root.get("userName")), "%" + filter.userName().toLowerCase() + "%"));
+                    String likeValue = "%" + filter.userName().toLowerCase() + "%";
+                    predicates.add(
+                        cb.or(
+                            cb.like(cb.lower(root.get("userName")), likeValue),
+                            cb.like(cb.lower(root.get("loginId")), likeValue)
+                        )
+                    );
                 }
                 if (filter.orgId() != null) {
                     predicates.add(cb.equal(root.get("orgId"), filter.orgId()));

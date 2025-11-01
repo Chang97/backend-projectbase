@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/menu")
+@RequestMapping("/api/authr/menus")
 @RequiredArgsConstructor
 public class MenuCommandController {
 
@@ -38,7 +38,7 @@ public class MenuCommandController {
     public ResponseEntity<MenuCommandResponse> createMenu(@Valid @RequestBody MenuCommandRequest request) {
         MenuCommand command = menuCommandWebMapper.toCommand(request);
         MenuCommandResult result = createMenuUseCase.handle(command);
-        URI location = URI.create("/api/menu/" + result.menuId());
+        URI location = URI.create("/api/authr/menus/" + result.menuId());
         return ResponseEntity.created(location)
                 .body(menuCommandWebMapper.toResponse(result));
     }

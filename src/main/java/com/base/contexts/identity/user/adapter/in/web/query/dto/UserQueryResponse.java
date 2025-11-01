@@ -10,7 +10,7 @@ public record UserQueryResponse(
         String userName,
         Long orgId,
         String empNo,
-        String positionName,
+        String pstnName,
         String tel,
         Long statusCodeId,
         Boolean useYn,

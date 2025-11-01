@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/role")
+@RequestMapping("/api/authr/roles")
 @RequiredArgsConstructor
 public class RoleCommandController {
 
@@ -39,7 +39,7 @@ public class RoleCommandController {
     public ResponseEntity<RoleCommandResponse> createRole(@Valid @RequestBody RoleCommandRequest request) {
         RoleCommand command = roleCommandWebMapper.toCommand(request);
         RoleCommandResult result = createRoleUseCase.handle(command);
-        URI location = URI.create("/api/role/" + result.roleId());
+        URI location = URI.create("/api/authr/roles/" + result.roleId());
         return ResponseEntity.created(location)
                 .body(roleCommandWebMapper.toResponse(result));
     }
