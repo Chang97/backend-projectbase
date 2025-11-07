@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.base.contexts.authr.cache.domain.port.out.AuthorityCacheEventPort;
 import com.base.contexts.authr.menu.application.command.port.in.DeleteMenuUseCase;
 import com.base.contexts.authr.menu.domain.model.Menu;
-import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapRepository;
-import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
+import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapCommandPort;
+import com.base.contexts.authr.menu.domain.port.out.MenuCommandPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,8 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 class DeleteMenuHandler implements DeleteMenuUseCase {
 
-    private final MenuRepository menuRepository;
-    private final MenuPermissionMapRepository menuPermissionRepository;
+    private final MenuCommandPort menuRepository;
+    private final MenuPermissionMapCommandPort menuPermissionCommandPort;
     private final AuthorityCacheEventPort authorityCacheEventPort;
 
     @Override
@@ -30,7 +30,7 @@ class DeleteMenuHandler implements DeleteMenuUseCase {
 
         existing.disable();
         menuRepository.save(existing);
-        menuPermissionRepository.replacePermissions(menuId, List.of());
+        menuPermissionCommandPort.replacePermissions(menuId, List.of());
         authorityCacheEventPort.publishPermissionsChanged(List.of());
     }
 }

@@ -7,7 +7,7 @@ import com.base.contexts.authr.permission.application.query.dto.PermissionQueryR
 import com.base.contexts.authr.permission.application.query.mapper.PermissionQueryMapper;
 import com.base.contexts.authr.permission.application.query.port.in.GetPermissionUseCase;
 import com.base.contexts.authr.permission.domain.model.Permission;
-import com.base.contexts.authr.permission.domain.port.out.PermissionRepository;
+import com.base.contexts.authr.permission.domain.port.out.PermissionQueryPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -17,12 +17,12 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 class GetPermissionHandler implements GetPermissionUseCase {
 
-    private final PermissionRepository permissionRepository;
+    private final PermissionQueryPort permissionQueryPort;
     private final PermissionQueryMapper permissionQueryMapper;
 
     @Override
     public PermissionQueryResult handle(Long permissionId) {
-        Permission permission = permissionRepository.findById(permissionId)
+        Permission permission = permissionQueryPort.findById(permissionId)
                 .orElseThrow(() -> new NotFoundException("Permission not found"));
         return permissionQueryMapper.toResult(permission);
     }

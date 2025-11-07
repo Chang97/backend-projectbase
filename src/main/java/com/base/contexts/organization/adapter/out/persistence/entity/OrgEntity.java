@@ -1,6 +1,6 @@
 package com.base.contexts.organization.adapter.out.persistence.entity;
 
-import com.base.domain.common.BaseEntity;
+import com.base.shared.core.jpa.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

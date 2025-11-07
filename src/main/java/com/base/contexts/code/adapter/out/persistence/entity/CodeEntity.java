@@ -1,9 +1,9 @@
 package com.base.contexts.code.adapter.out.persistence.entity;
 
+import com.base.shared.core.jpa.BaseEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
-
-import com.base.domain.common.BaseEntity;
 
 @Entity
 @Table(

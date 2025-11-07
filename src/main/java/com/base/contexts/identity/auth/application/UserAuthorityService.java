@@ -13,10 +13,10 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.base.contexts.authr.cache.domain.port.out.AuthorityCachePort;
-import com.base.contexts.authr.permission.domain.port.out.PermissionRepository;
-import com.base.contexts.authr.role.domain.port.out.RoleRepository;
-import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
-import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapRepository;
+import com.base.contexts.authr.permission.domain.port.out.PermissionQueryPort;
+import com.base.contexts.authr.role.domain.port.out.RoleQueryPort;
+import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapQueryPort;
+import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapQueryPort;
 import com.base.shared.core.util.StringNormalizer;
 
 import lombok.RequiredArgsConstructor;
@@ -26,10 +26,10 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class UserAuthorityService {
 
-    private final UserRoleMapRepository userRoleMapRepository;
-    private final RoleRepository roleRepository;
-    private final RolePermissionMapRepository rolePermissionMapRepository;
-    private final PermissionRepository permissionRepository;
+    private final UserRoleMapQueryPort userRoleMapQueryPort;
+    private final RoleQueryPort roleQueryPort;
+    private final RolePermissionMapQueryPort rolePermissionMapQueryPort;
+    private final PermissionQueryPort permissionQueryPort;
     private final AuthorityCachePort authorityCachePort;
 
     public Set<GrantedAuthority> loadAuthorities(Long userId) {
@@ -49,19 +49,19 @@ public class UserAuthorityService {
     private Set<GrantedAuthority> populateAndCache(Long userId) {
         LinkedHashSet<String> codes = new LinkedHashSet<>();
 
-        List<Long> roleIds = userRoleMapRepository.findRoleIdsByUserId(userId);
+        List<Long> roleIds = userRoleMapQueryPort.findRoleIdsByUserId(userId);
         if (!CollectionUtils.isEmpty(roleIds)) {
-            roleRepository.findAllByIds(roleIds).stream()
+            roleQueryPort.findAllByIds(roleIds).stream()
                     .map(role -> normalizeRoleName(role.getRoleName()))
                     .filter(StringUtils::hasText)
                     .forEach(codes::add);
 
-            Set<Long> permissionIds = rolePermissionMapRepository.findByRoleIds(roleIds).stream()
+            Set<Long> permissionIds = rolePermissionMapQueryPort.findByRoleIds(roleIds).stream()
                     .map(map -> map.getPermissionId())
                     .collect(Collectors.toSet());
 
             if (!permissionIds.isEmpty()) {
-                permissionRepository.findAllByIds(permissionIds).stream()
+                permissionQueryPort.findAllByIds(permissionIds).stream()
                         .map(permission -> StringNormalizer.trimToNull(permission.getPermissionCode()))
                         .filter(StringUtils::hasText)
                         .forEach(codes::add);

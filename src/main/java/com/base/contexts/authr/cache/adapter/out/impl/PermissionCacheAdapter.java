@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.base.contexts.authr.permission.application.query.dto.PermissionQueryResult;
+import com.base.contexts.authr.permission.domain.model.PermissionSnapshot;
 import com.base.platform.redis.property.PermissionCacheProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -24,13 +24,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PermissionCacheAdapter {
 
-    private static final TypeReference<List<PermissionQueryResult>> LIST_TYPE = new TypeReference<>() {};
+    private static final TypeReference<List<PermissionSnapshot>> LIST_TYPE = new TypeReference<>() {};
 
     private final RedisTemplate<String, String> redisTemplate;
     private final PermissionCacheProperties properties;
     private final ObjectMapper objectMapper;
 
-    public Optional<List<PermissionQueryResult>> get(String permissionName, Boolean useYn) {
+    public Optional<List<PermissionSnapshot>> get(String permissionName, Boolean useYn) {
         String key = buildKey(permissionName, useYn);
         try {
             String json = redisTemplate.opsForValue().get(key);
@@ -48,14 +48,14 @@ public class PermissionCacheAdapter {
         }
     }
 
-    public void put(String permissionName, Boolean useYn, List<PermissionQueryResult> responses) {
+    public void put(String permissionName, Boolean useYn, List<PermissionSnapshot> snapshots) {
         String key = buildKey(permissionName, useYn);
-        if (responses == null || responses.isEmpty()) {
+        if (snapshots == null || snapshots.isEmpty()) {
             redisTemplate.delete(key);
             return;
         }
         try {
-            String json = objectMapper.writeValueAsString(responses);
+            String json = objectMapper.writeValueAsString(snapshots);
             Duration ttl = Duration.ofSeconds(Math.max(properties.ttlSeconds(), 1L));
             redisTemplate.opsForValue().set(key, json, ttl);
         } catch (JsonProcessingException ex) {

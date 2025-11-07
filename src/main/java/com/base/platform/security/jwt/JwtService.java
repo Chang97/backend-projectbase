@@ -2,7 +2,7 @@ package com.base.platform.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
@@ -109,9 +109,9 @@ public class JwtService {
     }
 
     // 토큰 만료 시각(UTC) 반환
-    public OffsetDateTime extractExpiration(String token) {
+    public LocalDateTime extractExpiration(String token) {
         Date expiration = parseClaims(token).getExpiration();
-        return OffsetDateTime.ofInstant(expiration.toInstant(), ZoneOffset.UTC);
+        return LocalDateTime.ofInstant(expiration.toInstant(), ZoneOffset.UTC);
     }
 
     // 내부 파싱 공통 로직

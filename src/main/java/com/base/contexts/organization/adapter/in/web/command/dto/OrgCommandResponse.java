@@ -1,6 +1,6 @@
 package com.base.contexts.organization.adapter.in.web.command.dto;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public record OrgCommandResponse(Long orgId,
         Long upperOrgId,
@@ -10,6 +10,6 @@ public record OrgCommandResponse(Long orgId,
         Boolean useYn,
         Long createdBy,
         Long updatedBy,
-        OffsetDateTime createdAt,
-        OffsetDateTime updatedAt) {
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
 }

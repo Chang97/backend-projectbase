@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 
 import com.base.contexts.authr.cache.domain.port.out.AuthorityCacheEventPort;
 import com.base.contexts.authr.role.domain.model.Role;
-import com.base.contexts.authr.role.domain.port.out.RoleRepository;
+import com.base.contexts.authr.role.domain.port.out.RoleCommandPort;
 import com.base.contexts.authr.userrolemap.domain.model.UserRoleMap;
-import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapRepository;
+import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapCommandPort;
 import com.base.contexts.identity.user.domain.port.out.UserRoleAssignmentPort;
 import com.base.platform.exception.ValidationException;
 
@@ -22,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserRoleAssignmentAdapter implements UserRoleAssignmentPort{
 
-    private final RoleRepository roleRepository;
-    private final UserRoleMapRepository userRoleMapRepository;
+    private final RoleCommandPort roleCommandPort;
+    private final UserRoleMapCommandPort userRoleMapCommandPort;
     private final AuthorityCacheEventPort authorityCacheEventPort;
 
     @Override
@@ -34,7 +34,7 @@ public class UserRoleAssignmentAdapter implements UserRoleAssignmentPort{
 
     private void syncRoles(Long userId, List<Long> roleIds) {
         List<Long> sanitized = sanitizeRoleIds(roleIds);
-        userRoleMapRepository.deleteAllByUserId(userId);
+        userRoleMapCommandPort.deleteAllByUserId(userId);
         if (sanitized.isEmpty()) {
             return;
         }
@@ -42,7 +42,7 @@ public class UserRoleAssignmentAdapter implements UserRoleAssignmentPort{
         List<UserRoleMap> mappings = sanitized.stream()
                 .map(roleId -> UserRoleMap.of(userId, roleId))
                 .toList();
-        userRoleMapRepository.saveAll(mappings);
+        userRoleMapCommandPort.saveAll(mappings);
     }
 
     private List<Long> sanitizeRoleIds(List<Long> roleIds) {
@@ -56,7 +56,7 @@ public class UserRoleAssignmentAdapter implements UserRoleAssignmentPort{
     }
 
     private void validateRoleExistence(List<Long> roleIds) {
-        List<Role> roles = roleRepository.findAllByIds(roleIds);
+        List<Role> roles = roleCommandPort.findAllByIds(roleIds);
         Set<Long> existing = roles.stream()
                 .map(role -> role.getRoleId() != null ? role.getRoleId().value() : null)
                 .filter(Objects::nonNull)

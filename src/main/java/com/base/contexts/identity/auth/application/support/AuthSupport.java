@@ -19,7 +19,7 @@ import com.base.contexts.identity.auth.application.UserAuthorityService;
 import com.base.contexts.identity.auth.application.dto.AuthSession;
 import com.base.contexts.identity.auth.application.dto.AuthUserSnapshot;
 import com.base.contexts.identity.user.domain.model.User;
-import com.base.contexts.identity.user.domain.port.out.UserRepository;
+import com.base.contexts.identity.user.domain.port.out.UserQueryPort;
 import com.base.platform.exception.NotFoundException;
 import com.base.platform.exception.ValidationException;
 import com.base.platform.security.jwt.JwtProperties;
@@ -41,7 +41,7 @@ public class AuthSupport {
     private final JwtProperties jwtProperties;
     private final RefreshTokenStorePort refreshTokenStorePort;
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private final UserQueryPort userQueryPort;
     private final UserAuthorityService userAuthorityService;
 
     @Value("${security.cookies.secure:true}")
@@ -121,7 +121,7 @@ public class AuthSupport {
 
     /** 사용자 엔터티와 권한 정보를 조립해 세션 스냅샷을 만든다. */
     public AuthSession buildSession(Long userId, Collection<? extends GrantedAuthority> authorities) {
-        User user = userRepository.findById(userId)
+        User user = userQueryPort.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         AuthUserSnapshot userSnapshot = toSnapshot(user);
@@ -134,7 +134,7 @@ public class AuthSupport {
      * Refresh 토큰 재발급 등에서 사용할 UserPrincipal 인스턴스를 생성한다.
      */
     public UserPrincipal buildPrincipal(Long userId, Collection<? extends GrantedAuthority> authorities) {
-        User user = userRepository.findById(userId)
+        User user = userQueryPort.findById(userId)
                 .orElseThrow(() -> new ValidationException("User not found."));
         Collection<? extends GrantedAuthority> resolved = (authorities == null || authorities.isEmpty())
                 ? userAuthorityService.loadAuthoritiesOrEmpty(userId)

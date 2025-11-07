@@ -4,21 +4,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.base.contexts.authr.userrolemap.adapter.out.persistence.entity.UserRoleMapEntity;
 import com.base.contexts.authr.userrolemap.adapter.out.persistence.mapper.UserRoleMapEntityMapper;
 import com.base.contexts.authr.userrolemap.adapter.out.persistence.repo.UserRoleMapJpaRepository;
 import com.base.contexts.authr.userrolemap.domain.model.UserRoleMap;
 import com.base.contexts.authr.userrolemap.domain.model.UserRoleMapId;
-import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapRepository;
+import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapCommandPort;
+import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapQueryPort;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
-class UserRoleMapRepositoryAdapter implements UserRoleMapRepository {
+class UserRoleMapRepositoryAdapter implements UserRoleMapCommandPort, UserRoleMapQueryPort {
 
     private final UserRoleMapJpaRepository jpaRepository;
     private final UserRoleMapEntityMapper mapper;

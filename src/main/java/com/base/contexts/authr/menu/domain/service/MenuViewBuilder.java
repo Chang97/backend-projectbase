@@ -58,18 +58,18 @@ public final class MenuViewBuilder {
         if (c != null) return c;
 
         if (!stack.add(id)) {
-        throw new IllegalStateException("Cycle detected in menu hierarchy at " + id);
+            throw new IllegalStateException("Cycle detected in menu hierarchy at " + id);
         }
 
         if (m.getUpperMenuId() == null) {
-        cache.put(id, 0);
-        stack.remove(id);
-        return 0;
+            cache.put(id, 0);
+            stack.remove(id);
+            return 0;
         }
 
         Menu parent = menus.get(m.getUpperMenuId().value());
         if (parent == null) {
-        throw new IllegalStateException("Parent missing for menu " + id);
+            throw new IllegalStateException("Parent missing for menu " + id);
         }
 
         int d = depthOf(parent, menus, cache, stack) + 1;

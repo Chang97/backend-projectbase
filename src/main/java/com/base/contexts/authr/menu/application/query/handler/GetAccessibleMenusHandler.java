@@ -6,13 +6,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.base.contexts.authr.menu.application.query.dto.MenuQueryResult;
 import com.base.contexts.authr.menu.application.query.dto.MenuTreeResult;
 import com.base.contexts.authr.menu.application.query.dto.UserMenuAccessResult;
 import com.base.contexts.authr.menu.application.query.mapper.MenuQueryMapper;
 import com.base.contexts.authr.menu.application.query.port.in.GetAccessibleMenusUseCase;
 import com.base.contexts.authr.menu.domain.model.Menu;
-import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
+import com.base.contexts.authr.menu.domain.port.out.MenuQueryPort;
 import com.base.contexts.authr.menu.domain.service.MenuViewBuilder;
 import com.base.contexts.authr.menu.domain.view.MenuViews;
 
@@ -23,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class GetAccessibleMenusHandler implements GetAccessibleMenusUseCase {
 
-    private final MenuRepository menuRepository;
+    private final MenuQueryPort menuRepository;
     private final MenuQueryMapper menuQueryMapper;
 
     @Override

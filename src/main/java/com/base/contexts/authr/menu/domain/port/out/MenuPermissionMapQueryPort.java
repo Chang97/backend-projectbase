@@ -5,9 +5,7 @@ import java.util.List;
 
 import com.base.contexts.authr.menu.domain.model.MenuPermissionMap;
 
-public interface MenuPermissionMapRepository {
-
-    void replacePermissions(Long menuId, Collection<MenuPermissionMap> permissions);
+public interface MenuPermissionMapQueryPort {
 
     List<Long> findPermissionIdsByMenuId(Long menuId);
 

@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.base.contexts.attachment.application.command.port.in.DeleteAtchFileUseCase;
-import com.base.contexts.attachment.domain.port.out.AtchFileItemRepository;
-import com.base.contexts.attachment.domain.port.out.AtchFileRepository;
+import com.base.contexts.attachment.domain.port.out.AtchFileCommandPort;
+import com.base.contexts.attachment.domain.port.out.AtchFileItemCommandPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,12 +14,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class DeleteAtchFileHandler implements DeleteAtchFileUseCase {
 
-    private final AtchFileRepository atchFileRepository;
-    private final AtchFileItemRepository atchFileItemRepository;
+    private final AtchFileCommandPort atchFileCommandPort;
+    private final AtchFileItemCommandPort atchFileItemCommandPort;
 
     @Override
     public void handle(Long atchFileId) {
-        atchFileItemRepository.deleteByAtchFileId(atchFileId);
-        atchFileRepository.deleteById(atchFileId);
+        atchFileItemCommandPort.deleteByAtchFileId(atchFileId);
+        atchFileCommandPort.deleteById(atchFileId);
     }
 }

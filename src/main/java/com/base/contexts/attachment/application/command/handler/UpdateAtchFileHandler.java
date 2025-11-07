@@ -8,7 +8,7 @@ import com.base.contexts.attachment.application.command.dto.AtchFileCommandResul
 import com.base.contexts.attachment.application.command.mapper.AtchFileCommandMapper;
 import com.base.contexts.attachment.application.command.port.in.UpdateAtchFileUseCase;
 import com.base.contexts.attachment.domain.model.AtchFile;
-import com.base.contexts.attachment.domain.port.out.AtchFileRepository;
+import com.base.contexts.attachment.domain.port.out.AtchFileCommandPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -18,17 +18,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class UpdateAtchFileHandler implements UpdateAtchFileUseCase {
 
-    private final AtchFileRepository atchFileRepository;
+    private final AtchFileCommandPort atchFileCommandPort;
     private final AtchFileCommandMapper commandMapper;
 
     @Override
     public AtchFileCommandResult handle(Long atchFileId, AtchFileCommand command) {
-        AtchFile existing = atchFileRepository.findById(atchFileId)
+        AtchFile existing = atchFileCommandPort.findById(atchFileId)
                 .orElseThrow(() -> new NotFoundException("Attachment file not found. id=" + atchFileId));
         existing.changeFileGroupCodeId(command.fileGroupCodeId());
         existing.changeUseYn(command.useYn());
 
-        AtchFile saved = atchFileRepository.save(existing);
+        AtchFile saved = atchFileCommandPort.save(existing);
         return commandMapper.toResult(saved);
     }
 }

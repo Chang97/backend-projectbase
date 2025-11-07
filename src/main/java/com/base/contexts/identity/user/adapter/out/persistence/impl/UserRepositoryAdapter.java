@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.base.contexts.identity.user.adapter.out.persistence.entity.UserEntity;
 import com.base.contexts.identity.user.adapter.out.persistence.mapper.UserEntityMapper;
@@ -12,15 +11,15 @@ import com.base.contexts.identity.user.adapter.out.persistence.repo.UserJpaRepos
 import com.base.contexts.identity.user.adapter.out.persistence.spec.UserEntitySpecifications;
 import com.base.contexts.identity.user.domain.model.User;
 import com.base.contexts.identity.user.domain.model.UserFilter;
-import com.base.contexts.identity.user.domain.port.out.UserRepository;
+import com.base.contexts.identity.user.domain.port.out.UserCommandPort;
+import com.base.contexts.identity.user.domain.port.out.UserQueryPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
-class UserRepositoryAdapter implements UserRepository {
+class UserRepositoryAdapter implements UserCommandPort, UserQueryPort {
 
     private final UserJpaRepository jpaRepository;
     private final UserEntityMapper mapper;
@@ -41,53 +40,45 @@ class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<User> findById(Long userId) {
+        public Optional<User> findById(Long userId) {
         return jpaRepository.findById(userId)
                 .map(mapper::toDomain);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<User> findByEmail(String email) {
+        public Optional<User> findByEmail(String email) {
         return jpaRepository.findByEmail(email)
                 .map(mapper::toDomain);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<User> findByLoginId(String loginId) {
+        public Optional<User> findByLoginId(String loginId) {
         return jpaRepository.findByLoginId(loginId)
                 .map(mapper::toDomain);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public boolean existsByEmail(String email) {
+        public boolean existsByEmail(String email) {
         return jpaRepository.existsByEmail(email);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public boolean existsByLoginId(String loginId) {
+        public boolean existsByLoginId(String loginId) {
         return jpaRepository.existsByLoginId(loginId);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public boolean existsByEmailExcludingId(String email, Long userId) {
+        public boolean existsByEmailExcludingId(String email, Long userId) {
         return jpaRepository.existsByEmailAndUserIdNot(email, userId);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public boolean existsByLoginIdExcludingId(String loginId, Long userId) {
+        public boolean existsByLoginIdExcludingId(String loginId, Long userId) {
         return jpaRepository.existsByLoginIdAndUserIdNot(loginId, userId);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<User> search(UserFilter filter) {
+        public List<User> search(UserFilter filter) {
         return jpaRepository.findAll(UserEntitySpecifications.withFilter(filter)).stream()
                 .map(mapper::toDomain)
                 .toList();

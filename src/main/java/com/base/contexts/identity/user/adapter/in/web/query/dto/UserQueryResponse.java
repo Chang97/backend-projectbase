@@ -1,6 +1,6 @@
 package com.base.contexts.identity.user.adapter.in.web.query.dto;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record UserQueryResponse(
@@ -14,7 +14,7 @@ public record UserQueryResponse(
         String tel,
         Long statusCodeId,
         Boolean useYn,
-        OffsetDateTime passwordUpdatedAt,
+        LocalDateTime passwordUpdatedAt,
         Integer passwordFailCount,
         List<Long> roleIds
 ) {

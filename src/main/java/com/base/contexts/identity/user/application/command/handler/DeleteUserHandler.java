@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.base.contexts.identity.user.application.command.port.in.DeleteUserUseCase;
 import com.base.contexts.identity.user.domain.model.User;
-import com.base.contexts.identity.user.domain.port.out.UserRepository;
+import com.base.contexts.identity.user.domain.port.out.UserCommandPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -15,13 +15,13 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 class DeleteUserHandler implements DeleteUserUseCase {
 
-    private final UserRepository userRepository;
+    private final UserCommandPort userCommandPort;
 
     @Override
     public void handle(Long userId) {
-        User existing = userRepository.findById(userId)
+        User existing = userCommandPort.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         existing.disable();
-        userRepository.save(existing);
+        userCommandPort.save(existing);
     }
 }

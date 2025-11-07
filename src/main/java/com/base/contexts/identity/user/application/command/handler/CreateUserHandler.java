@@ -12,7 +12,7 @@ import com.base.contexts.identity.user.application.command.dto.UserCommandResult
 import com.base.contexts.identity.user.application.command.mapper.UserCommandMapper;
 import com.base.contexts.identity.user.application.command.port.in.CreateUserUseCase;
 import com.base.contexts.identity.user.domain.model.User;
-import com.base.contexts.identity.user.domain.port.out.UserRepository;
+import com.base.contexts.identity.user.domain.port.out.UserCommandPort;
 import com.base.contexts.identity.user.domain.port.out.UserRoleAssignmentPort;
 import com.base.platform.exception.ConflictException;
 import com.base.platform.exception.ValidationException;
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 class CreateUserHandler implements CreateUserUseCase {
 
-    private final UserRepository userRepository;
+    private final UserCommandPort userCommandPort;
     private final AuthorityCacheEventPort authorityCacheEventPort;
     private final UserCommandMapper userCommandMapper;
     private final PasswordEncoder passwordEncoder;
@@ -36,7 +36,7 @@ class CreateUserHandler implements CreateUserUseCase {
         validateUniqueness(command);
         String encodedPassword = encodePassword(command.rawPassword());
         User user = userCommandMapper.toDomain(command, encodedPassword);
-        User saved = userRepository.save(user);
+        User saved = userCommandPort.save(user);
         userRoleAssignmentPort.replaceUserRoles(saved.getUserId().value(), command.roleIds());
         authorityCacheEventPort.publishRoleAuthoritiesChanged(List.of(saved.getUserId().value()));
         return new UserCommandResult(saved.getUserId().value());
@@ -44,11 +44,11 @@ class CreateUserHandler implements CreateUserUseCase {
 
     private void validateUniqueness(UserCommand command) {
         String email = StringNormalizer.trimToNull(command.email());
-        if (email != null && userRepository.existsByEmail(email)) {
+        if (email != null && userCommandPort.existsByEmail(email)) {
             throw new ConflictException("이미 사용 중인 이메일입니다.");
         }
         String loginId = StringNormalizer.trimToNull(command.loginId());
-        if (loginId != null && userRepository.existsByLoginId(loginId)) {
+        if (loginId != null && userCommandPort.existsByLoginId(loginId)) {
             throw new ConflictException("이미 사용 중인 로그인 ID입니다.");
         }
     }

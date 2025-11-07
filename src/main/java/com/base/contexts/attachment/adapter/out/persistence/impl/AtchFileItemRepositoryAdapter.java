@@ -11,14 +11,15 @@ import com.base.contexts.attachment.adapter.out.persistence.mapper.AtchFileItemE
 import com.base.contexts.attachment.adapter.out.persistence.repo.AtchFileItemJpaRepository;
 import com.base.contexts.attachment.adapter.out.persistence.repo.AtchFileJpaRepository;
 import com.base.contexts.attachment.domain.model.AtchFileItem;
-import com.base.contexts.attachment.domain.port.out.AtchFileItemRepository;
+import com.base.contexts.attachment.domain.port.out.AtchFileItemCommandPort;
+import com.base.contexts.attachment.domain.port.out.AtchFileItemQueryPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-class AtchFileItemRepositoryAdapter implements AtchFileItemRepository {
+class AtchFileItemRepositoryAdapter implements AtchFileItemCommandPort, AtchFileItemQueryPort {
 
     private final AtchFileItemJpaRepository atchFileItemJpaRepository;
     private final AtchFileJpaRepository atchFileJpaRepository;

@@ -9,7 +9,7 @@ import com.base.contexts.organization.application.command.mapper.OrgCommandMappe
 import com.base.contexts.organization.application.command.port.in.UpdateOrgUseCase;
 import com.base.contexts.organization.domain.model.Org;
 import com.base.contexts.organization.domain.model.OrgId;
-import com.base.contexts.organization.domain.port.out.OrgRepository;
+import com.base.contexts.organization.domain.port.out.OrgCommandPort;
 import com.base.platform.exception.ConflictException;
 import com.base.platform.exception.NotFoundException;
 
@@ -20,21 +20,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class UpdateOrgHandler implements UpdateOrgUseCase {
 
-    private final OrgRepository orgRepository;
+    private final OrgCommandPort orgCommandPort;
     private final OrgCommandMapper commandMapper;
 
     @Override
     public OrgCommandResult handle(Long orgId, OrgCommand command) {
-        Org existing = orgRepository.findById(orgId)
+        Org existing = orgCommandPort.findById(orgId)
                 .orElseThrow(() -> new NotFoundException("Org not found. id=" + orgId));
 
         if (!existing.getOrgCode().equals(command.orgCode())
-                && orgRepository.existsByOrgCode(command.orgCode())) {
+                && orgCommandPort.existsByOrgCode(command.orgCode())) {
             throw new ConflictException("Org code already exists: " + command.orgCode());
         }
 
         if (command.upperOrgId() != null) {
-            orgRepository.findById(command.upperOrgId())
+            orgCommandPort.findById(command.upperOrgId())
                     .orElseThrow(() -> new NotFoundException("Parent org not found. id=" + command.upperOrgId()));
         }
 
@@ -44,7 +44,7 @@ class UpdateOrgHandler implements UpdateOrgUseCase {
         existing.changeUseYn(command.useYn());
         existing.attachTo(OrgId.of(command.upperOrgId()));
 
-        Org saved = orgRepository.save(existing);
+        Org saved = orgCommandPort.save(existing);
         return commandMapper.toResult(saved);
     }
 }

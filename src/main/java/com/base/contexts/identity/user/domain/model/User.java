@@ -1,6 +1,6 @@
 package com.base.contexts.identity.user.domain.model;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import com.base.shared.core.util.StringNormalizer;
 
@@ -22,7 +22,7 @@ public class User {
     private String positionName;
     private String tel;
     private Long statusCodeId;
-    private OffsetDateTime passwordUpdatedAt;
+    private LocalDateTime passwordUpdatedAt;
     private Integer passwordFailCount;
     private String previousPassword;
     private Boolean useYn;
@@ -64,7 +64,7 @@ public class User {
             String positionName,
             String tel,
             Long statusCodeId,
-            OffsetDateTime passwordUpdatedAt,
+            LocalDateTime passwordUpdatedAt,
             Integer passwordFailCount,
             String previousPassword,
             Boolean useYn) {
@@ -118,7 +118,7 @@ public class User {
         this.email = normalize(newEmail);
     }
 
-    public void changePassword(String newPassword, OffsetDateTime changedAt) {
+    public void changePassword(String newPassword, LocalDateTime changedAt) {
         this.previousPassword = this.password;
         this.password = newPassword;
         this.passwordUpdatedAt = changedAt;

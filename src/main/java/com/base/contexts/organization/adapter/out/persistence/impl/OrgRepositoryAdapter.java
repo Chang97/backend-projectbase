@@ -10,14 +10,15 @@ import com.base.contexts.organization.adapter.out.persistence.mapper.OrgEntityMa
 import com.base.contexts.organization.adapter.out.persistence.repo.OrgJpaRepository;
 import com.base.contexts.organization.domain.model.Org;
 import com.base.contexts.organization.domain.model.OrgId;
-import com.base.contexts.organization.domain.port.out.OrgRepository;
+import com.base.contexts.organization.domain.port.out.OrgCommandPort;
+import com.base.contexts.organization.domain.port.out.OrgQueryPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-class OrgRepositoryAdapter implements OrgRepository {
+class OrgRepositoryAdapter implements OrgCommandPort, OrgQueryPort {
 
     private final OrgJpaRepository orgJpaRepository;
     private final OrgEntityMapper entityMapper;

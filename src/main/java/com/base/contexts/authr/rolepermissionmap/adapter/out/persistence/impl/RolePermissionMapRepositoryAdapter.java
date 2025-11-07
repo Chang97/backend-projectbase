@@ -4,21 +4,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.base.contexts.authr.rolepermissionmap.adapter.out.persistence.entity.RolePermissionMapEntity;
 import com.base.contexts.authr.rolepermissionmap.adapter.out.persistence.mapper.RolePermissionMapEntityMapper;
 import com.base.contexts.authr.rolepermissionmap.adapter.out.persistence.repo.RolePermissionMapJpaRepository;
 import com.base.contexts.authr.rolepermissionmap.domain.model.RolePermissionMap;
 import com.base.contexts.authr.rolepermissionmap.domain.model.RolePermissionMapId;
-import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
+import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapCommandPort;
+import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapQueryPort;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
-class RolePermissionMapRepositoryAdapter implements RolePermissionMapRepository {
+class RolePermissionMapRepositoryAdapter implements RolePermissionMapCommandPort, RolePermissionMapQueryPort {
 
     private final RolePermissionMapJpaRepository jpaRepository;
     private final RolePermissionMapEntityMapper mapper;

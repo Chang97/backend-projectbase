@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.base.contexts.authr.cache.domain.port.out.AuthorityCacheEventPort;
 import com.base.contexts.authr.permission.application.command.port.in.DeletePermissionUseCase;
 import com.base.contexts.authr.permission.domain.model.Permission;
-import com.base.contexts.authr.permission.domain.port.out.PermissionRepository;
-import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
-import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapRepository;
+import com.base.contexts.authr.permission.domain.port.out.PermissionCommandPort;
+import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapCommandPort;
+import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapCommandPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -20,23 +20,23 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 class DeletePermissionHandler implements DeletePermissionUseCase {
 
-    private final PermissionRepository permissionRepository;
-    private final RolePermissionMapRepository rolePermissionMapRepository;
-    private final UserRoleMapRepository userRoleMapRepository;
+    private final PermissionCommandPort permissionCommandPort;
+    private final RolePermissionMapCommandPort rolePermissionMapCommandPort;
+    private final UserRoleMapCommandPort userRoleMapCommandPort;
     private final AuthorityCacheEventPort authorityCacheEventPort;
 
     @Override
     public void handle(Long permissionId) {
-        Permission existing = permissionRepository.findById(permissionId)
+        Permission existing = permissionCommandPort.findById(permissionId)
                 .orElseThrow(() -> new NotFoundException("Permission not found"));
         existing.disable();
-        permissionRepository.save(existing);
+        permissionCommandPort.save(existing);
         evictAuthorityCacheForPermission(existing.getPermissionId().permissionId());
     }
 
     private void evictAuthorityCacheForPermission(Long permissionId) {
-        List<Long> roleIds = rolePermissionMapRepository.findRoleIdsByPermissionId(permissionId);
-        List<Long> userIds = roleIds.isEmpty() ? List.of() : userRoleMapRepository.findUserIdsByRoleIds(roleIds);
+        List<Long> roleIds = rolePermissionMapCommandPort.findRoleIdsByPermissionId(permissionId);
+        List<Long> userIds = roleIds.isEmpty() ? List.of() : userRoleMapCommandPort.findUserIdsByRoleIds(roleIds);
         authorityCacheEventPort.publishRoleAuthoritiesChanged(userIds);
         authorityCacheEventPort.publishPermissionsChanged(userIds);
     }

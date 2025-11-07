@@ -11,14 +11,15 @@ import com.base.contexts.code.adapter.out.persistence.repo.CodeJpaRepository;
 import com.base.contexts.code.adapter.out.persistence.spec.CodeEntitySpecifications;
 import com.base.contexts.code.domain.model.Code;
 import com.base.contexts.code.domain.model.CodeFilter;
-import com.base.contexts.code.domain.port.out.CodeRepository;
+import com.base.contexts.code.domain.port.out.CodeCommandPort;
+import com.base.contexts.code.domain.port.out.CodeQueryPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-class CodeRepositoryAdapter implements CodeRepository {
+class CodeRepositoryAdapter implements CodeCommandPort, CodeQueryPort {
 
     private final CodeJpaRepository jpaRepository;
     private final CodeEntityMapper mapper;

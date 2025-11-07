@@ -1,6 +1,6 @@
 package com.base.contexts.attachment.adapter.in.web.command.dto;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public record AtchFileItemCommandResponse(Long atchFileItemId,
         Long atchFileId,
@@ -10,6 +10,6 @@ public record AtchFileItemCommandResponse(Long atchFileItemId,
         Boolean useYn,
         Long createdBy,
         Long updatedBy,
-        OffsetDateTime createdAt,
-        OffsetDateTime updatedAt) {
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
 }

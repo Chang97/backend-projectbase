@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.base.contexts.authr.menu.adapter.out.persistence.entity.MenuEntity;
 import com.base.contexts.authr.menu.adapter.out.persistence.entity.MenuPermissionMapEntity;
@@ -12,15 +11,15 @@ import com.base.contexts.authr.menu.adapter.out.persistence.mapper.MenuPermissio
 import com.base.contexts.authr.menu.adapter.out.persistence.repo.MenuJpaRepository;
 import com.base.contexts.authr.menu.adapter.out.persistence.repo.MenuPermissionMapJpaRepository;
 import com.base.contexts.authr.menu.domain.model.MenuPermissionMap;
-import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapRepository;
+import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapCommandPort;
+import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapQueryPort;
 import com.base.contexts.authr.permission.adapter.out.persistence.repo.PermissionJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
-class MenuPermissionMapRepositoryAdapter implements MenuPermissionMapRepository {
+class MenuPermissionMapRepositoryAdapter implements MenuPermissionMapCommandPort, MenuPermissionMapQueryPort {
 
     private final MenuPermissionMapJpaRepository jpaRepository;
     private final MenuPermissionMapEntityMapper mapper;
@@ -44,14 +43,12 @@ class MenuPermissionMapRepositoryAdapter implements MenuPermissionMapRepository 
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Long> findPermissionIdsByMenuId(Long menuId) {
+        public List<Long> findPermissionIdsByMenuId(Long menuId) {
         return jpaRepository.findPermissionIdsByMenuId(menuId);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<MenuPermissionMap> findByMenuIds(Collection<Long> menuIds) {
+        public List<MenuPermissionMap> findByMenuIds(Collection<Long> menuIds) {
         if (menuIds == null || menuIds.isEmpty()) {
             return List.of();
         }
@@ -61,8 +58,7 @@ class MenuPermissionMapRepositoryAdapter implements MenuPermissionMapRepository 
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Long> findMenuIdsByPermissionId(Long permissionId) {
+        public List<Long> findMenuIdsByPermissionId(Long permissionId) {
         return jpaRepository.findMenuIdsByPermissionId(permissionId);
     }
 }

@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.base.contexts.authr.role.domain.model.Role;
-import com.base.contexts.authr.role.domain.model.RoleFilter;
 
-public interface RoleRepository {
+public interface RoleCommandPort {
 
     Role save(Role role);
 
@@ -18,6 +17,4 @@ public interface RoleRepository {
     boolean existsByName(String roleName);
 
     List<Role> findAllByIds(Collection<Long> roleIds);
-
-    List<Role> search(RoleFilter filter);
 }

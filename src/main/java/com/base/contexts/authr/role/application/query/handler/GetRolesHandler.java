@@ -11,9 +11,9 @@ import com.base.contexts.authr.role.application.query.mapper.RoleQueryMapper;
 import com.base.contexts.authr.role.application.query.port.in.GetRolesUseCase;
 import com.base.contexts.authr.role.domain.model.Role;
 import com.base.contexts.authr.role.domain.model.RoleFilter;
-import com.base.contexts.authr.role.domain.port.out.RoleRepository;
+import com.base.contexts.authr.role.domain.port.out.RoleQueryPort;
 import com.base.contexts.authr.rolepermissionmap.domain.model.RolePermissionMap;
-import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
+import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapQueryPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,17 +22,17 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 class GetRolesHandler implements GetRolesUseCase {
 
-    private final RoleRepository roleRepository;
-    private final RolePermissionMapRepository rolePermissionMapRepository;
+    private final RoleQueryPort roleQueryPort;
+    private final RolePermissionMapQueryPort rolePermissionMapQueryPort;
     private final RoleQueryMapper roleQueryMapper;
 
     @Override
     public List<RoleQueryResult> handle(RoleQuery query) {
         RoleFilter filter = roleQueryMapper.toFilter(query);
-        List<Role> roles = roleRepository.search(filter);
+        List<Role> roles = roleQueryPort.search(filter);
         java.util.Map<Long, List<Long>> permissionsByRole = roles.isEmpty()
                 ? java.util.Collections.emptyMap()
-                : rolePermissionMapRepository.findByRoleIds(
+                : rolePermissionMapQueryPort.findByRoleIds(
                                 roles.stream()
                                         .map(role -> role.getRoleId().value())
                                         .toList())

@@ -1,11 +1,7 @@
-package com.base.contexts.identity.auth.application.service;
+package com.base.contexts.identity.auth.application.handler;
 
 import java.util.List;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +10,9 @@ import com.base.contexts.identity.auth.application.dto.AuthExecutionResult;
 import com.base.contexts.identity.auth.application.dto.AuthSession;
 import com.base.contexts.identity.auth.application.dto.LoginCommand;
 import com.base.contexts.identity.auth.application.port.in.LoginUseCase;
+import com.base.contexts.identity.auth.application.port.out.AuthenticationPort;
 import com.base.contexts.identity.auth.application.support.AuthSupport;
 import com.base.contexts.identity.auth.application.support.AuthSupport.TokenBundle;
-import com.base.platform.exception.ValidationException;
 import com.base.platform.security.userdetails.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
@@ -24,25 +20,22 @@ import lombok.RequiredArgsConstructor;
 /**
  * 로그인 유즈케이스 구현체.
  * <p>
- * 1) 인증 매니저를 통해 자격 증명을 검증하고
+ * 1) 인증 포트를 통해 자격 증명을 검증하고
  * 2) Refresh/Access 토큰을 발급 및 저장한 뒤
  * 3) 사용자 세션 정보를 조립해 반환한다.
  */
 @Service
 @RequiredArgsConstructor
 @Transactional
-class LoginService implements LoginUseCase {
+public class LoginHandler implements LoginUseCase {
 
-    private final AuthenticationManager authenticationManager;
+    private final AuthenticationPort authenticationPort;
     private final AuthSupport authSupport;
 
     @Override
     public AuthExecutionResult handle(LoginCommand command) {
         // 1. 자격 증명을 검증한다. 실패 시 ValidationException이 발생한다.
-        Authentication authentication = authenticate(command);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        UserPrincipal principal = authenticationPort.authenticate(command.loginId(), command.password());
 
         // 2. 토큰을 발급하고 저장소에 최신 Refresh 토큰 정보를 기록한다.
         TokenBundle tokenBundle = authSupport.issueTokenBundle(principal);
@@ -54,15 +47,4 @@ class LoginService implements LoginUseCase {
 
         return new AuthExecutionResult(session, cookies);
     }
-
-    private Authentication authenticate(LoginCommand command) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(command.loginId(), command.password());
-        try {
-            return authenticationManager.authenticate(authenticationToken);
-        } catch (AuthenticationException ex) {
-            throw new ValidationException("Invalid login credentials.");
-        }
-    }
-
 }

@@ -7,7 +7,7 @@ import java.util.Optional;
 import com.base.contexts.authr.userrolemap.domain.model.UserRoleMap;
 import com.base.contexts.authr.userrolemap.domain.model.UserRoleMapId;
 
-public interface UserRoleMapRepository {
+public interface UserRoleMapCommandPort {
 
     UserRoleMap save(UserRoleMap userRole);
 

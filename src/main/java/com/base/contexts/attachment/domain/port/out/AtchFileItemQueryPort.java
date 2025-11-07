@@ -5,15 +5,9 @@ import java.util.Optional;
 
 import com.base.contexts.attachment.domain.model.AtchFileItem;
 
-public interface AtchFileItemRepository {
-
-    AtchFileItem save(AtchFileItem item);
+public interface AtchFileItemQueryPort {
 
     Optional<AtchFileItem> findById(Long atchFileItemId);
 
     List<AtchFileItem> findByAtchFileId(Long atchFileId);
-
-    void deleteById(Long atchFileItemId);
-
-    void deleteByAtchFileId(Long atchFileId);
 }

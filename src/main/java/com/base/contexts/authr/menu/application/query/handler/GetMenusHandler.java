@@ -14,8 +14,8 @@ import com.base.contexts.authr.menu.application.query.port.in.GetMenusUseCase;
 import com.base.contexts.authr.menu.domain.model.Menu;
 import com.base.contexts.authr.menu.domain.model.MenuFilter;
 import com.base.contexts.authr.menu.domain.model.MenuPermissionMap;
-import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapRepository;
-import com.base.contexts.authr.menu.domain.port.out.MenuRepository;
+import com.base.contexts.authr.menu.domain.port.out.MenuPermissionMapQueryPort;
+import com.base.contexts.authr.menu.domain.port.out.MenuQueryPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,8 +24,8 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 class GetMenusHandler implements GetMenusUseCase {
 
-    private final MenuRepository menuRepository;
-    private final MenuPermissionMapRepository menuPermissionRepository;
+    private final MenuQueryPort menuRepository;
+    private final MenuPermissionMapQueryPort menuPermissionQueryPort;
     private final MenuQueryMapper menuQueryMapper;
 
     @Override
@@ -38,7 +38,7 @@ class GetMenusHandler implements GetMenusUseCase {
         List<Long> menuIds = menus.stream()
                 .map(menu -> menu.getMenuId().value())
                 .toList();
-        Map<Long, List<Long>> permissionsByMenu = menuPermissionRepository.findByMenuIds(menuIds).stream()
+        Map<Long, List<Long>> permissionsByMenu = menuPermissionQueryPort.findByMenuIds(menuIds).stream()
                 .collect(Collectors.groupingBy(
                         permission -> permission.getMenuId(),
                         Collectors.mapping(MenuPermissionMap::getPermissionId, Collectors.toList())

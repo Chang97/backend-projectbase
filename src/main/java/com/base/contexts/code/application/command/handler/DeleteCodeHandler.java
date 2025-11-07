@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.base.contexts.code.application.command.port.in.DeleteCodeUseCase;
 import com.base.contexts.code.domain.model.Code;
-import com.base.contexts.code.domain.port.out.CodeRepository;
+import com.base.contexts.code.domain.port.out.CodeCommandPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -15,13 +15,13 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 class DeleteCodeHandler implements DeleteCodeUseCase {
 
-    private final CodeRepository codeRepository;
+    private final CodeCommandPort codeCommandPort;
 
     @Override
     public void handle(Long codeId) {
-        Code existing = codeRepository.findById(codeId)
+        Code existing = codeCommandPort.findById(codeId)
                 .orElseThrow(() -> new NotFoundException("Code not found"));
         existing.disable();
-        codeRepository.save(existing);
+        codeCommandPort.save(existing);
     }
 }

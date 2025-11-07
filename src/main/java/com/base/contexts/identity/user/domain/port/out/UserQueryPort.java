@@ -6,9 +6,7 @@ import java.util.Optional;
 import com.base.contexts.identity.user.domain.model.User;
 import com.base.contexts.identity.user.domain.model.UserFilter;
 
-public interface UserRepository {
-
-    User save(User user);
+public interface UserQueryPort {
 
     Optional<User> findById(Long userId);
 
@@ -16,13 +14,9 @@ public interface UserRepository {
 
     Optional<User> findByLoginId(String loginId);
 
-    boolean existsByEmail(String email);
-
     boolean existsByLoginId(String loginId);
 
-    boolean existsByEmailExcludingId(String email, Long userId);
-
-    boolean existsByLoginIdExcludingId(String loginId, Long userId);
+    boolean existsByEmail(String email);
 
     List<User> search(UserFilter filter);
 }

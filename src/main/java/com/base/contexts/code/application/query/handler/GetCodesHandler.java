@@ -10,7 +10,7 @@ import com.base.contexts.code.application.query.dto.CodeQueryResult;
 import com.base.contexts.code.application.query.mapper.CodeQueryMapper;
 import com.base.contexts.code.application.query.port.in.GetCodesUseCase;
 import com.base.contexts.code.domain.model.CodeFilter;
-import com.base.contexts.code.domain.port.out.CodeRepository;
+import com.base.contexts.code.domain.port.out.CodeQueryPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 class GetCodesHandler implements GetCodesUseCase {
 
-    private final CodeRepository codeRepository;
+    private final CodeQueryPort codeQueryPort;
     private final CodeQueryMapper codeQueryMapper;
 
     @Override
@@ -35,7 +35,7 @@ class GetCodesHandler implements GetCodesUseCase {
                 effective.useYn()
         );
 
-        return codeRepository.search(filter).stream()
+        return codeQueryPort.search(filter).stream()
                 .map(codeQueryMapper::toResult)
                 .toList();
     }

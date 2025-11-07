@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.base.contexts.attachment.application.query.dto.AtchFileItemResult;
 import com.base.contexts.attachment.application.query.mapper.AtchFileQueryMapper;
 import com.base.contexts.attachment.application.query.port.in.GetAtchFileItemsUseCase;
-import com.base.contexts.attachment.domain.port.out.AtchFileItemRepository;
+import com.base.contexts.attachment.domain.port.out.AtchFileItemQueryPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,12 +17,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class GetAtchFileItemsHandler implements GetAtchFileItemsUseCase {
 
-    private final AtchFileItemRepository atchFileItemRepository;
+    private final AtchFileItemQueryPort atchFileItemQueryPort;
     private final AtchFileQueryMapper queryMapper;
 
     @Override
     public List<AtchFileItemResult> handle(Long atchFileId) {
-        return atchFileItemRepository.findByAtchFileId(atchFileId).stream()
+        return atchFileItemQueryPort.findByAtchFileId(atchFileId).stream()
                 .map(queryMapper::toItemResult)
                 .toList();
     }

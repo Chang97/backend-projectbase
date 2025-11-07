@@ -1,6 +1,6 @@
 package com.base.contexts.organization.domain.model;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Org {
@@ -13,8 +13,8 @@ public class Org {
     private Boolean useYn;
     private Long createdBy;
     private Long updatedBy;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     private Org(OrgId orgId,
             OrgId upperOrgId,
@@ -24,8 +24,8 @@ public class Org {
             Boolean useYn,
             Long createdBy,
             Long updatedBy,
-            OffsetDateTime createdAt,
-            OffsetDateTime updatedAt) {
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
         this.orgId = orgId;
         this.upperOrgId = upperOrgId;
         this.orgCode = Objects.requireNonNull(orgCode, "orgCode must not be null");
@@ -54,8 +54,8 @@ public class Org {
             Boolean useYn,
             Long createdBy,
             Long updatedBy,
-            OffsetDateTime createdAt,
-            OffsetDateTime updatedAt) {
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
         return new Org(orgId, upperOrgId, orgCode, orgName, srt, useYn, createdBy, updatedBy, createdAt, updatedAt);
     }
 
@@ -91,11 +91,11 @@ public class Org {
         return updatedBy;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public OffsetDateTime getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
@@ -122,8 +122,8 @@ public class Org {
     public void markPersisted(OrgId orgId,
             Long createdBy,
             Long updatedBy,
-            OffsetDateTime createdAt,
-            OffsetDateTime updatedAt) {
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
         this.orgId = orgId;
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
@@ -133,8 +133,8 @@ public class Org {
 
     public void updateAudit(Long createdBy,
             Long updatedBy,
-            OffsetDateTime createdAt,
-            OffsetDateTime updatedAt) {
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
         this.createdAt = createdAt;

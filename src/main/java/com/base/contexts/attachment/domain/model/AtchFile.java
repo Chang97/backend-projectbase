@@ -1,6 +1,6 @@
 package com.base.contexts.attachment.domain.model;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class AtchFile {
@@ -10,16 +10,16 @@ public class AtchFile {
     private Boolean useYn;
     private Long createdBy;
     private Long updatedBy;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     private AtchFile(AtchFileId atchFileId,
             Long fileGroupCodeId,
             Boolean useYn,
             Long createdBy,
             Long updatedBy,
-            OffsetDateTime createdAt,
-            OffsetDateTime updatedAt) {
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
         this.atchFileId = atchFileId;
         this.fileGroupCodeId = Objects.requireNonNull(fileGroupCodeId, "fileGroupCodeId must not be null");
         this.useYn = useYn == null ? Boolean.TRUE : useYn;
@@ -38,8 +38,8 @@ public class AtchFile {
             Boolean useYn,
             Long createdBy,
             Long updatedBy,
-            OffsetDateTime createdAt,
-            OffsetDateTime updatedAt) {
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
         return new AtchFile(atchFileId, fileGroupCodeId, useYn, createdBy, updatedBy, createdAt, updatedAt);
     }
 
@@ -63,11 +63,11 @@ public class AtchFile {
         return updatedBy;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public OffsetDateTime getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
@@ -82,8 +82,8 @@ public class AtchFile {
     public void markPersisted(AtchFileId id,
             Long createdBy,
             Long updatedBy,
-            OffsetDateTime createdAt,
-            OffsetDateTime updatedAt) {
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
         this.atchFileId = id;
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
@@ -93,8 +93,8 @@ public class AtchFile {
 
     public void updateAudit(Long createdBy,
             Long updatedBy,
-            OffsetDateTime createdAt,
-            OffsetDateTime updatedAt) {
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
         this.createdAt = createdAt;

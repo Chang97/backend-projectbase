@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.base.contexts.code.application.query.dto.CodeQueryResult;
 import com.base.contexts.code.application.query.mapper.CodeQueryMapper;
 import com.base.contexts.code.application.query.port.in.GetCodesByUpperIdUseCase;
-import com.base.contexts.code.domain.port.out.CodeRepository;
+import com.base.contexts.code.domain.port.out.CodeQueryPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,12 +17,12 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 class GetCodesByUpperIdHandler implements GetCodesByUpperIdUseCase {
 
-    private final CodeRepository codeRepository;
+    private final CodeQueryPort codeQueryPort;
     private final CodeQueryMapper codeQueryMapper;
 
     @Override
     public List<CodeQueryResult> handle(Long upperCodeId) {
-        return codeRepository.findActiveChildrenByUpperId(upperCodeId).stream()
+        return codeQueryPort.findActiveChildrenByUpperId(upperCodeId).stream()
                 .map(codeQueryMapper::toResult)
                 .toList();
     }

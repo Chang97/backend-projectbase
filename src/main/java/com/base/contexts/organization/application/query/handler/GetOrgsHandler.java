@@ -11,7 +11,7 @@ import com.base.contexts.organization.application.query.dto.OrgQueryResult;
 import com.base.contexts.organization.application.query.mapper.OrgQueryMapper;
 import com.base.contexts.organization.application.query.port.in.GetOrgsUseCase;
 import com.base.contexts.organization.domain.model.Org;
-import com.base.contexts.organization.domain.port.out.OrgRepository;
+import com.base.contexts.organization.domain.port.out.OrgQueryPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class GetOrgsHandler implements GetOrgsUseCase {
 
-    private final OrgRepository orgRepository;
+    private final OrgQueryPort orgQueryPort;
     private final OrgQueryMapper queryMapper;
 
     @Override
@@ -36,15 +36,15 @@ class GetOrgsHandler implements GetOrgsUseCase {
 
     private List<Org> fetchOrgs(OrgQuery query) {
         if (query == null) {
-            return orgRepository.findAll();
+            return orgQueryPort.findAll();
         }
         if (query.upperOrgId() != null) {
-            return orgRepository.findByUpperOrgId(query.upperOrgId());
+            return orgQueryPort.findByUpperOrgId(query.upperOrgId());
         }
         if (StringUtils.hasText(query.upperOrgCode())) {
-            return orgRepository.findByUpperOrgCode(query.upperOrgCode().trim());
+            return orgQueryPort.findByUpperOrgCode(query.upperOrgCode().trim());
         }
-        return orgRepository.findAll();
+        return orgQueryPort.findAll();
     }
 
     private boolean filterByCode(Org org, OrgQuery query) {

@@ -7,7 +7,7 @@ import com.base.contexts.organization.application.query.dto.OrgQueryResult;
 import com.base.contexts.organization.application.query.mapper.OrgQueryMapper;
 import com.base.contexts.organization.application.query.port.in.GetOrgUseCase;
 import com.base.contexts.organization.domain.model.Org;
-import com.base.contexts.organization.domain.port.out.OrgRepository;
+import com.base.contexts.organization.domain.port.out.OrgQueryPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -17,12 +17,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class GetOrgHandler implements GetOrgUseCase {
 
-    private final OrgRepository orgRepository;
+    private final OrgQueryPort orgQueryPort;
     private final OrgQueryMapper queryMapper;
 
     @Override
     public OrgQueryResult handle(Long orgId) {
-        Org org = orgRepository.findById(orgId)
+        Org org = orgQueryPort.findById(orgId)
                 .orElseThrow(() -> new NotFoundException("Org not found. id=" + orgId));
         return queryMapper.toResult(org);
     }

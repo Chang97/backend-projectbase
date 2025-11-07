@@ -10,7 +10,7 @@ import com.base.contexts.attachment.application.query.dto.AtchFileSummaryResult;
 import com.base.contexts.attachment.application.query.mapper.AtchFileQueryMapper;
 import com.base.contexts.attachment.application.query.port.in.GetAtchFilesUseCase;
 import com.base.contexts.attachment.domain.model.AtchFile;
-import com.base.contexts.attachment.domain.port.out.AtchFileRepository;
+import com.base.contexts.attachment.domain.port.out.AtchFileQueryPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,12 +19,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class GetAtchFilesHandler implements GetAtchFilesUseCase {
 
-    private final AtchFileRepository atchFileRepository;
+    private final AtchFileQueryPort atchFileQueryPort;
     private final AtchFileQueryMapper queryMapper;
 
     @Override
     public List<AtchFileSummaryResult> handle(AtchFileQuery query) {
-        List<AtchFile> atchFiles = atchFileRepository.findAll();
+        List<AtchFile> atchFiles = atchFileQueryPort.findAll();
         return atchFiles.stream()
                 .filter(file -> filterByGroupCode(file, query))
                 .filter(file -> filterByUseYn(file, query))

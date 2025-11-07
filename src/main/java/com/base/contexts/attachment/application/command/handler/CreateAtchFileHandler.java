@@ -8,7 +8,7 @@ import com.base.contexts.attachment.application.command.dto.AtchFileCommandResul
 import com.base.contexts.attachment.application.command.mapper.AtchFileCommandMapper;
 import com.base.contexts.attachment.application.command.port.in.CreateAtchFileUseCase;
 import com.base.contexts.attachment.domain.model.AtchFile;
-import com.base.contexts.attachment.domain.port.out.AtchFileRepository;
+import com.base.contexts.attachment.domain.port.out.AtchFileCommandPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,13 +17,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class CreateAtchFileHandler implements CreateAtchFileUseCase {
 
-    private final AtchFileRepository atchFileRepository;
+    private final AtchFileCommandPort atchFileCommandPort;
     private final AtchFileCommandMapper commandMapper;
 
     @Override
     public AtchFileCommandResult handle(AtchFileCommand command) {
         AtchFile atchFile = commandMapper.toDomain(command);
-        AtchFile saved = atchFileRepository.save(atchFile);
+        AtchFile saved = atchFileCommandPort.save(atchFile);
         return commandMapper.toResult(saved);
     }
 }

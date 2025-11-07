@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.base.contexts.identity.user.application.query.dto.LoginIdAvailabilityResult;
 import com.base.contexts.identity.user.application.query.mapper.UserQueryMapper;
 import com.base.contexts.identity.user.application.query.port.in.CheckLoginIdUseCase;
-import com.base.contexts.identity.user.domain.port.out.UserRepository;
+import com.base.contexts.identity.user.domain.port.out.UserQueryPort;
 import com.base.platform.exception.ValidationException;
 import com.base.shared.core.util.StringNormalizer;
 
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 class CheckLoginIdHandler implements CheckLoginIdUseCase {
 
-    private final UserRepository userRepository;
+    private final UserQueryPort userQueryPort;
     private final UserQueryMapper userQueryMapper;
 
     @Override
@@ -26,7 +26,7 @@ class CheckLoginIdHandler implements CheckLoginIdUseCase {
         if (normalized == null) {
             throw new ValidationException("로그인 ID는 필수값입니다.");
         }
-        boolean available = !userRepository.existsByLoginId(normalized);
+        boolean available = !userQueryPort.existsByLoginId(normalized);
         return userQueryMapper.toLoginIdAvailability(normalized, available);
     }
 }

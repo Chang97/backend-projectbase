@@ -8,8 +8,8 @@ import com.base.contexts.attachment.application.command.dto.AtchFileItemCommandR
 import com.base.contexts.attachment.application.command.mapper.AtchFileItemCommandMapper;
 import com.base.contexts.attachment.application.command.port.in.CreateAtchFileItemUseCase;
 import com.base.contexts.attachment.domain.model.AtchFileItem;
-import com.base.contexts.attachment.domain.port.out.AtchFileItemRepository;
-import com.base.contexts.attachment.domain.port.out.AtchFileRepository;
+import com.base.contexts.attachment.domain.port.out.AtchFileCommandPort;
+import com.base.contexts.attachment.domain.port.out.AtchFileItemCommandPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -19,18 +19,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class CreateAtchFileItemHandler implements CreateAtchFileItemUseCase {
 
-    private final AtchFileRepository atchFileRepository;
-    private final AtchFileItemRepository atchFileItemRepository;
+    private final AtchFileCommandPort atchFileCommandPort;
+    private final AtchFileItemCommandPort atchFileItemCommandPort;
     private final AtchFileItemCommandMapper commandMapper;
 
     @Override
     public AtchFileItemCommandResult handle(AtchFileItemCommand command) {
         Long atchFileId = command.atchFileId();
-        atchFileRepository.findById(atchFileId)
+        atchFileCommandPort.findById(atchFileId)
                 .orElseThrow(() -> new NotFoundException("Attachment file not found. id=" + atchFileId));
 
         AtchFileItem item = commandMapper.toDomain(command);
-        AtchFileItem saved = atchFileItemRepository.save(item);
+        AtchFileItem saved = atchFileItemCommandPort.save(item);
         return commandMapper.toResult(saved);
     }
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.base.contexts.authr.role.adapter.out.persistence.entity.RoleEntity;
 import com.base.contexts.authr.role.adapter.out.persistence.mapper.RoleEntityMapper;
@@ -13,14 +12,14 @@ import com.base.contexts.authr.role.adapter.out.persistence.repo.RoleJpaReposito
 import com.base.contexts.authr.role.adapter.out.persistence.spec.RoleEntitySpecifications;
 import com.base.contexts.authr.role.domain.model.Role;
 import com.base.contexts.authr.role.domain.model.RoleFilter;
-import com.base.contexts.authr.role.domain.port.out.RoleRepository;
+import com.base.contexts.authr.role.domain.port.out.RoleCommandPort;
+import com.base.contexts.authr.role.domain.port.out.RoleQueryPort;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
-class RoleRepositoryAdapter implements RoleRepository {
+class RoleRepositoryAdapter implements RoleCommandPort, RoleQueryPort {
 
     private final RoleJpaRepository jpaRepository;
     private final RoleEntityMapper mapper;
@@ -41,34 +40,29 @@ class RoleRepositoryAdapter implements RoleRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<Role> findById(Long roleId) {
+        public Optional<Role> findById(Long roleId) {
         return jpaRepository.findById(roleId).map(mapper::toDomain);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<Role> findByName(String roleName) {
+        public Optional<Role> findByName(String roleName) {
         return jpaRepository.findByRoleNameIgnoreCase(roleName).map(mapper::toDomain);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public boolean existsByName(String roleName) {
+        public boolean existsByName(String roleName) {
         return jpaRepository.existsByRoleNameIgnoreCase(roleName);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Role> findAllByIds(Collection<Long> roleIds) {
+        public List<Role> findAllByIds(Collection<Long> roleIds) {
         return jpaRepository.findAllById(roleIds).stream()
                 .map(mapper::toDomain)
                 .toList();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Role> search(RoleFilter filter) {
+        public List<Role> search(RoleFilter filter) {
         return jpaRepository.findAll(RoleEntitySpecifications.withFilter(filter)).stream()
                 .map(mapper::toDomain)
                 .toList();

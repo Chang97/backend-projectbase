@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.base.contexts.organization.application.command.port.in.DeleteOrgUseCase;
-import com.base.contexts.organization.domain.port.out.OrgRepository;
+import com.base.contexts.organization.domain.port.out.OrgCommandPort;
 import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -14,14 +14,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class DeleteOrgHandler implements DeleteOrgUseCase {
 
-    private final OrgRepository orgRepository;
+    private final OrgCommandPort orgCommandPort;
 
     @Override
     public void handle(Long orgId) {
-        boolean exists = orgRepository.findById(orgId).isPresent();
+        boolean exists = orgCommandPort.findById(orgId).isPresent();
         if (!exists) {
             throw new NotFoundException("Org not found. id=" + orgId);
         }
-        orgRepository.deleteById(orgId);
+        orgCommandPort.deleteById(orgId);
     }
 }

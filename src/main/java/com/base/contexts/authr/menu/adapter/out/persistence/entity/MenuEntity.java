@@ -1,6 +1,7 @@
 package com.base.contexts.authr.menu.adapter.out.persistence.entity;
 
-import com.base.domain.common.BaseEntity;
+import com.base.shared.core.jpa.BaseEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
 

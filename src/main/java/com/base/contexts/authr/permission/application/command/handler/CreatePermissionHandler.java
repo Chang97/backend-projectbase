@@ -12,9 +12,9 @@ import com.base.contexts.authr.permission.application.command.mapper.PermissionC
 import com.base.contexts.authr.permission.application.command.port.in.CreatePermissionUseCase;
 import com.base.contexts.authr.permission.domain.model.Permission;
 import com.base.contexts.authr.permission.domain.model.PermissionId;
-import com.base.contexts.authr.permission.domain.port.out.PermissionRepository;
-import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapRepository;
-import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapRepository;
+import com.base.contexts.authr.permission.domain.port.out.PermissionCommandPort;
+import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapCommandPort;
+import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapCommandPort;
 import com.base.platform.exception.ConflictException;
 
 import lombok.RequiredArgsConstructor;
@@ -24,21 +24,21 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 class CreatePermissionHandler implements CreatePermissionUseCase {
 
-    private final PermissionRepository permissionRepository;
-    private final RolePermissionMapRepository rolePermissionMapRepository;
-    private final UserRoleMapRepository userRoleMapRepository;
+    private final PermissionCommandPort permissionCommandPort;
+    private final RolePermissionMapCommandPort rolePermissionMapCommandPort;
+    private final UserRoleMapCommandPort userRoleMapCommandPort;
     private final AuthorityCacheEventPort authorityCacheEventPort;
     private final PermissionCommandMapper permissionCommandMapper;
 
     @Override
     public PermissionCommandResult handle(PermissionCommand command) {
-        if (permissionRepository.existsByPermissionCode(command.permissionCode())) {
+        if (permissionCommandPort.existsByPermissionCode(command.permissionCode())) {
             throw new ConflictException("Permission code already exists: " + command.permissionCode());
         }
 
         Permission permission = permissionCommandMapper.toDomain(command);
 
-        Permission saved = permissionRepository.save(permission);
+        Permission saved = permissionCommandPort.save(permission);
         PermissionId savedId = saved.getPermissionId();
         if (savedId != null) {
             evictAuthorityCacheForPermission(savedId.permissionId());
@@ -47,8 +47,8 @@ class CreatePermissionHandler implements CreatePermissionUseCase {
     }
 
     private void evictAuthorityCacheForPermission(Long permissionId) {
-        List<Long> roleIds = rolePermissionMapRepository.findRoleIdsByPermissionId(permissionId);
-        List<Long> userIds = roleIds.isEmpty() ? List.of() : userRoleMapRepository.findUserIdsByRoleIds(roleIds);
+        List<Long> roleIds = rolePermissionMapCommandPort.findRoleIdsByPermissionId(permissionId);
+        List<Long> userIds = roleIds.isEmpty() ? List.of() : userRoleMapCommandPort.findUserIdsByRoleIds(roleIds);
         authorityCacheEventPort.publishRoleAuthoritiesChanged(userIds);
         authorityCacheEventPort.publishPermissionsChanged(userIds);
     }

@@ -10,7 +10,7 @@ import com.base.contexts.authr.permission.application.query.dto.PermissionQueryR
 import com.base.contexts.authr.permission.application.query.mapper.PermissionQueryMapper;
 import com.base.contexts.authr.permission.application.query.port.in.GetPermissionsUseCase;
 import com.base.contexts.authr.permission.domain.model.PermissionFilter;
-import com.base.contexts.authr.permission.domain.port.out.PermissionRepository;
+import com.base.contexts.authr.permission.domain.port.out.PermissionQueryPort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 class GetPermissionsHandler implements GetPermissionsUseCase {
 
-    private final PermissionRepository permissionRepository;
+    private final PermissionQueryPort permissionQueryPort;
     private final PermissionQueryMapper permissionQueryMapper;
 
     @Override
@@ -35,7 +35,7 @@ class GetPermissionsHandler implements GetPermissionsUseCase {
                 effective.useYn()
         );
 
-        return permissionRepository.findAll(filter).stream()
+        return permissionQueryPort.findAll(filter).stream()
                 .map(permissionQueryMapper::toResult)
                 .toList();
     }

@@ -1,6 +1,6 @@
-package com.base.domain.common;
+package com.base.shared.core.jpa;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -33,14 +33,14 @@ public abstract class BaseEntity {
     private Long createdId;
 
     @CreatedDate
-    @Column(name = "created_dt", columnDefinition = "timestamptz default now()", updatable = false)
-    private OffsetDateTime createdDt;
+    @Column(name = "created_dt", updatable = false)
+    private LocalDateTime createdDt;
 
     @LastModifiedBy
     @Column(name = "updated_id")
     private Long updatedId;
 
     @LastModifiedDate
-    @Column(name = "updated_dt", columnDefinition = "timestamptz default now()")
-    private OffsetDateTime updatedDt;
+    @Column(name = "updated_dt")
+    private LocalDateTime updatedDt;
 }

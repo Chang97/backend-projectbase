@@ -1,6 +1,6 @@
 package com.base.contexts.organization.application.command.dto;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public record OrgCommandResult(Long orgId,
         Long upperOrgId,
@@ -10,6 +10,6 @@ public record OrgCommandResult(Long orgId,
         Boolean useYn,
         Long createdBy,
         Long updatedBy,
-        OffsetDateTime createdAt,
-        OffsetDateTime updatedAt) {
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
 }

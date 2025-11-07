@@ -1,4 +1,4 @@
-package com.base.contexts.identity.auth.application.service;
+package com.base.contexts.identity.auth.application.handler;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-class RefreshTokenService implements RefreshTokenUseCase {
+public class RefreshTokenHandler implements RefreshTokenUseCase {
 
     private final AuthSupport authSupport;
 

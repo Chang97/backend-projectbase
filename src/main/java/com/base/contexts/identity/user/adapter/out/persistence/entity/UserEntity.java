@@ -1,8 +1,8 @@
 package com.base.contexts.identity.user.adapter.out.persistence.entity;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
-import com.base.domain.common.BaseEntity;
+import com.base.shared.core.jpa.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -58,7 +58,7 @@ public class UserEntity extends BaseEntity {
     private Long userStatusCodeId;
 
     @Column(name = "user_password_update_dt")
-    private OffsetDateTime userPasswordUpdateDt;
+    private LocalDateTime userPasswordUpdateDt;
 
     @Column(name = "user_password_fail_cnt")
     private Integer userPasswordFailCnt;

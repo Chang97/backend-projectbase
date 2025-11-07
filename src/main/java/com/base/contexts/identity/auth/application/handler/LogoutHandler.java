@@ -1,4 +1,4 @@
-package com.base.contexts.identity.auth.application.service;
+package com.base.contexts.identity.auth.application.handler;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-class LogoutService implements LogoutUseCase {
+public class LogoutHandler implements LogoutUseCase {
 
     private final AuthSupport authSupport;
 

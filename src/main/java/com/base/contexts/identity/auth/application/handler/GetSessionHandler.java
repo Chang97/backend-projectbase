@@ -1,4 +1,4 @@
-package com.base.contexts.identity.auth.application.service;
+package com.base.contexts.identity.auth.application.handler;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class GetSessionUseCaseImpl implements GetSessionUseCase {
+public class GetSessionHandler implements GetSessionUseCase {
 
     private final AuthSupport authSupport;
 
