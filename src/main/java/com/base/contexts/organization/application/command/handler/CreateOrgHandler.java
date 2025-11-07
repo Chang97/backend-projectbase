@@ -8,9 +8,10 @@ import com.base.contexts.organization.application.command.dto.OrgCommandResult;
 import com.base.contexts.organization.application.command.mapper.OrgCommandMapper;
 import com.base.contexts.organization.application.command.port.in.CreateOrgUseCase;
 import com.base.contexts.organization.domain.model.Org;
+import com.base.contexts.organization.domain.model.OrgId;
+import com.base.contexts.organization.domain.policy.OrgPolicy;
 import com.base.contexts.organization.domain.port.out.OrgCommandPort;
 import com.base.platform.exception.ConflictException;
-import com.base.platform.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,13 +28,14 @@ class CreateOrgHandler implements CreateOrgUseCase {
         if (orgCommandPort.existsByOrgCode(command.orgCode())) {
             throw new ConflictException("Org code already exists: " + command.orgCode());
         }
-        if (command.upperOrgId() != null) {
-            orgCommandPort.findById(command.upperOrgId())
-                    .orElseThrow(() -> new NotFoundException("Parent org not found. id=" + command.upperOrgId()));
-        }
 
         Org org = commandMapper.toDomain(command);
+        OrgPolicy.using(this::orgExists).assertUpperExists(org.getUpperOrgId());
         Org saved = orgCommandPort.save(org);
         return commandMapper.toResult(saved);
+    }
+
+    private Boolean orgExists(OrgId orgId) {
+        return orgId != null && orgCommandPort.existsById(orgId.value());
     }
 }

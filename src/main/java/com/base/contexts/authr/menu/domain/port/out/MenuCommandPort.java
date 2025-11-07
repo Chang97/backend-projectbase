@@ -11,8 +11,9 @@ public interface MenuCommandPort {
 
     Optional<Menu> findById(Long menuId);
 
+    boolean existsById(Long menuId);
+
     boolean existsByMenuCode(String menuCode);
 
     List<Menu> findByUpperMenuId(Long upperMenuId);
 }
-

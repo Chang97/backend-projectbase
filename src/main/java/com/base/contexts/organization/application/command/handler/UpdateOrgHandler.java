@@ -9,6 +9,7 @@ import com.base.contexts.organization.application.command.mapper.OrgCommandMappe
 import com.base.contexts.organization.application.command.port.in.UpdateOrgUseCase;
 import com.base.contexts.organization.domain.model.Org;
 import com.base.contexts.organization.domain.model.OrgId;
+import com.base.contexts.organization.domain.policy.OrgPolicy;
 import com.base.contexts.organization.domain.port.out.OrgCommandPort;
 import com.base.platform.exception.ConflictException;
 import com.base.platform.exception.NotFoundException;
@@ -33,18 +34,20 @@ class UpdateOrgHandler implements UpdateOrgUseCase {
             throw new ConflictException("Org code already exists: " + command.orgCode());
         }
 
-        if (command.upperOrgId() != null) {
-            orgCommandPort.findById(command.upperOrgId())
-                    .orElseThrow(() -> new NotFoundException("Parent org not found. id=" + command.upperOrgId()));
-        }
+        OrgId newUpper = OrgId.of(command.upperOrgId());
+        OrgPolicy.using(this::orgExists).assertUpperExists(newUpper);
 
         existing.changeOrgCode(command.orgCode());
         existing.changeOrgName(command.orgName());
         existing.changeSrt(command.srt());
         existing.changeUseYn(command.useYn());
-        existing.attachTo(OrgId.of(command.upperOrgId()));
+        existing.attachTo(newUpper);
 
         Org saved = orgCommandPort.save(existing);
         return commandMapper.toResult(saved);
+    }
+
+    private Boolean orgExists(OrgId orgId) {
+        return orgId != null && orgCommandPort.existsById(orgId.value());
     }
 }

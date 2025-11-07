@@ -46,9 +46,14 @@ public class MenuRepositoryAdapter implements MenuCommandPort, MenuQueryPort {
     }
 
     @Override
-        public Optional<Menu> findById(Long menuId) {
+    public Optional<Menu> findById(Long menuId) {
         return jpaRepository.findById(menuId)
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public boolean existsById(Long menuId) {
+        return jpaRepository.existsById(menuId);
     }
 
     @Override

@@ -12,6 +12,8 @@ import com.base.contexts.authr.menu.application.command.mapper.MenuCommandMapper
 import com.base.contexts.authr.menu.application.command.support.MenuPermissionSynchronizer;
 import com.base.contexts.authr.menu.application.command.port.in.UpdateMenuUseCase;
 import com.base.contexts.authr.menu.domain.model.Menu;
+import com.base.contexts.authr.menu.domain.model.MenuId;
+import com.base.contexts.authr.menu.domain.policy.MenuPolicy;
 import com.base.contexts.authr.menu.domain.port.out.MenuCommandPort;
 import com.base.platform.exception.ConflictException;
 import com.base.platform.exception.NotFoundException;
@@ -40,9 +42,14 @@ class UpdateMenuHandler implements UpdateMenuUseCase {
         }
 
         menuCommandMapper.apply(existing, command);
+        MenuPolicy.using(this::menuExists).assertUpperExists(existing.getUpperMenuId());
         Menu saved = menuRepository.save(existing);
         menuPermissionSynchronizer.sync(saved.getMenuId().value(), command.permissionIds());
         authorityCacheEventPort.publishPermissionsChanged(List.of());
         return menuCommandMapper.toResult(saved);
+    }
+
+    private Boolean menuExists(MenuId menuId) {
+        return menuId != null && menuRepository.existsById(menuId.value());
     }
 }

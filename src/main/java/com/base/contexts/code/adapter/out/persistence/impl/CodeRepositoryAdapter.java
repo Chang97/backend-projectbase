@@ -11,7 +11,10 @@ import com.base.contexts.code.adapter.out.persistence.repo.CodeJpaRepository;
 import com.base.contexts.code.adapter.out.persistence.spec.CodeEntitySpecifications;
 import com.base.contexts.code.domain.model.Code;
 import com.base.contexts.code.domain.model.CodeFilter;
+import com.base.contexts.code.domain.model.CodeId;
+import com.base.contexts.code.domain.model.CodeSnapshot;
 import com.base.contexts.code.domain.port.out.CodeCommandPort;
+import com.base.contexts.code.domain.port.out.CodeReferencePort;
 import com.base.contexts.code.domain.port.out.CodeQueryPort;
 import com.base.platform.exception.NotFoundException;
 
@@ -19,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-class CodeRepositoryAdapter implements CodeCommandPort, CodeQueryPort {
+class CodeRepositoryAdapter implements CodeCommandPort, CodeQueryPort, CodeReferencePort {
 
     private final CodeJpaRepository jpaRepository;
     private final CodeEntityMapper mapper;
@@ -42,6 +45,8 @@ class CodeRepositoryAdapter implements CodeCommandPort, CodeQueryPort {
         if (code.getUpperCodeId() != null) {
             CodeEntity parent = jpaRepository.getReferenceById(code.getUpperCodeId().codeId());
             entity.setUpperCode(parent);
+        } else {
+            entity.setUpperCode(null);
         }
         CodeEntity saved = jpaRepository.save(entity);
         return mapper.toDomain(saved);
@@ -83,5 +88,14 @@ class CodeRepositoryAdapter implements CodeCommandPort, CodeQueryPort {
         return jpaRepository.findAll(CodeEntitySpecifications.withFilter(filter)).stream()
                 .map(mapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Optional<CodeSnapshot> load(CodeId codeId) {
+        if (codeId == null) {
+            return Optional.empty();
+        }
+        return jpaRepository.findById(codeId.codeId())
+                .map(entity -> new CodeSnapshot(CodeId.of(entity.getCodeId()), entity.getOrderPath()));
     }
 }

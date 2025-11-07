@@ -46,6 +46,11 @@ class OrgRepositoryAdapter implements OrgCommandPort, OrgQueryPort {
     }
 
     @Override
+    public boolean existsById(Long orgId) {
+        return orgId != null && orgJpaRepository.existsById(orgId);
+    }
+
+    @Override
     public Optional<Org> findByOrgCode(String orgCode) {
         return orgJpaRepository.findByOrgCode(orgCode)
                 .map(entityMapper::toDomain);

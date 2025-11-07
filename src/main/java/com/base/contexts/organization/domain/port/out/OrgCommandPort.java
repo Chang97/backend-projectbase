@@ -10,6 +10,8 @@ public interface OrgCommandPort {
 
     Optional<Org> findById(Long orgId);
 
+    boolean existsById(Long orgId);
+
     Optional<Org> findByOrgCode(String orgCode);
 
     boolean existsByOrgCode(String orgCode);

@@ -105,14 +105,9 @@ public class Code {
         );
     }
 
-    public void attachTo(Code parent) {
-        if (parent == null) {
-            upperCodeId = null;
-            refreshOrderPath(null);
-            return;
-        }
-        upperCodeId = parent.codeId;
-        refreshOrderPath(parent.orderPath);
+    public void attachTo(CodeId parentId, String parentOrderPath) {
+        upperCodeId = parentId;
+        refreshOrderPath(parentOrderPath);
     }
 
     public void changeCodeName(String newName) {
