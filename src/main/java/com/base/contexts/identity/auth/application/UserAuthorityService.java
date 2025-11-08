@@ -13,7 +13,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.base.contexts.authr.cache.domain.port.out.AuthorityCachePort;
-import com.base.contexts.authr.permission.domain.port.out.PermissionQueryPort;
+import com.base.contexts.authr.permission.application.query.service.PermissionCatalogService;
+import com.base.contexts.authr.permission.domain.model.PermissionSnapshot;
 import com.base.contexts.authr.role.domain.port.out.RoleQueryPort;
 import com.base.contexts.authr.rolepermissionmap.domain.port.out.RolePermissionMapQueryPort;
 import com.base.contexts.authr.userrolemap.domain.port.out.UserRoleMapQueryPort;
@@ -29,7 +30,7 @@ public class UserAuthorityService {
     private final UserRoleMapQueryPort userRoleMapQueryPort;
     private final RoleQueryPort roleQueryPort;
     private final RolePermissionMapQueryPort rolePermissionMapQueryPort;
-    private final PermissionQueryPort permissionQueryPort;
+    private final PermissionCatalogService permissionCatalogService;
     private final AuthorityCachePort authorityCachePort;
 
     public Set<GrantedAuthority> loadAuthorities(Long userId) {
@@ -61,8 +62,10 @@ public class UserAuthorityService {
                     .collect(Collectors.toSet());
 
             if (!permissionIds.isEmpty()) {
-                permissionQueryPort.findAllByIds(permissionIds).stream()
-                        .map(permission -> StringNormalizer.trimToNull(permission.getPermissionCode()))
+                List<PermissionSnapshot> activePermissions = permissionCatalogService.getActivePermissions();
+                activePermissions.stream()
+                        .filter(snapshot -> snapshot.permissionId() != null && permissionIds.contains(snapshot.permissionId()))
+                        .map(snapshot -> StringNormalizer.trimToNull(snapshot.permissionCode()))
                         .filter(StringUtils::hasText)
                         .forEach(codes::add);
             }

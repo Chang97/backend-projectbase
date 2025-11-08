@@ -25,15 +25,7 @@ class GetPermissionsHandler implements GetPermissionsUseCase {
     @Override
     public List<PermissionQueryResult> handle(PermissionQuery query) {
         
-        PermissionQuery effective = query == null
-                ? new PermissionQuery(null, null, null, null)
-                : query;
-        PermissionFilter filter = new PermissionFilter(
-                effective.permissionId(),
-                effective.permissionCode(),
-                effective.permissionName(),
-                effective.useYn()
-        );
+        PermissionFilter filter = permissionQueryMapper.toFilter(query);
 
         return permissionQueryPort.findAll(filter).stream()
                 .map(permissionQueryMapper::toResult)
