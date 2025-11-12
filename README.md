@@ -4,7 +4,7 @@ Spring Boot 기반 인증/인가 템플릿입니다. JWT + HttpOnly 쿠키 + Red
 
 ## Tech Stack
 
-- Java 21 / Spring Boot 3.x
+- Java 17 / Spring Boot 3.5
 - Spring Security (stateless JWT)
 - Redis: refresh token store & authority/permission cache
 - PostgreSQL (예시 스키마)
