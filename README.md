@@ -1,149 +1,74 @@
-# 📑 Database Schema (PostgreSQL)
+# Backend Project Base
 
-아래는 공통 테이블 기반 설계 (User, Role, Menu, Code, Org, Permission, File 등)입니다.  
-ERD는 [dbdiagram.io](https://dbdiagram.io) 기반으로 작성되었고, PostgreSQL 환경을 기준으로 합니다.  
+Spring Boot 기반 인증/인가 템플릿입니다. JWT + HttpOnly 쿠키 + Redis(리프레시 토큰/권한 캐시) 조합으로, Vue 프런트와 연동할 때 필요한 CORS·쿠키 전략이 기본 설정되어 있습니다.
 
-![ERD](./docs/project-base.png)
----
+## Tech Stack
 
-## 🗄️ DBML
+- Java 21 / Spring Boot 3.x
+- Spring Security (stateless JWT)
+- Redis: refresh token store & authority/permission cache
+- PostgreSQL (예시 스키마)
+- Gradle
 
-```dbml
-// Use DBML to define your database structure
-// Docs: https://dbml.dbdiagram.io/docs
+## Quick Start
 
-Table user [note: '사용자 계정 관리 테이블'] {
-  user_id integer [pk, increment, not null, note: '사용자 PK']
-  email varchar(200) [unique, not null, note: '이메일 (로그인 계정)']
-  login_id varchar(100) [note: '로그인 ID']
-  user_password varchar(400) [note: '비밀번호 (암호화 저장)']
-  user_name varchar(100) [note: '사용자 이름']
-  org_id integer [ref: > org.org_id, note: '소속 조직 ID']
-  emp_no varchar(100) [note: '사번']
-  pstn_name varchar(200) [note: '직위명']
-  tel varchar(100) [note: '전화번호']
-  user_status_code_id integer [ref: > code.code_id, note: '사용자 상태 코드 (공통코드 참조)']
-  user_password_update_dt timestamptz [note: '비밀번호 변경일시']
-  user_password_fail_cnt integer [note: '비밀번호 실패 횟수']
-  old1_user_password varchar(400) [note: '이전 비밀번호']
-  use_yn boolean [default: true, note: '사용 여부']
-  created_id integer [note: '생성자 ID']
-  created_dt timestamptz [default: `now()`, note: '생성일시']
-  updated_id integer [note: '수정자 ID']
-  updated_dt timestamptz [default: `now()`, note: '수정일시']
-}
+```bash
+./gradlew clean build
+./gradlew bootRun
+```
 
-Table role [note: '사용자 역할(권한 그룹) 테이블'] {
-  role_id integer [pk, increment, not null, note: '역할 PK']
-  role_name varchar(200) [unique, not null, note: '역할명 (예: 관리자, 사용자)']
-  use_yn boolean [default: true, note: '사용 여부']
-  created_id integer [note: '생성자 ID']
-  created_dt timestamptz [default: `now()`, note: '생성일시']
-  updated_id integer [note: '수정자 ID']
-  updated_dt timestamptz [default: `now()`, note: '수정일시']
-}
+- Base URL: `http://localhost:8080`
 
-Table menu [note: '시스템 메뉴 관리 테이블'] {
-  menu_id integer [pk, increment, not null, note: '메뉴 PK']
-  menu_code varchar(50) [unique, not null, note: '메뉴 코드 (논리 식별자)']
-  upper_menu_id integer [ref: > menu.menu_id, note: '상위 메뉴 ID']
-  menu_name varchar(200) [not null, note: '메뉴명']
-  menu_cn varchar(400) [note: '메뉴 설명']
-  url varchar(300) [note: '메뉴 URL']
-  srt integer [note: '정렬 순서']
-  use_yn boolean [default: true, note: '사용 여부']
-  created_id integer [note: '생성자 ID']
-  created_dt timestamptz [default: `now()`, note: '생성일시']
-  updated_id integer [note: '수정자 ID']
-  updated_dt timestamptz [default: `now()`, note: '수정일시']
-}
+## Auth Flow
 
-Table code [note: '공통 코드 관리 테이블'] {
-  code_id integer [pk, increment, not null, note: '코드 PK (Surrogate Key)']
-  upper_code_id integer [ref: > code.code_id, note: '상위 코드 ID']
-  code varchar(40) [unique, not null, note: '코드 값 (논리 식별자)']
-  code_name varchar(200) [note: '코드명']
-  description varchar(4000) [note: '코드 설명']
-  srt integer [note: '정렬 순서']
-  etc1 varchar(100) [note: '예비 컬럼1']
-  etc2 varchar(100) [note: '예비 컬럼2']
-  etc3 varchar(100) [note: '예비 컬럼3']
-  etc4 varchar(100) [note: '예비 컬럼4']
-  use_yn boolean [default: true, note: '사용 여부']
-  created_id integer [note: '생성자 ID']
-  created_dt timestamptz [default: `now()`, note: '생성일시']
-  updated_id integer [note: '수정자 ID']
-  updated_dt timestamptz [default: `now()`, note: '수정일시']
+1. `POST /api/auth/login`
+   - Body: `LoginRequest`
+   - Response: `LoginResponse` + `Set-Cookie: ACCESS_TOKEN`, `Set-Cookie: REFRESH_TOKEN`
+2. `POST /api/auth/refresh`
+   - Uses HttpOnly `REFRESH_TOKEN` cookie만으로 새 토큰 번들 재발급
+3. `POST /api/auth/logout`
+   - 쿠키 무효화 + Redis refresh token revoke
+4. `GET /api/auth/me`
+   - 세션 확인 및 사용자 스냅샷
 
-  indexes {
-    (upper_code_id, code) [unique]
-  }
-}
+쿠키 속성 (`AuthSupport.java`)
 
-Table org [note: '조직 관리 테이블'] {
-  org_id integer [not null, increment, pk, note: '조직 PK']
-  upper_org_id integer [ref: > org.org_id, note: '상위 조직 ID']
-  org_name varchar(200) [note: '조직명']
-  srt integer [note: '정렬 순서']
-  use_yn boolean [default: true, note: '사용 여부']
-  created_id integer [note: '생성자 ID']
-  created_dt timestamptz [default: `now()`, note: '생성일시']
-  updated_id integer [note: '수정자 ID']
-  updated_dt timestamptz [default: `now()`, note: '수정일시']
-}
+| Cookie         | httpOnly | SameSite | Secure (`security.cookies.secure`) | Path               | Max-Age (기본) |
+| -------------- | -------- | -------- | ---------------------------------- | ------------------ | -------------- |
+| ACCESS_TOKEN   | true     | Lax      | false (dev)                        | `/`                | 3600s          |
+| REFRESH_TOKEN  | true     | Lax      | false (dev)                        | `/api/auth/refresh`| 604800s        |
 
-Table permission [note: '권한 정의 테이블 (CRUD 등)'] {
-  permission_id integer [pk, not null, note: '권한 PK']
-  permission_code varchar(100) [unique, not null, note: '권한 코드 (예: USER_READ)']
-  permission_name varchar(200) [note: '권한명 (설명)']
-  use_yn boolean [default: true, note: '사용 여부']
-  created_id integer [note: '생성자 ID']
-  created_dt timestamptz [default: `now()`, note: '생성일시']
-  updated_id integer [note: '수정자 ID']
-  updated_dt timestamptz [default: `now()`, note: '수정일시']
-}
+## CORS & Cookies
 
-Table atch_file [note: '첨부파일 묶음 테이블'] {
-  atch_file_id integer [pk, increment, not null, note: '첨부파일 PK']
-  file_grp_code_id integer [ref: > code.code_id, note: '파일 그룹 코드 (공통코드 참조)']
-  created_id integer [note: '생성자 ID']
-  created_dt timestamptz [default: `now()`, note: '생성일시']
-  updated_id integer [note: '수정자 ID']
-  updated_dt timestamptz [default: `now()`, note: '수정일시']
-}
+`application.yml` (`cors.*`)  
 
-Table atch_file_item [note: '첨부파일 개별 항목 테이블'] {
-  atch_file_item_id integer [pk, increment, not null, note: '첨부파일 항목 PK']
-  atch_file_id integer [not null, ref: > atch_file.atch_file_id, note: '첨부파일 PK 참조']
-  path varchar(400) [note: '파일 저장 경로']
-  file_name varchar(400) [note: '원본 파일명']
-  file_size integer [note: '파일 크기 (byte)']
-  created_id integer [note: '생성자 ID']
-  created_dt timestamptz [default: `now()`, note: '생성일시']
-  updated_id integer [note: '수정자 ID']
-  updated_dt timestamptz [default: `now()`, note: '수정일시']
-}
+| Key               | Value                            |
+| ----------------- | -------------------------------- |
+| allowed-origins   | `http://localhost:5173`          |
+| allowed-methods   | `GET,POST,PUT,PATCH,DELETE,OPTIONS` |
+| allowed-headers   | `Authorization, Content-Type`    |
+| exposed-headers   | `Authorization`                  |
+| allow-credentials | `true`                           |
+| max-age           | `3600`                           |
 
-Table role_permission_map [note: '역할-권한 매핑 테이블'] {
-  role_id integer [ref: > role.role_id, note: '역할 PK']
-  permission_id integer [ref: > permission.permission_id, note: '권한 PK']
-  indexes { (role_id, permission_id) [pk] }
-}
+프런트는 `withCredentials: true`, `baseURL=http://localhost:8080`로 axios를 구성합니다.
 
-Table menu_permission_map [note: '메뉴-권한 매핑 테이블'] {
-  menu_id integer [ref: > menu.menu_id, note: '메뉴 PK']
-  permission_id integer [ref: > permission.permission_id, note: '권한 PK']
-  indexes { (menu_id, permission_id) [pk] }
-}
+## Redis Keys
 
-Table user_role_map [note: '사용자-역할 매핑 테이블'] {
-  user_id integer [not null, ref: > user.user_id, note: '사용자 PK']
-  role_id integer [not null, ref: > role.role_id, note: '역할 PK']
+| Prefix                               | Description                                |
+| ------------------------------------ | ------------------------------------------ |
+| `auth:refresh_token:{userId}:{tokenId}` | Refresh token hash + TTL                   |
+| `auth:perm:{userId}`                 | 사용자 권한 목록 캐시 (기본 600s)          |
+| `app:permission:{useYn}:{name}`      | 퍼미션 스냅샷 캐시                        |
 
-  indexes {
-    (user_id, role_id) [pk]
-  }
-}
+권한·퍼미션·메뉴 변경 시 `AuthorityCacheEventPort`→`AuthorityCacheEventListener`가 캐시를 무효화합니다.
 
-...
+## 주요 코드 포인트
 
+- `SecurityConfig` : `/api/auth/*`, Swagger, OPTIONS 요청 `permitAll`, `JwtAuthenticationFilter` 삽입
+- `JwtAuthenticationFilter` : 쿠키 → Authorization 헤더 순으로 토큰 확인
+- `AuthSupport` : 토큰 번들 발급/쿠키 설정/refresh token hash 관리
+
+## License
+
+MIT (필요 시 수정)
